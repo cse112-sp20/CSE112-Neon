@@ -1,17 +1,26 @@
 {
-    "name": "electron_tutorial",
+    "name": "neon_pulse",
     "version": "1.0.0",
     "description": "",
-    "main": "main.js",
+    "main": "src/main.js",
     "scripts": {
         "start": "electron .",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "lint": "eslint .",
+        "prepush": "npm run lint && npm test:unit",
+        "test:unit": "mocha ./test/unit_testing/*.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "electron": "^8.2.5"
+        "chai": "^4.2.0",
+        "chai-as-promised": "^7.1.1",
+        "electron": "^8.2.5",
+        "eslint": "^7.0.0",
+        "eslint-config-google": "^0.14.0",
+        "husky": "^4.2.5",
+        "mocha": "^7.1.2",
+        "spectron": "^10.0.1"
     },
     "dependencies": {
         "ps-list": "^7.0.0"
