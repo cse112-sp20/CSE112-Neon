@@ -25,9 +25,7 @@
   "prepush": "npm run lint && npm test:unit",
   "test:unit": "mocha ./test/unit_testing/*.js",
   "test:int": "mocha ./test/integration_testing/*.js",
-  "postinstall": "electron-builder install-app-deps",
-  "build": "electron-builder",
-  "release": "electron-builder --windows --publish always"
+  "postinstall": "electron-builder install-app-deps"
  },
  "keywords": [],
  "author": "",

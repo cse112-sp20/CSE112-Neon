@@ -1,7 +1,7 @@
 # Source
 # https://github.com/samuelmeuli/action-electron-builder
 
-name: Build/release
+name: Build/Release - Mac
 
 on: [pull_request]
 
@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-latest]
         #os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
