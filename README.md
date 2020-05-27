@@ -46,7 +46,7 @@ Integration Testing
   
   Nothing is currently being enforced off of these results.
   
-    ```bash
+  ```bash
   npm run test:unit_cov
   npm run test:unit_cov_html
   ```
