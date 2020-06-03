@@ -1,5 +1,5 @@
 const { dialog } = require('electron').remote;
-
+var {checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel} = require('./js/js_functions/checkout_functions.js');
 const firebaseConfig = {
   apiKey: 'AIzaSyBmn_tDSlm4lLdrvSqj8Yb00KkYae8cL-Y',
   authDomain: 'neon-pulse-development.firebaseapp.com',
@@ -15,16 +15,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const uid = localStorage.getItem('userid');
-let teamName = '';
 
-checkTeams()
+checkTeams(uid,db)
 var errorMessage = "An error occurred when trying to find your team, returning to main page."
-
 
 let taskNum = 1;
 
 const endFlowButton = document.getElementById('endFlowBtn');
-endFlowButton.addEventListener('click', () => endFlow());
+endFlowButton.addEventListener('click', () => endFlow(db,uid));
 
 var cancelButton = document.getElementById("cancelBtn")
 cancelButton.addEventListener("click", () => cancel())

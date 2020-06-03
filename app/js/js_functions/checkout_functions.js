@@ -1,4 +1,4 @@
-function checkTeams() {
+function checkTeams(uid,db) {
 
     db.collection("teams").where(uid, "==", true)
         .get()
@@ -96,7 +96,7 @@ function updateGoal() {
             //document.location.href = 'taskbar.html'
         });
 }
-function endFlow() {
+function endFlow(db,uid) {
     updateThermometer()
     var docRef = db.collection("teams").doc(teamName).collection(uid).doc("status")
     //initialize the things to be pushed

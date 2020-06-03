@@ -1,4 +1,4 @@
-function checkTeams() {
+function checkTeams(db,uid) {
     const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
     db.collection('teams').where(uid, '==', true)
         .get()
@@ -28,7 +28,7 @@ function checkTeams() {
             document.location.href = 'taskbar.html';
         });
 }
-function checkPrevTask() {
+function checkPrevTask(db,uid) {
     db.collection('teams').where(uid, '==', true)
         .get()
         .then((querySnapshot) => {
@@ -68,29 +68,41 @@ function checkPrevTask() {
         });
 }
 // startflow will always send 3 tasks value, if the user didn't not set any of them, just set the val to be ""
-function startFlow() {
-    console.log('tv1', task1.value);
-    const obj = {
-        checkedIn: true,
-        task1: task1.value,
-        task2: task2.value,
-        task3: task3.value,
-        taskStatus: 1,
-    };
-    db.collection('teams').doc(teamName).collection(uid).doc('status')
-        .set(obj)
-        .then(() => {
-            console.log('Document written');
-            document.location.href = 'taskbar.html';
+function startFlow(db,uid,task1,task2,task3) {
+    db.collection('teams').where(uid, '==', true)
+        .get()
+        .then((querySnapshot) => {
+            console.log(querySnapshot.docs);
+            if (querySnapshot.docs.length > 0) {
+                querySnapshot.forEach((doc) => {
+                    teamName = doc.id;
+                });
+            }
+            return teamName;
         })
-        .catch((error) => {
-            dialog.showMessageBox({
-                type: 'error',
-                title: 'Error',
-                message: error.message,
+        .then((teamName)=>{
+            const obj = {
+                checkedIn: true,
+                task1: task1.value,
+                task2: task2.value,
+                task3: task3.value,
+                taskStatus: 1,
+                };
+            db.collection('teams').doc(teamName).collection(uid).doc('status')
+            .set(obj)
+            .then(() => {
+                console.log('Document written');
+                document.location.href = 'taskbar.html';
+            })
+            .catch((error) => {
+                dialog.showMessageBox({
+                    type: 'error',
+                    title: 'Error',
+                    message: error.message,
+                });
+                console.error('Error adding document: ', error);
+                document.location.href = 'taskbar.html';
             });
-            console.error('Error adding document: ', error);
-            document.location.href = 'taskbar.html';
         });
 }
 

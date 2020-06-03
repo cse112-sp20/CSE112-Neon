@@ -15,7 +15,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const uid = localStorage.getItem('userid');
-let teamName = '';
 const task1 = document.getElementById('Task1');
 const task2 = document.getElementById('Task2');
 const task3 = document.getElementById('Task3');
@@ -24,6 +23,11 @@ task2.value = '';
 task3.value = '';
 const prevList = document.getElementById('prevTask');
 const todayTask = document.getElementById('todayTask');
+
+checkTeams(db,uid);
+checkPrevTask(db,uid);
+const startFlowButton = document.getElementById('startFlowBtn');
+startFlowButton.addEventListener('click', () => startFlow(db,uid,task1,task2,task3));
 
 prevList.addEventListener('click', (event) => {
   const { target } = event;
@@ -76,7 +80,6 @@ function cancel() { document.location.href = "taskbar.html" }
 
 todayTask.addEventListener('click', (event) => {
   target = event.target;
-  console.log(target.innerText);
   if (target.innerText == 'Delete') {
     targetParent = target.parentNode;
     targetParent.style.display = 'none';

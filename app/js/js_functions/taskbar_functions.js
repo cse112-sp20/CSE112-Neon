@@ -55,7 +55,7 @@ function getTeam() {
 function checkStatus() {
     flowDiv.style.display = 'block';
     teamExistsDiv.style.display = 'block';
-
+    console.log(teamName)
     const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
     docRef.get()
         .then((doc) => {
@@ -64,8 +64,6 @@ function checkStatus() {
                     startFlowButton.style.display = 'none';
                     endFlowButton.style.display = 'block';
                 }
-            } else {
-                console.error('Error getting data');
             }
         })
         .catch((error) => {
