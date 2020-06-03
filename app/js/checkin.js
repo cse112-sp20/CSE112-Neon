@@ -1,6 +1,5 @@
 var  dialog  = require('electron').remote;
 
-
 const firebaseConfig = {
   apiKey: 'AIzaSyBmn_tDSlm4lLdrvSqj8Yb00KkYae8cL-Y',
   authDomain: 'neon-pulse-development.firebaseapp.com',
@@ -12,7 +11,6 @@ const firebaseConfig = {
   measurementId: 'G-VMS6JL8H4S',
 };
 // Initialize Firebase
-var firebase = require('firebase');
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const uid = localStorage.getItem('userid');
