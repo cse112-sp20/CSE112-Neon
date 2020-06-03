@@ -1,4 +1,5 @@
 var  dialog  = require('electron').remote;
+var {checkTeams, checkPrevTask, startFlow, addTask} = require('./js_functions/checkin_functions.js');
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBmn_tDSlm4lLdrvSqj8Yb00KkYae8cL-Y',
@@ -23,12 +24,6 @@ task2.value = '';
 task3.value = '';
 const prevList = document.getElementById('prevTask');
 const todayTask = document.getElementById('todayTask');
-
-checkTeams();
-checkPrevTask();
-
-const startFlowButton = document.getElementById('startFlowBtn');
-startFlowButton.addEventListener('click', () => startFlow());
 
 prevList.addEventListener('click', (event) => {
   const { target } = event;
