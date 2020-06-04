@@ -1,5 +1,5 @@
 const dialog = require('electron').remote;
-const { firebaseConfig } = require('./js/common.js');
+const { firebaseConfig } = require('./common.js');
 const {
   checkTeams, checkPrevTask, startFlow, addTask,
 } = require('./js_functions/checkin_functions.js');
