@@ -27,4 +27,3 @@ endFlowButton.addEventListener('click', () => endFlow(db, uid));
 
 const cancelButton = document.getElementById('cancelBtn');
 cancelButton.addEventListener('click', () => cancel());
-

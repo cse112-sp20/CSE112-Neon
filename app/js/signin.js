@@ -1,4 +1,4 @@
-const { dialog } = require('electron').remote;
+// const { dialog } = require('electron').remote;
 const { shell } = require('electron');
 
 /** Firebase Config */
@@ -15,7 +15,7 @@ const firebaseConfig = {
 
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// const db = firebase.firestore();
 
 const signInBtn = document.getElementById('signInBtn');
 
@@ -23,7 +23,8 @@ let intervalVar;
 
 /**
  * Opens up google sign in page, then continually pings server for response from redirect. Once that
- * redirect response is received then userid, email, and name are retrieved. Then redirects to taskbar.html
+ * redirect response is received then userid, email, and name are retrieved. Then redirects to
+ * taskbar.html
  */
 signInBtn.addEventListener('click', () => {
   console.log('here');
