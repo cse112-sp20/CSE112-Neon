@@ -1,6 +1,6 @@
 
 const {
-  checkTeams, endFlow, cancel, setColor,
+  checkTeams, endFlow, cancel,
 } = require('./js_functions/checkout_functions.js');
 
 /** Firebase Config */

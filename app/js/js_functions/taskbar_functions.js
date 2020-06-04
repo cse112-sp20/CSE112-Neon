@@ -216,5 +216,6 @@ function onStatusChange(name, status) {
 }
 
 module.exports = {
-  checkTeams, getTeam, checkStatus, createTeam, joinTeam, leaveTeam, addTeamMember, checkThermometer, addStatusListener, onStatusChange,
+  checkTeams, getTeam, checkStatus, createTeam, joinTeam, leaveTeam, addTeamMember, checkThermometer,
+   addStatusListener, onStatusChange,
 };

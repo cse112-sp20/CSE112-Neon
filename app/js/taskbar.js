@@ -106,7 +106,7 @@ endFlowButton.style.display = 'none';
 
 
 // Right column logistics
-// let teamName;
+let teamName;
 const createTeamButton = document.getElementById('createTeamButton');
 createTeamButton.addEventListener('click', () => createTeam());
 const joinTeamButton = document.getElementById('joinTeamButton');
