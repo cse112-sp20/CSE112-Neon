@@ -1,3 +1,23 @@
+/* eslint no-shadow: ["error", { "allow": ["teamName"] }] */
+
+let teamName = '';
+const { dialog } = require('electron').remote;
+
+/**
+ * TODO
+ * @param {*} parent
+ * @param {*} text
+ */
+function addTask(parent, text) {
+  const task = `
+        <li>
+            <input style="display: inline-block;" value = "${text}">
+            <button class="bt">Add</button>
+            <button class="bt">Delete</button>
+        </li>`;
+  parent.insertAdjacentHTML('beforeend', task);
+}
+
 /**
  * Checks which team a particular user is currently in
  * @param {*} db
@@ -57,19 +77,19 @@ function checkPrevTask(db, uid) {
         .collection(uid).doc('status')
         .get()
         .then((status) => {
-          statusObj = status.data();
-          ptDiv = document.getElementById('prevTask');
+          const statusObj = status.data();
+          const ptDiv = document.getElementById('prevTask');
           console.log(statusObj.task1);
-          if (statusObj.task1 != '' || statusObj.task2 != '' || statusObj.task3 != '') {
+          if (statusObj.task1 !== '' || statusObj.task2 !== '' || statusObj.task3 !== '') {
             ptDiv.style.display = 'block';
           }
-          if (statusObj.task1 != '') {
+          if (statusObj.task1 !== '') {
             addTask(ptDiv, statusObj.task1);
           }
-          if (statusObj.task2 != '') {
+          if (statusObj.task2 !== '') {
             addTask(ptDiv, statusObj.task2);
           }
-          if (statusObj.task3 != '') {
+          if (statusObj.task3 !== '') {
             addTask(ptDiv, statusObj.task3);
           }
         })
@@ -78,7 +98,9 @@ function checkPrevTask(db, uid) {
         });
     });
 }
-// startflow will always send 3 tasks value, if the user didn't not set any of them, just set the val to be ""
+
+// startflow will always send 3 tasks value, if the user didn't not set any of them,
+// just set the val to be ""
 /**
  * TODO
  */
@@ -120,20 +142,7 @@ function startFlow(db, uid, task1, task2, task3) {
     });
 }
 
-/**
- * TODO
- * @param {*} parent
- * @param {*} text
- */
-function addTask(parent, text) {
-  const task = `
-        <li>
-            <input style="display: inline-block;" value = "${text}">
-            <button class="bt">Add</button>
-            <button class="bt">Delete</button>
-        </li>`;
-  parent.insertAdjacentHTML('beforeend', task);
-}
+
 module.exports = {
   checkTeams, checkPrevTask, startFlow, addTask,
 };
