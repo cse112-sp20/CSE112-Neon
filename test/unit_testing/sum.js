@@ -1,6 +1,6 @@
-/* test/unit_testing/sum.js */
+/* test/unit_testing/sum_functions.js */
 
-var sum = require('../../app/js/sum.js');
+var sum = require('../../app/js/js_functions/sum_functions.js');
 var expect = require('chai').expect;
 
 describe('#sum()', function() {

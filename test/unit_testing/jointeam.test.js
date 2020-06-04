@@ -1,0 +1,1 @@
+var module = require('../../app/js/js_functions/jointeam_functions.js');

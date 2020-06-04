@@ -1,0 +1,1 @@
+var module = require('../../app/js/js_functions/checkout_functions.js');

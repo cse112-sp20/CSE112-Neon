@@ -1,4 +1,4 @@
-/* sum.js */
+/* sum_functions.js */
 
 module.exports = function () {
   // Convert arguments object to an array

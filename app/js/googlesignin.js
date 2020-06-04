@@ -2,6 +2,7 @@ const regexGUID = /\?guid=([\dA-z]*[-][\dA-z]*[-][\dA-z]*)/;
 const guid = window.location.search.match(regexGUID)[1];
 console.log(guid);
 
+/** Firebase Config */
 const firebaseConfig = {
   apiKey: 'AIzaSyBmn_tDSlm4lLdrvSqj8Yb00KkYae8cL-Y',
   authDomain: 'neon-pulse-development.firebaseapp.com',
@@ -12,29 +13,16 @@ const firebaseConfig = {
   appId: '1:240091062123:web:babe11f5f03ced38fbb62e',
   measurementId: 'G-VMS6JL8H4S',
 };
-// Initialize Firebase
+
+/** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
 
-/* var provider = new firebase.auth.GoogleAuthProvider();
-firebase.auth().signInWithPopup(provider).then(function(result) {
-    // This gives you a Google Access Token. You can use it to access the Google API.
-    var token = result.credential.accessToken;
-    // The signed-in user info.
-    var user = result.user;
-    // ...
-    console.log(user.uh);
-}).catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    // The email of the user's account used.
-    var email = error.email;
-    // The firebase.auth.AuthCredential type that was used.
-    var credential = error.credential;
-    // ...
-}); */
 const h3 = document.getElementById('loginstatus');
 
+/**
+ * Gets redirect result, if there isn't a redirect result then redirects page to Google sign in page. After
+ * redirect result is obtained then post to server.
+ */
 firebase.auth().getRedirectResult().then((result) => {
   if (result.credential) {
     // This gives you a Google Access Token. You can use it to access the Google API.
@@ -68,8 +56,6 @@ firebase.auth().getRedirectResult().then((result) => {
     xhr.send(JSON.stringify(id));
     h3.innerHTML = 'You have successfully logged in, please return to Neon Pulse.';
   }
-
-  // window.close()
 }).catch((error) => {
   // Handle Errors here.
   const errorCode = error.code;
