@@ -1,37 +1,50 @@
 /**
- * Checks which team a particular user is currently in
+ * return the user's teamname
  * @param {*} db 
  * @param {string} uid 
  */
-function checkTeams(db, uid) {
-    const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
-    db.collection('teams').where(uid, '==', true)
+function getTeamName(db,uid){
+    var getTN = function(resolve,reject){
+        db.collection('teams').where(uid, '==', true)
         .get()
         .then((querySnapshot) => {
             console.log(querySnapshot.docs);
             if (querySnapshot.docs.length > 0) {
                 querySnapshot.forEach((doc) => {
-                    teamName = doc.id;
+                    resolve(doc.id);
                 });
-            } else {
-                dialog.showMessageBox({
-                    type: 'error',
-                    title: 'Error',
-                    message: errorMessage,
-                });
-                console.log('Team not found');
-                document.location.href = 'taskbar.html';
             }
-        })
-        .catch((error) => {
-            dialog.showMessageBox({
-                type: 'error',
-                title: 'Error',
-                message: errorMessage,
-            });
-            console.log('Error getting documents: ', error);
-            document.location.href = 'taskbar.html';
+            return;
         });
+    }
+    return new Promise(getTN);
+}
+
+/**
+ * show warnings if a user fail to join a team
+ * @param {*} db 
+ * @param {string} uid 
+ */
+function failGetTeamName(){
+    const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
+    dialog.showMessageBox({
+        type: 'error',
+        title: 'Error',
+        message: errorMessage,
+    });
+    console.log('Error getting documents: ', error);
+    document.location.href = 'taskbar.html'; 
+}
+
+/**
+ * Checks if a user joined a team or not
+ * @param {*} db 
+ * @param {string} uid 
+ */
+function checkTeams(db,uid) {
+        getTeamName(db,uid)
+        .then()
+        .catch(failGetTeamName)
 }
 
 /**
@@ -40,17 +53,7 @@ function checkTeams(db, uid) {
  * @param {string} uid 
  */
 function checkPrevTask(db, uid) {
-    db.collection('teams').where(uid, '==', true)
-        .get()
-        .then((querySnapshot) => {
-            console.log(querySnapshot.docs);
-            if (querySnapshot.docs.length > 0) {
-                querySnapshot.forEach((doc) => {
-                    teamName = doc.id;
-                });
-            }
-            return teamName;
-        })
+        getTeamName(db,uid)
         .then((teamName) => {
             db.collection('teams')
                 .doc(teamName)
@@ -83,17 +86,7 @@ function checkPrevTask(db, uid) {
  * TODO
  */
 function startFlow(db, uid, task1, task2, task3) {
-    db.collection('teams').where(uid, '==', true)
-        .get()
-        .then((querySnapshot) => {
-            console.log(querySnapshot.docs);
-            if (querySnapshot.docs.length > 0) {
-                querySnapshot.forEach((doc) => {
-                    teamName = doc.id;
-                });
-            }
-            return teamName;
-        })
+    getTeamName(db,uid)
         .then((teamName) => {
             const obj = {
                 checkedIn: true,
