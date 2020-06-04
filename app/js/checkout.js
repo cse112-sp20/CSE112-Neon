@@ -1,5 +1,6 @@
 const { dialog } = require('electron').remote;
 
+/** Firebase Config */
 const firebaseConfig = {
     apiKey: 'AIzaSyBmn_tDSlm4lLdrvSqj8Yb00KkYae8cL-Y',
     authDomain: 'neon-pulse-development.firebaseapp.com',
@@ -10,7 +11,8 @@ const firebaseConfig = {
     appId: '1:240091062123:web:babe11f5f03ced38fbb62e',
     measurementId: 'G-VMS6JL8H4S',
 };
-// Initialize Firebase
+
+/** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const uid = localStorage.getItem('userid');
@@ -19,6 +21,9 @@ let teamName = '';
 checkTeams()
 var errorMessage = "An error occurred when trying to find your team, returning to main page."
 
+/**
+ * Checks which team a particular user is currently in
+ */
 function checkTeams() {
 
     db.collection("teams").where(uid, "==", true)
@@ -52,8 +57,11 @@ function checkTeams() {
         });
 }
 
-
-// create a list of goals that user saved in check-in
+/**
+ * create a list of goals that user saved in check-in
+ * @param {*} goal 
+ * @param {*} n 
+ */
 function createGoalList(goal, n) {
 
     // Assigning the attributes 
@@ -85,7 +93,9 @@ function createGoalList(goal, n) {
 
 let taskNum = 1;
 
-
+/**
+ * TODO
+ */
 function updateGoal() {
     var n = 1;
     var goalText = document.getElementById("goalText");
@@ -126,10 +136,16 @@ function updateGoal() {
 const endFlowButton = document.getElementById('endFlowBtn');
 endFlowButton.addEventListener('click', () => endFlow());
 
+/**
+ * Starts endflow
+ */
 function endFlow() {
     updateThermometer()
 }
 
+/**
+ * After thermometer is updated Firebase db is updated with the completed statuses
+ */
 function handleEndFlow() {
     var docRef = db.collection("teams").doc(teamName).collection(uid).doc("status")
         //initialize the things to be pushed
@@ -181,8 +197,14 @@ function handleEndFlow() {
 var cancelButton = document.getElementById("cancelBtn")
 cancelButton.addEventListener("click", () => cancel())
 
+/**
+ * Cancels checkout flow
+ */
 function cancel() { document.location.href = "taskbar.html" }
 
+/**
+ * Updates thermometer with completed tasks
+ */
 function updateThermometer() {
     console.log(dict)
     var line1 = document.getElementById("h1")
