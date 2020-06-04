@@ -1,7 +1,7 @@
-const firebase = require('firebase/app');
 const { firebaseConfig } = require('./common.js');
+
 const {
-    checkTeams, endFlow, cancel,
+  checkTeams, endFlow, cancel,
 } = require('./js_functions/checkout_functions.js');
 
 /** Initialize Firebase */
