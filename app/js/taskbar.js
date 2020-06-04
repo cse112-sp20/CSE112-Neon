@@ -12,7 +12,7 @@ const firebaseConfig = {
   measurementId: 'G-VMS6JL8H4S',
 };
 
-const status_emoji = {
+const statusEmoji = {
   Online: '😀',
   Offline: '😴',
   Coding: '👨‍💻',
@@ -57,9 +57,9 @@ document.getElementById('userStatus').onchange = function () {
   db.collection('users').doc(uid).update({
     userStatus: value,
   })
-    .catch((error) => {
-      console.error('Error attempting to change user status: ', error);
-    });
+      .catch((error) => {
+        console.error('Error attempting to change user status: ', error);
+      });
 };
 
 /**

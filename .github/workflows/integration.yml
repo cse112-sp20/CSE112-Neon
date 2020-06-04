@@ -1,10 +1,6 @@
 name: integration
 
 on: [pull_request]
-#on:
-#  pull_request:
-#    branches:
-#      - dev
 
 jobs:
   integration:
@@ -15,12 +11,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install
+        run: npm ci
       - name: Run headless test
         uses: GabrielBB/xvfb-action@v1.2
         with:
           working-directory: ./ #optional
-          run: npm test
-      - name: Install
-        run: npm ci
-      - name: Test
-        run: npm run test:int
+          run: npm run test:int
