@@ -62,8 +62,8 @@ function getStatus(teamName,db,uid){
 }
 /**
  * TODO
- * @param {*} db 
- * @param {string} uid 
+ * @param {*} db
+ * @param {string} uid
  */
 function checkPrevTask(db, uid) {
         getTeamName(db,uid)
@@ -94,6 +94,7 @@ function checkPrevTask(db, uid) {
         .catch((error) => {
             console.log('Error checking prev tasks', error);
         });
+    });
 }
 // startflow will always send 3 tasks value, if the user didn't not set any of them, just set the val to be ""
 /**
@@ -125,20 +126,23 @@ function startFlow(db, uid, task1, task2, task3) {
                     document.location.href = 'taskbar.html';
                 });
         });
+    });
 }
 
 /**
  * TODO
- * @param {*} parent 
- * @param {*} text 
+ * @param {*} parent
+ * @param {*} text
  */
 function addTask(parent, text) {
-    const task = `
+  const task = `
         <li>
             <input style="display: inline-block;" value = "${text}">
             <button class="bt">Add</button>
             <button class="bt">Delete</button>
         </li>`;
-    parent.insertAdjacentHTML('beforeend', task);
+  parent.insertAdjacentHTML('beforeend', task);
 }
-module.exports = { checkTeams, checkPrevTask, startFlow, addTask };
+module.exports = {
+  checkTeams, checkPrevTask, startFlow, addTask,
+};

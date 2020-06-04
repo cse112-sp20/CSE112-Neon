@@ -1,8 +1,7 @@
 # CSE112-Neon
 [![Actions Status](https://github.com/cse112-sp20/CSE112-Neon/workflows/unit/badge.svg)](https://github.com/cse112-sp20/CSE112-Neon/actions) [![Actions Status](https://github.com/cse112-sp20/CSE112-Neon/workflows/integration/badge.svg)](https://github.com/cse112-sp20/CSE112-Neon/actions) [![Actions Status](https://github.com/cse112-sp20/CSE112-Neon/workflows/Build/badge.svg)](https://github.com/cse112-sp20/CSE112-Neon/actions)
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/241caa7b9153e0b64ffd/maintainability)](https://codeclimate.com/github/cse112-sp20/CSE112-Neon/maintainability)
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/241caa7b9153e0b64ffd/maintainability)](https://codeclimate.com/github/cse112-sp20/CSE112-Neon/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/241caa7b9153e0b64ffd/test_coverage)](https://codeclimate.com/github/cse112-sp20/CSE112-Neon/test_coverage)
 
 ## Installing
 ```bash

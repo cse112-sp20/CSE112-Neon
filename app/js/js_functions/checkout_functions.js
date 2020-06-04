@@ -1,67 +1,64 @@
 /**
  * Checks which team a particular user is currently in
- * @param {string} uid 
- * @param {*} db 
+ * @param {string} uid
+ * @param {*} db
  */
 function checkTeams(uid, db) {
-
-    db.collection("teams").where(uid, "==", true)
-        .get()
-        .then(function(querySnapshot) {
-            console.log(querySnapshot.docs)
-            if (querySnapshot.docs.length > 0) {
-                querySnapshot.forEach(function(doc) {
-                    teamName = doc.id
-                });
-                updateGoal(db, uid)
-            } else {
-
-                dialog.showMessageBox({
-                    type: 'error',
-                    title: 'Error',
-                    message: errorMessage
-                });
-                console.log("Team not found")
-                    //document.location.href = 'taskbar.html'
-            }
-        })
-        .catch(function(error) {
-            console.log("Error getting documents: ", error);
-            //document.location.href = 'taskbar.html'
+  db.collection('teams').where(uid, '==', true)
+    .get()
+    .then((querySnapshot) => {
+      console.log(querySnapshot.docs);
+      if (querySnapshot.docs.length > 0) {
+        querySnapshot.forEach((doc) => {
+          teamName = doc.id;
         });
+        updateGoal(db, uid);
+      } else {
+        dialog.showMessageBox({
+          type: 'error',
+          title: 'Error',
+          message: errorMessage,
+        });
+        console.log('Team not found');
+        // document.location.href = 'taskbar.html'
+      }
+    })
+    .catch((error) => {
+      console.log('Error getting documents: ', error);
+      // document.location.href = 'taskbar.html'
+    });
 }
 
 /**
  * create a list of goals that user saved in check-in
- * @param {*} goal 
- * @param {*} n 
+ * @param {*} goal
+ * @param {*} n
  */
 function createGoalList(goal, n) {
-
-    // Assigning the attributes
-    var id = n.toString();
-    var form = document.getElementById("line" + id);
-    var label = document.createElement('label');
-    var labelId = "task" + id;
-    var con = document.getElementById('container' + id);
-
-
-    // appending the created text to
-    // the created label tag
-    var s = "";
-    label.appendChild(document.createTextNode(goal + s));
-    label.id = labelId;
+  // Assigning the attributes
+  const id = n.toString();
+  const form = document.getElementById(`line${id}`);
+  const label = document.createElement('label');
+  const labelId = `task${id}`;
+  const con = document.getElementById(`container${id}`);
 
 
-    document.getElementById('h' + id).style.display = "block"
+  // appending the created text to
+  // the created label tag
+  const s = '';
+  label.appendChild(document.createTextNode(goal + s));
+  label.id = labelId;
 
-    con.style.position = "absolute";
-    con.style.right = "0";
-    con.style.display = "inline-block";
 
-    // appending label to div
-    form.appendChild(label);
-    form.appendChild(con);
+  document.getElementById(`h${id}`).style.display = 'block';
+
+  con.style.position = 'absolute';
+  con.style.right = '0';
+  con.style.display = 'inline-block';
+
+  // appending label to div
+  form.appendChild(label);
+  form.appendChild(con);
 }
 
 let taskNum = 1;
@@ -70,44 +67,42 @@ let taskNum = 1;
  * TODO
  */
 function updateGoal(db, uid) {
-    var n = 1;
-    var goalText = document.getElementById("goalText");
-    var docRef = db.collection("teams").doc(teamName).collection(uid).doc("status")
-    docRef.get()
-        .then(function(doc) {
-            if (doc.exists) {
-                goalText.style.display = "none";
-                var id = "task" + n.toString();
-                var data = doc.data()
-                while (id in data & data[id] != "") {
-
-                    createGoalList(data[id], n);
-                    n++;
-                    taskNum++;
-                    id = "task" + n.toString();
-                }
-                if (n == 1) {
-                    goalText.innerHTML = "No Task Set For The Day!"
-                    goalText.style.display = "block";
-                }
-
-            } else {
-                console.error("Error getting data");
-            }
-        })
-        .catch(function(error) {
-            console.error("Error getting data: ", error);
-            //document.location.href = 'taskbar.html'
-        });
+  let n = 1;
+  const goalText = document.getElementById('goalText');
+  const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
+  docRef.get()
+    .then((doc) => {
+      if (doc.exists) {
+        goalText.style.display = 'none';
+        let id = `task${n.toString()}`;
+        const data = doc.data();
+        while (id in data & data[id] != '') {
+          createGoalList(data[id], n);
+          n++;
+          taskNum++;
+          id = `task${n.toString()}`;
+        }
+        if (n == 1) {
+          goalText.innerHTML = 'No Task Set For The Day!';
+          goalText.style.display = 'block';
+        }
+      } else {
+        console.error('Error getting data');
+      }
+    })
+    .catch((error) => {
+      console.error('Error getting data: ', error);
+      // document.location.href = 'taskbar.html'
+    });
 }
 
 /**
  * Starts endflow
- * @param {*} db 
- * @param {string} uid 
+ * @param {*} db
+ * @param {string} uid
  */
 function endFlow(db, uid) {
-    updateThermometer(db, uid)
+  updateThermometer(db, uid);
 }
 
 /**
@@ -146,22 +141,22 @@ function handleEndFlow(db, uid) {
         } else {
             obj[taskId] = "";
         }
-
     }
-    docRef.set(obj)
-        .then(function() {
-            console.log("Document written");
-            document.location.href = 'taskbar.html'
-        })
-        .catch(function(error) {
-            dialog.showMessageBox({
-                type: 'error',
-                title: 'Error',
-                message: error.message
-            });
-            console.error("Error adding document: ", error);
-            //document.location.href = 'taskbar.html'
-        });
+  }
+  docRef.set(obj)
+    .then(() => {
+      console.log('Document written');
+      document.location.href = 'taskbar.html';
+    })
+    .catch((error) => {
+      dialog.showMessageBox({
+        type: 'error',
+        title: 'Error',
+        message: error.message,
+      });
+      console.error('Error adding document: ', error);
+      // document.location.href = 'taskbar.html'
+    });
 }
 
 /**
@@ -236,15 +231,37 @@ function updateThermometer(db, uid) {
                 })
             }
         })
-        .catch(function(error) {
-            console.log("Error getting documents: ", error);
-            handleEndFlow(db, uid)
-        });
+          .catch((err) => {
+            console.log(err);
+            handleEndFlow(db, uid);
+          });
+      } else {
+        let currProgress = querySnapshot.data().progress;
+        currProgress += (tasksCompleted * 10);
+        db.collection('thermometers').doc(teamName).set({
+          progress: currProgress,
+          lastEpoch: querySnapshot.data().lastEpoch,
+        }).then(() => {
+          console.log('Document written');
+          handleEndFlow(db, uid);
+        })
+          .catch((err) => {
+            console.log(err);
+            handleEndFlow(db, uid);
+          });
+      }
+    })
+    .catch((error) => {
+      console.log('Error getting documents: ', error);
+      handleEndFlow(db, uid);
+    });
 }
 
 /**
  * Cancels checkout flow
  */
-function cancel() { document.location.href = "taskbar.html" }
+function cancel() { document.location.href = 'taskbar.html'; }
 
-module.exports = { checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel };
+module.exports = {
+  checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel,
+};
