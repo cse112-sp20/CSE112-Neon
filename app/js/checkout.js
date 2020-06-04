@@ -20,7 +20,6 @@ const uid = localStorage.getItem('userid');
 
 checkTeams(uid, db)
 var errorMessage = "An error occurred when trying to find your team, returning to main page."
-
 let taskNum = 1;
 
 const endFlowButton = document.getElementById('endFlowBtn');
