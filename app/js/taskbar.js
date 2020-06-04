@@ -83,6 +83,11 @@ logoutButton.addEventListener('click', () => {
   });
 });
 
+
+function startFlow() { document.location.href = 'checkin.html'; }
+
+function endFlow() { document.location.href = 'checkout.html'; }
+
 // Left column logistics
 const startFlowButton = document.getElementById('startFlowButton');
 startFlowButton.addEventListener('click', () => startFlow());
@@ -99,12 +104,9 @@ teamNoneDiv.style.display = 'none';
 teamExistsDiv.style.display = 'none';
 endFlowButton.style.display = 'none';
 
-function startFlow() { document.location.href = 'checkin.html'; }
-
-function endFlow() { document.location.href = 'checkout.html'; }
 
 // Right column logistics
-let teamName;
+// let teamName;
 const createTeamButton = document.getElementById('createTeamButton');
 createTeamButton.addEventListener('click', () => createTeam());
 const joinTeamButton = document.getElementById('joinTeamButton');
