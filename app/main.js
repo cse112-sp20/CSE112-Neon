@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require('electron');
-const psList = require('ps-list');
+// const psList = require('ps-list');
 const express = require('express');
-const path = require('path');
+// const path = require('path');
 const bodyParser = require('body-parser');
 
 const expressApp = express();
@@ -44,8 +44,8 @@ expressApp.get('/checklogin', (req, res) => {
 expressApp.listen(port, () => { console.log('Server running'); });
 
 
-let intervalVar;
-const vsCodeStatus = false;
+// let intervalVar;
+// const vsCodeStatus = false;
 
 let win;
 
