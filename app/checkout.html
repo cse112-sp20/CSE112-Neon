@@ -14,31 +14,31 @@
 
 <body>
     <h1>Check Out</h1>
-    <h2 id="goalText">Loading Goals...</h2>
+    <h2 id="goalText">Loading Tasks...</h2>
     <div class="form" id="form">
-        
+
         <div id="line1">
-            <h4 id="h1"  style="display: none;">Task 1</h4>
-            <div id="container1"  style="display: none;">
-                <button id="completedBtn1" onclick="setColor('completedBtn', '#7FFF00',1)">
+            <h4 id="h1" style="display: none;">Task 1</h4>
+            <div id="container1" style="display: none;">
+                <button id="completedBtn1" >
                     <img src="assets/icon/check.svg">
                     <br />
                     Completed
                 </button>
 
-                <button id="keepBtn1" onclick="setColor('keepBtn', '#00B4AB',1)">
+                <button id="keepBtn1">
                     <img src="assets/icon/keep.svg">
                     <br />
                     Keeping At It
                 </button>
 
-                <button id="sosBtn1" onclick="setColor('sosBtn', '#FFD832',1)">
+                <button id="sosBtn1" >
                     <img src="assets/icon/sos.svg">
                     <br />
                     SOS
                 </button>
 
-                <button id="blockedBtn1" onclick="setColor('blockedBtn', 'red',1)">
+                <button id="blockedBtn1" >
                     <img src="assets/icon/block.svg">
                     <br />
                     Blocked
@@ -47,26 +47,26 @@
         </div>
         <div id="line2">
             <h4 id="h2" style="display: none;">Task 2</h4>
-            <div  id="container2" style="display: none;">
-                <button id="completedBtn2" onclick="setColor('completedBtn', '#7FFF00',2)">
+            <div id="container2" style="display: none;">
+                <button id="completedBtn2">
                     <img src="assets/icon/check.svg">
                     <br />
                     Completed
                 </button>
 
-                <button id="keepBtn2" onclick="setColor('keepBtn', '#00B4AB',2)">
+                <button id="keepBtn2" >
                     <img src="assets/icon/keep.svg">
                     <br />
                     Keeping At It
                 </button>
 
-                <button id="sosBtn2" onclick="setColor('sosBtn', '#FFD832',2)">
+                <button id="sosBtn2" >
                     <img src="assets/icon/sos.svg">
                     <br />
                     SOS
                 </button>
 
-                <button id="blockedBtn2" onclick="setColor('blockedBtn', 'red',2)">
+                <button id="blockedBtn2" >
                     <img src="assets/icon/block.svg">
                     <br />
                     Blocked
@@ -74,15 +74,15 @@
             </div>
         </div>
         <div id="line3">
-            <h4  id="h3" style="display: none;">Task 3</h4>
-            <div  id="container3" style="display: none;">
-                <button id="completedBtn3" onclick="setColor('completedBtn', '#7FFF00',3)">
+            <h4 id="h3" style="display: none;">Task 3</h4>
+            <div id="container3" style="display: none;">
+                <button id="completedBtn3">
                     <img src="assets/icon/check.svg">
                     <br />
                     Completed
                 </button>
 
-                <button id="keepBtn3" onclick="setColor('keepBtn', '#00B4AB',3)">
+                <button id="keepBtn3" >
                     <img src="assets/icon/keep.svg">
                     <br />
                     Keeping At It
@@ -107,48 +107,47 @@
         <li><input type="button" name="Cancel" value="Cancel" id="cancelBtn"></li>
     </ul>
     <script>
-        // a dictionary to check if any button is clicked
-        var dict = {}
-        var c = "completedBtn";
-        var k = "keepBtn";
-        var s = "sosBtn";
-        var b = "blockedBtn";
-        for( i = 1; i<=3; i++ ){
-            var j = i.toString();
-            dict[i] = {};
-            dict[i][c] = 1;
-            dict[i][k] = 1;
-            dict[i][s] = 1;
-            dict[i][b] = 1;
-        }
 
-        // 1 means that button is not clicked, 0 is clicked.
-        function setColor(btn, color, i) {
-            for (var key in dict[i]) {
-                var property = document.getElementById(key+i.toString());
-                if (key == btn) {
-                    if (dict[i][btn] == 0) {
-                        property.style.backgroundColor = "#FFFFFF"
-                        dict[i][btn] = 1;
-                    }
-                    else {
-                        property.style.backgroundColor = color
-                        dict[i][btn] = 0;
-                    }
-                }
-                else {
-                    property.style.backgroundColor = "#FFFFFF"
-                    dict[i][key] = 1;
-                }
-            }
-        }
-        for( i = 1; i<=3; i++ ){
-            setColor(c, '#7FFF00', i);
-        }
-        // setColor(c+i.toString(), '#7FFF00', 1)
-        // var property = document.getElementById("completedBtn1");
-        // property.style.backgroundColor = '#7FFF00';
         require('./js/checkout.js')
+        // const dict = {};
+        // const c = 'completedBtn';
+        // const k = 'keepBtn';
+        // const s = 'sosBtn';
+        // const b = 'blockedBtn';
+        // let j;
+        // for (j = 1; j <= 3; j += 1) {
+        //     dict[j] = {};
+        //     dict[j][c] = 1;
+        //     dict[j][k] = 1;
+        //     dict[j][s] = 1;
+        //     dict[j][b] = 1;
+        // }
+        /**
+         * set the color of button
+         * @param {*} btn
+         * @param {*} color
+         * @param {*} i
+         */
+        // function setColor(btn, color, i) {
+        //     for (const key in dict[i]) {
+        //         const property = document.getElementById(key + i.toString());
+        //         if (key == btn) {
+        //             if (dict[i][btn] == 0) {
+        //                 property.style.backgroundColor = '#FFFFFF';
+        //                 dict[i][btn] = 1;
+        //             } else {
+        //                 property.style.backgroundColor = color;
+        //                 dict[i][btn] = 0;
+        //             }
+        //         } else {
+        //             property.style.backgroundColor = '#FFFFFF';
+        //             dict[i][key] = 1;
+        //         }
+        //     }
+        // }
+        // for (j = 1; j <= 3; j += 1) {
+        //     setColor(c, '#7FFF00', j);
+        // }
 
     </script>
 
