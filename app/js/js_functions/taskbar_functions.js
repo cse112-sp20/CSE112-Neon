@@ -1,4 +1,5 @@
-/* Check if the user is already in a team.
+/** 
+ * Check if the user is already in a team.
  * If so, join the team automatically
  */
 function checkTeams() {
@@ -20,7 +21,7 @@ function checkTeams() {
                 getTeam()
             } else {
                 teamNoneDiv.style.display = "block"
-                //console.log("Team not found")
+                    //console.log("Team not found")
             }
         })
         .catch(function(error) {
@@ -34,7 +35,9 @@ function checkTeams() {
         });
 }
 
-// Get the team members, and add listeners to their status change
+/**
+ * Get the team members, and add listeners to their status change
+ */
 function getTeam() {
     db.collection("users").where("team", "==", teamName).get()
         .then(function(querySnapshot) {
@@ -52,6 +55,9 @@ function getTeam() {
         });
 }
 
+/**
+ * TODO
+ */
 function checkStatus() {
     flowDiv.style.display = 'block';
     teamExistsDiv.style.display = 'block';
@@ -71,15 +77,24 @@ function checkStatus() {
         });
 }
 
+/**
+ * Link to createteam
+ */
 function createTeam() {
     document.location.href = 'createteam.html';
 }
 
+/**
+ * Link to jointeam
+ */
 function joinTeam() {
     console.log('Join Team');
     document.location.href = 'jointeam.html';
 }
 
+/**
+ * TODO
+ */
 function leaveTeam() {
     // Attempt to remove the status document from the corresponding user in the team document
     db.collection('teams').doc(teamName).collection(uid).doc('status')
@@ -105,9 +120,10 @@ function leaveTeam() {
 
 // Utility functions
 
-/* Adds the team member to the team div on UI
- * name: user's name to display
- * status: user's status, in string
+/**
+ * Adds the team member to the team div on UI name
+ * @param {string} name: user's name to display
+ * @param {string} status: user's status, in string
  */
 function addTeamMember(name, status) {
     console.log(`Adding member ${name}, status: ${status}`);
@@ -138,6 +154,9 @@ function addTeamMember(name, status) {
     if (init) { teamStatusesDiv.appendChild(statuslist); }
 }
 
+/**
+ * Checks value of thermometer and updates ui
+ */
 function checkThermometer() {
     var thermometer = document.getElementById("thermometer")
 
@@ -164,8 +183,9 @@ function checkThermometer() {
         });
 }
 
-/* Adds a listener to the status of the given user with id
- * id: user's id
+/**
+ * Adds a listener to the status of the given user with id
+ * @param {*} id: user's id
  */
 function addStatusListener(id) {
     db.collection('users').doc(id)
@@ -177,9 +197,10 @@ function addStatusListener(id) {
         });
 }
 
-/* Change the status of the team member on UI
- * name: user's name
- * status: user's new status
+/**
+ * Change the status of the team member on UI
+ * @param {*} name: user's name
+ * @param {*} status: user's new status
  */
 function onStatusChange(name, status) {
     const status_elem = document.getElementById(`status_${name}`);
@@ -194,4 +215,4 @@ function onStatusChange(name, status) {
     }
 }
 
-module.exports = {checkTeams, getTeam, checkStatus, createTeam, joinTeam, leaveTeam, addTeamMember, checkThermometer, addStatusListener, onStatusChange};
+module.exports = { checkTeams, getTeam, checkStatus, createTeam, joinTeam, leaveTeam, addTeamMember, checkThermometer, addStatusListener, onStatusChange };

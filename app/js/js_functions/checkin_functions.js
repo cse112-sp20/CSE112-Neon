@@ -1,4 +1,9 @@
-function checkTeams(db,uid) {
+/**
+ * Checks which team a particular user is currently in
+ * @param {*} db 
+ * @param {string} uid 
+ */
+function checkTeams(db, uid) {
     const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
     db.collection('teams').where(uid, '==', true)
         .get()
@@ -28,7 +33,13 @@ function checkTeams(db,uid) {
             document.location.href = 'taskbar.html';
         });
 }
-function checkPrevTask(db,uid) {
+
+/**
+ * TODO
+ * @param {*} db 
+ * @param {string} uid 
+ */
+function checkPrevTask(db, uid) {
     db.collection('teams').where(uid, '==', true)
         .get()
         .then((querySnapshot) => {
@@ -68,7 +79,10 @@ function checkPrevTask(db,uid) {
         });
 }
 // startflow will always send 3 tasks value, if the user didn't not set any of them, just set the val to be ""
-function startFlow(db,uid,task1,task2,task3) {
+/**
+ * TODO
+ */
+function startFlow(db, uid, task1, task2, task3) {
     db.collection('teams').where(uid, '==', true)
         .get()
         .then((querySnapshot) => {
@@ -80,32 +94,37 @@ function startFlow(db,uid,task1,task2,task3) {
             }
             return teamName;
         })
-        .then((teamName)=>{
+        .then((teamName) => {
             const obj = {
                 checkedIn: true,
                 task1: task1.value,
                 task2: task2.value,
                 task3: task3.value,
                 taskStatus: 1,
-                };
+            };
             db.collection('teams').doc(teamName).collection(uid).doc('status')
-            .set(obj)
-            .then(() => {
-                console.log('Document written');
-                document.location.href = 'taskbar.html';
-            })
-            .catch((error) => {
-                dialog.showMessageBox({
-                    type: 'error',
-                    title: 'Error',
-                    message: error.message,
+                .set(obj)
+                .then(() => {
+                    console.log('Document written');
+                    document.location.href = 'taskbar.html';
+                })
+                .catch((error) => {
+                    dialog.showMessageBox({
+                        type: 'error',
+                        title: 'Error',
+                        message: error.message,
+                    });
+                    console.error('Error adding document: ', error);
+                    document.location.href = 'taskbar.html';
                 });
-                console.error('Error adding document: ', error);
-                document.location.href = 'taskbar.html';
-            });
         });
 }
 
+/**
+ * TODO
+ * @param {*} parent 
+ * @param {*} text 
+ */
 function addTask(parent, text) {
     const task = `
         <li>
@@ -115,5 +134,4 @@ function addTask(parent, text) {
         </li>`;
     parent.insertAdjacentHTML('beforeend', task);
 }
-module.exports = {checkTeams, checkPrevTask, startFlow, addTask};
-
+module.exports = { checkTeams, checkPrevTask, startFlow, addTask };

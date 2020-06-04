@@ -1,4 +1,9 @@
-function checkTeams(uid,db) {
+/**
+ * Checks which team a particular user is currently in
+ * @param {string} uid 
+ * @param {*} db 
+ */
+function checkTeams(uid, db) {
 
     db.collection("teams").where(uid, "==", true)
         .get()
@@ -8,7 +13,7 @@ function checkTeams(uid,db) {
                 querySnapshot.forEach(function(doc) {
                     teamName = doc.id
                 });
-                updateGoal()
+                updateGoal(db, uid)
             } else {
 
                 dialog.showMessageBox({
@@ -17,21 +22,20 @@ function checkTeams(uid,db) {
                     message: errorMessage
                 });
                 console.log("Team not found")
-                //document.location.href = 'taskbar.html'
+                    //document.location.href = 'taskbar.html'
             }
         })
         .catch(function(error) {
-            dialog.showMessageBox({
-                type: 'error',
-                title: 'Error',
-                message: errorMessage
-            });
             console.log("Error getting documents: ", error);
             //document.location.href = 'taskbar.html'
         });
 }
 
-// create a list of goals that user saved in check-in
+/**
+ * create a list of goals that user saved in check-in
+ * @param {*} goal 
+ * @param {*} n 
+ */
 function createGoalList(goal, n) {
 
     // Assigning the attributes
@@ -60,7 +64,12 @@ function createGoalList(goal, n) {
     form.appendChild(con);
 }
 
-function updateGoal() {
+let taskNum = 1;
+
+/**
+ * TODO
+ */
+function updateGoal(db, uid) {
     var n = 1;
     var goalText = document.getElementById("goalText");
     var docRef = db.collection("teams").doc(teamName).collection(uid).doc("status")
@@ -87,19 +96,26 @@ function updateGoal() {
             }
         })
         .catch(function(error) {
-            dialog.showMessageBox({
-                type: 'error',
-                title: 'Error',
-                message: error.message
-            });
             console.error("Error getting data: ", error);
             //document.location.href = 'taskbar.html'
         });
 }
-function endFlow(db,uid) {
-    updateThermometer()
+
+/**
+ * Starts endflow
+ * @param {*} db 
+ * @param {string} uid 
+ */
+function endFlow(db, uid) {
+    updateThermometer(db, uid)
+}
+
+/**
+ * After thermometer is updated Firebase db is updated with the completed statuses
+ */
+function handleEndFlow(db, uid) {
     var docRef = db.collection("teams").doc(teamName).collection(uid).doc("status")
-    //initialize the things to be pushed
+        //initialize the things to be pushed
     var obj = {
         checkedIn: false,
     }
@@ -144,7 +160,11 @@ function endFlow(db,uid) {
             //document.location.href = 'taskbar.html'
         });
 }
-function updateThermometer() {
+
+/**
+ * Updates thermometer with completed tasks
+ */
+function updateThermometer(db, uid) {
     console.log(dict)
     var line1 = document.getElementById("h1")
     var line2 = document.getElementById("h2")
@@ -162,14 +182,14 @@ function updateThermometer() {
     if (line1Valid) {
         if (dict[1]["completedBtn"] == 0)
             tasksCompleted++
-        else
-            console.log("Task 1 not completed")
+            else
+                console.log("Task 1 not completed")
     }
     if (line2Valid) {
         if (dict[2]["completedBtn"] == 0)
             tasksCompleted++
-        else
-            console.log("Task 2 not completed")
+            else
+                console.log("Task 2 not completed")
     }
     if (line3Valid) {
         if (dict[3]["completedBtn"] == 0)
@@ -189,13 +209,15 @@ function updateThermometer() {
             newDay.setMinutes(0)
             newDay.setSeconds(0)
             if (timeDiff > day) {
-                db.collection("thermomemters").doc(teamName).set({
+                db.collection("thermometers").doc(teamName).set({
                     progress: (tasksCompleted * 10),
                     lastEpoch: newDay.getTime()
                 }).then(function() {
                     console.log("Document written")
+                    handleEndFlow(db, uid)
                 }).catch(function(err) {
                     console.log(err)
+                    handleEndFlow(db, uid)
                 })
             } else {
                 var currProgress = querySnapshot.data().progress
@@ -205,15 +227,22 @@ function updateThermometer() {
                     "lastEpoch": querySnapshot.data().lastEpoch
                 }).then(function() {
                     console.log("Document written")
+                    handleEndFlow(db, uid)
                 }).catch(function(err) {
                     console.log(err)
+                    handleEndFlow(db, uid)
                 })
             }
         })
         .catch(function(error) {
             console.log("Error getting documents: ", error);
+            handleEndFlow(db, uid)
         });
 }
+
+/**
+ * Cancels checkout flow
+ */
 function cancel() { document.location.href = "taskbar.html" }
 
-module.exports = {checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel};
+module.exports = { checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel };
