@@ -114,7 +114,10 @@ function endFlow(db, uid) {
  * After thermometer is updated Firebase db is updated with the completed statuses
  */
 function handleEndFlow(db, uid) {
-    var docRef = db.collection("teams").doc(teamName).collection(uid).doc("status")
+    var docRef = db.collection("teams")
+    .doc(teamName)
+    .collection(uid)
+    .doc("status")
         //initialize the things to be pushed
     var obj = {
         checkedIn: false,
@@ -165,10 +168,9 @@ function handleEndFlow(db, uid) {
  * Updates thermometer with completed tasks
  */
 function updateThermometer(db, uid) {
-    console.log(dict)
-    var line1 = document.getElementById("h1")
-    var line2 = document.getElementById("h2")
-    var line3 = document.getElementById("h3")
+    const line1 = document.getElementById("h1")
+    const line2 = document.getElementById("h2")
+    const line3 = document.getElementById("h3")
     var line1Valid = false,
         line2Valid = false,
         line3Valid = false

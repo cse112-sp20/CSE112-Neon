@@ -47,6 +47,19 @@ function checkTeams(db,uid) {
         .catch(failGetTeamName)
 }
 
+function getStatus(teamName,db,uid){
+    var getS = function(resolve,reject){
+        db.collection('teams')
+        .doc(teamName)
+        .collection(uid).doc('status')
+        .get()
+        .then((status)=>{
+            resolve(status);
+            return;
+        });
+    }
+    return new Promise(getS);
+}
 /**
  * TODO
  * @param {*} db 
@@ -54,11 +67,8 @@ function checkTeams(db,uid) {
  */
 function checkPrevTask(db, uid) {
         getTeamName(db,uid)
-        .then((teamName) => {
-            db.collection('teams')
-                .doc(teamName)
-                .collection(uid).doc('status')
-                .get()
+        .then((teamName) => 
+            getStatus(teamName,db,uid)
                 .then((status) => {
                     statusObj = status.data();
                     ptDiv = document.getElementById('prevTask');
@@ -75,10 +85,14 @@ function checkPrevTask(db, uid) {
                     if (statusObj.task3 != '') {
                         addTask(ptDiv, statusObj.task3);
                     }
+                    return
                 })
                 .catch((error) => {
                     console.log('Error checking prev tasks', error);
-                });
+                })
+        )
+        .catch((error) => {
+            console.log('Error checking prev tasks', error);
         });
 }
 // startflow will always send 3 tasks value, if the user didn't not set any of them, just set the val to be ""
