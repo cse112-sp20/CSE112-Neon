@@ -1,4 +1,4 @@
-const firebase = require('firebase/app');
+// const firebase = require('firebase');
 const {
   checkTeams, endFlow, cancel,
 } = require('./js_functions/checkout_functions.js');
@@ -21,6 +21,8 @@ const db = firebase.firestore();
 const uid = localStorage.getItem('userid');
 
 checkTeams(uid, db);
+
+document.addEventListener('load', () => initButtons());
 
 const endFlowButton = document.getElementById('endFlowBtn');
 endFlowButton.addEventListener('click', () => endFlow(db, uid));
