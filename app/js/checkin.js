@@ -41,7 +41,7 @@ prevList.addEventListener('click', (event) => {
   console.log('text', text);
   const parentLi = target.parentNode;
 
-  if (target.innerText == 'Add') {
+  if (target.innerText === 'Add') {
     if (task1.value === '') {
       task1.value = text;
       task1.parentNode.style.display = 'block';
@@ -82,13 +82,14 @@ document.getElementById('addTasks').addEventListener('click', () => {
   }
 });
 
-const cancelButton = document.getElementById('cancelBtn');
-cancelButton.addEventListener('click', () => cancel());
-
 /**
  * Cancels checkin flow
  */
 function cancel() { document.location.href = 'taskbar.html'; }
+
+const cancelButton = document.getElementById('cancelBtn');
+cancelButton.addEventListener('click', () => cancel());
+
 
 /**
  * TODO
