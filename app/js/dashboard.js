@@ -4,7 +4,7 @@ const psList = require('ps-list');
 const WIN_VS_CODE_PROCESS_NAME = 'Code.exe';
 
 let intervalVar;
-let vsCodeStatus = false;
+const vsCodeStatus = false;
 
 const pText = document.querySelector('#vscode-status');
 const numText = document.querySelector('#vscode-num');
