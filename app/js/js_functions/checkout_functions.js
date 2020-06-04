@@ -1,3 +1,8 @@
+const { dialog } = require('electron').remote;
+
+const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
+
+
 /**
  * Checks which team a particular user is currently in
  * @param {string} uid

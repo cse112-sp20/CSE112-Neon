@@ -1,7 +1,5 @@
-const { dialog } = require('electron').remote;
-const {
-  checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel,
-} = require('./js_functions/checkout_functions.js');
+
+const { checkTeams, endFlow, cancel } = require('./js_functions/checkout_functions.js');
 
 /** Firebase Config */
 const firebaseConfig = {
@@ -21,9 +19,6 @@ const db = firebase.firestore();
 const uid = localStorage.getItem('userid');
 
 checkTeams(uid, db);
-const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
-
-const taskNum = 1;
 
 const endFlowButton = document.getElementById('endFlowBtn');
 endFlowButton.addEventListener('click', () => endFlow(db, uid));
