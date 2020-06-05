@@ -28,7 +28,7 @@ colors[b] = 'red';
  * set the color of a row of button to the desired
  * @param {*} btn
  * @param {*} color
- * @param {*} i
+ * @param {integer} i
  */
 function setColor(btn, color, i) {
   const keys = Object.keys(dict[i]);
@@ -48,6 +48,8 @@ function setColor(btn, color, i) {
     }
   }
 }
+
+/* the tasks are first set to complete */
 for (j = 1; j <= 3; j += 1) {
   setColor(c, '#7FFF00', j);
 }
