@@ -165,9 +165,10 @@ function handleEndFlow(db, uid) {
  * Updates thermometer with completed tasks
  */
 function updateThermometer(db, uid) {
-    const line1 = document.getElementById("h1")
-    const line2 = document.getElementById("h2")
-    const line3 = document.getElementById("h3")
+    console.log(dict)
+    var line1 = document.getElementById("h1")
+    var line2 = document.getElementById("h2")
+    var line3 = document.getElementById("h3")
     var line1Valid = false,
         line2Valid = false,
         line3Valid = false
