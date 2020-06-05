@@ -1,8 +1,6 @@
 const dialog = require('electron').remote;
 const { firebaseConfig } = require('./common.js');
-const {
-  checkTeams, checkPrevTask, startFlow, addTask,
-} = require('./js_functions/checkin_functions.js');
+const { checkTeams, checkPrevTask, startFlow } = require('./js_functions/checkin_functions.js');
 
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
@@ -27,21 +25,19 @@ startFlowButton.addEventListener('click', () => startFlow(db, uid, task1, task2,
  */
 prevList.addEventListener('click', (event) => {
   const { target } = event;
-  console.log('event', target.parentNode.id);
-  text = target.parentNode.firstElementChild.value;
-  console.log('text', text);
-  parentLi = target.parentNode;
+  const text = target.parentNode.firstElementChild.value;
+  const parentLi = target.parentNode;
 
-  if (target.innerText == 'Add') {
-    if (task1.value == '') {
+  if (target.innerText === 'Add') {
+    if (task1.value === '') {
       task1.value = text;
       task1.parentNode.style.display = 'block';
       prevList.removeChild(parentLi);
-    } else if (task2.value == '') {
+    } else if (task2.value === '') {
       task2.value = text;
       task2.parentNode.style.display = 'block';
       prevList.removeChild(parentLi);
-    } else if (task3.value == '') {
+    } else if (task3.value === '') {
       task3.value = text;
       task3.parentNode.style.display = 'block';
       prevList.removeChild(parentLi);
@@ -49,10 +45,10 @@ prevList.addEventListener('click', (event) => {
       dialog.showMessageBox({
         type: 'error',
         title: 'Error',
-        message: errorMessage,
+        message: 'Error',
       });
     }
-  } else if (target.innerText == 'Delete') {
+  } else if (target.innerText === 'Delete') {
     document.getElementById('prevTask').removeChild(parentLi);
   }
 });
@@ -62,32 +58,31 @@ prevList.addEventListener('click', (event) => {
  */
 document.getElementById('addTasks').addEventListener('click', () => {
   console.log(task1.value);
-  if (task1.value == '') {
+  if (task1.value === '') {
     task1.parentNode.style.display = 'block';
-  } else if (task2.value == '') {
+  } else if (task2.value === '') {
     task2.parentNode.style.display = 'block';
-  } else if (task3.value == '') {
+  } else if (task3.value === '') {
     task3.parentNode.style.display = 'block';
   } else {
     console.log('here');
   }
 });
 
-const cancelButton = document.getElementById('cancelBtn');
-cancelButton.addEventListener('click', () => cancel());
-
 /**
  * Cancels checkin flow
  */
 function cancel() { document.location.href = 'taskbar.html'; }
+const cancelButton = document.getElementById('cancelBtn');
+cancelButton.addEventListener('click', () => cancel());
 
 /**
  * TODO
  */
 todayTask.addEventListener('click', (event) => {
-  target = event.target;
-  if (target.innerText == 'Delete') {
-    targetParent = target.parentNode;
+  const targetVal = event.target;
+  if (targetVal.innerText === 'Delete') {
+    const targetParent = targetVal.parentNode;
     targetParent.style.display = 'none';
     targetParent.firstElementChild.value = '';
   }
