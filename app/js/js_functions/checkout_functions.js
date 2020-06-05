@@ -4,10 +4,58 @@ const errorMessage = 'An error occurred when trying to find your team, returning
 let teamName;
 
 
+/* a dictionary to check if any button is clicked */
+const dict = {};
+const c = 'completedBtn';
+const k = 'keepBtn';
+const s = 'sosBtn';
+const b = 'blockedBtn';
+let j;
+for (j = 1; j <= 3; j += 1) {
+  dict[j] = {};
+  dict[j][c] = 1;
+  dict[j][k] = 1;
+  dict[j][s] = 1;
+  dict[j][b] = 1;
+}
+const colors = {};
+colors[c] = '#7FFF00';
+colors[k] = '#00B4AB';
+colors[s] = '#FFD832';
+colors[b] = 'red';
+
+/**
+ * set the color of a row of button to the desired
+ * @param {*} btn
+ * @param {*} color
+ * @param {*} i
+ */
+function setColor(btn, color, i) {
+  const keys = Object.keys(dict[i]);
+  for (let n = 0; n < keys.length; n += 1) {
+    const property = document.getElementById(keys[n] + i.toString());
+    if (keys[n] === btn) {
+      if (dict[i][btn] === 0) {
+        property.style.backgroundColor = '#FFFFFF';
+        dict[i][btn] = 1;
+      } else {
+        property.style.backgroundColor = color;
+        dict[i][btn] = 0;
+      }
+    } else {
+      property.style.backgroundColor = '#FFFFFF';
+      dict[i][keys[n]] = 1;
+    }
+  }
+}
+for (j = 1; j <= 3; j += 1) {
+  setColor(c, '#7FFF00', j);
+}
+
 /**
  * create a list of goals that user saved in check-in
  * @param {*} goal
- * @param {*} n
+ * @param {integer} n
  */
 function createGoalList(goal, n) {
   // Assigning the attributes
