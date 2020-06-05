@@ -18,9 +18,7 @@ fs.readFile(__dirname+ '/../../app/checkin.html', 'utf8', async function(err,dat
 	checkstub();
 	addSpy = sinon.spy(module,'addTask');
 	ptDiv = document.getElementById('prevTask');
-	console.log(ptDiv.innerHTML.length);
 	module.addTask(ptDiv,'This is a test for addTask');
-	console.log(ptDiv.innerHTML.substring(46,251));
 	describe('#addTask()', function() {
 		it('addTask is called once', function(){
 			expect(addSpy.calledOnce).to.equal(true);
