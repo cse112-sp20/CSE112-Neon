@@ -93,8 +93,7 @@ function checkPrevTask(db, uid) {
         )
         .catch((error) => {
             console.log('Error checking prev tasks', error);
-        });
-    });
+        })
 }
 // startflow will always send 3 tasks value, if the user didn't not set any of them, just set the val to be ""
 /**
@@ -126,7 +125,6 @@ function startFlow(db, uid, task1, task2, task3) {
                     document.location.href = 'taskbar.html';
                 });
         });
-    });
 }
 
 /**

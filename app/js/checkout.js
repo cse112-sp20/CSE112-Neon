@@ -1,7 +1,5 @@
-const firebase = require('firebase/app');
-const {
-    checkTeams, endFlow, cancel,
-} = require('./js_functions/checkout_functions.js');
+const { dialog } = require('electron').remote;
+var { checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel } = require('./js_functions/checkout_functions.js');
 
 /** Firebase Config */
 const firebaseConfig = {
@@ -22,9 +20,8 @@ const uid = localStorage.getItem('userid');
 
 checkTeams(uid, db);
 
-
 const endFlowButton = document.getElementById('endFlowBtn');
 endFlowButton.addEventListener('click', () => endFlow(db,uid));
 
-const cancelButton = document.getElementById('cancelBtn');
-cancelButton.addEventListener('click', () => cancel());
+var cancelButton = document.getElementById("cancelBtn")
+cancelButton.addEventListener("click", () => cancel())
