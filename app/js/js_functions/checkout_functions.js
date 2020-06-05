@@ -49,11 +49,6 @@ function setColor(btn, color, i) {
   }
 }
 
-/* the tasks are first set to complete */
-for (j = 1; j <= 3; j += 1) {
-  setColor(c, '#7FFF00', j);
-}
-
 /**
  * create a list of listeners for buttons according to row i
  * @param {integer} i
