@@ -1,17 +1,6 @@
-const { dialog } = require('electron').remote;
-//const firebase = require('firebase');
+const { firebaseConfig } = require('../common.js');
+// const firebase = require('firebase');
 
-/** Firebase Config */
-const firebaseConfig = {
-  apiKey: 'AIzaSyBmn_tDSlm4lLdrvSqj8Yb00KkYae8cL-Y',
-  authDomain: 'neon-pulse-development.firebaseapp.com',
-  databaseURL: 'https://neon-pulse-development.firebaseio.com',
-  projectId: 'neon-pulse-development',
-  storageBucket: 'neon-pulse-development.appspot.com',
-  messagingSenderId: '240091062123',
-  appId: '1:240091062123:web:babe11f5f03ced38fbb62e',
-  measurementId: 'G-VMS6JL8H4S',
-};
 
 // The emojis for each status
 const statusEmoji = {
@@ -87,16 +76,12 @@ function logout() {
     document.location.href = 'signin.html';
   }).catch((error) => {
     // Handle errors
-    dialog.showMessageBox({
-      type: 'error',
-      title: 'Error',
-      message: error.message,
-    });
     console.log(error);
+    document.location.href = 'taskbar,html';
   });
 }
 
-//Internal functions: functions used internally for the backend.
+// Internal functions: functions used internally for the backend.
 
 /**
  * Adds the team member to the team div on UI name
@@ -149,10 +134,9 @@ function addStatusListener(id) {
 
 /**
  * Checks value of thermometer and updates ui
- * @param {DOM element} thermometer: Div element for displaying thermometer
  */
-function checkThermometer(thermometer) {
-
+function checkThermometer() {
+  const thermometer = document.getElementById('thermometer');
   // Checking lastTime was reset
   db.collection('thermometers').doc(teamName)
     .onSnapshot((doc) => {
@@ -198,12 +182,13 @@ function getTeam() {
 
 /**
  * Check if the user has checked in in the team.
- * @param {DOM element} flowDiv: Div element for flow display.
- * @param {DOM element} teamExistsDiv: Div element for displaying the team(if exists).
- * @param {DOM element} startFlowButton: Button element to start the flow.
- * @param {DOM element} endFlowButton: Button element to end the flow.
  */
-function checkStatus(flowDiv, teamExistsDiv, startFlowButton, endFlowButton) {
+function checkStatus() {
+  const flowDiv = document.getElementById('flowDiv');
+  const teamExistsDiv = document.getElementById('teamExistsDiv');
+  const startFlowButton = document.getElementById('startFlowButton');
+  const endFlowButton = document.getElementById('endFlowButton');
+
   flowDiv.style.display = 'block';
   teamExistsDiv.style.display = 'block';
   console.log(teamName);
@@ -249,14 +234,8 @@ function initUser(uname) {
 /**
  * Check if the user is already in a team.
  * If so, join the team automatically
- * @param {DOM element} thermometer: Div element for displaying thermometer.
- * @param {DOM element} teamNoneDiv: Div element for displaying board if user is not in a team.
- * @param {DOM element} flowDiv: Div element for flow display.
- * @param {DOM element} teamExistsDiv: Div element for displaying the team(if exists).
- * @param {DOM element} startFlowButton: Button element to start the flow.
- * @param {DOM element} endFlowButton: Button element to end the flow.
  */
-function checkTeams(thermometer, teamNoneDiv, flowDiv, teamExistsDiv, startFlowButton, endFlowButton) {
+function checkTeams() {
   db.collection('teams').where(uid, '==', true).get()
     .then((querySnapshot) => {
       // console.log(querySnapshot.docs)
@@ -266,24 +245,22 @@ function checkTeams(thermometer, teamNoneDiv, flowDiv, teamExistsDiv, startFlowB
           // console.log(doc.id, " => ", doc.data());
           // console.log("Team name: ", doc.id)
           teamName = doc.id;
-          checkStatus(flowDiv, teamExistsDiv, startFlowButton, endFlowButton);
+          checkStatus();
         });
+        const teamExistsDiv = document.getElementById('teamExistsDiv');
         teamExistsDiv.style.display = 'block';
         const h2 = document.getElementById('teamName');
         h2.innerHTML = teamName;
-        checkThermometer(thermometer);
+        checkThermometer();
         getTeam();
       } else {
+        const teamNoneDiv = document.getElementById('teamNoneDiv');
         teamNoneDiv.style.display = 'block';
         // console.log("Team not found")
       }
     })
     .catch((error) => {
-      dialog.showMessageBox({
-        type: 'error',
-        title: 'Error',
-        message: error.message,
-      });
+      console.log(error);
       document.location.href = 'signin.html';
     });
 }

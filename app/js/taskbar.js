@@ -1,15 +1,16 @@
-const taskbarFunctions = require('./js/js_functions/taskbar_functions');
+const taskbarFunctions = require('./js/js_functions/taskbar_functions.js');
+
+// User info
+const uname = localStorage.getItem('displayName');
 
 /**
  * Top user information logistics
  */
-const uname = localStorage.getItem('displayName');
 document.getElementById('username').innerHTML = uname;
 document.getElementById('userStatus').onchange = function () {
   const { value } = document.getElementById('userStatus');
   taskbarFunctions.onStatusChange(uname, value);
 };
-const thermometer = document.getElementById('thermometer');
 
 // Top right log out button logistics
 const logoutButton = document.getElementById('logOutBtn');
@@ -40,5 +41,5 @@ const leaveTeamButton = document.getElementById('leaveTeamButton');
 leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam());
 
 // Call initializers in the backend
-taskbarFunctions.checkTeams(thermometer, teamNoneDiv, flowDiv, teamExistsDiv, startFlowButton, endFlowButton);
+taskbarFunctions.checkTeams();
 taskbarFunctions.initUser(uname);
