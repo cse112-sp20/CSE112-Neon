@@ -98,7 +98,9 @@ function createGoalList(goal, n) {
 }
 
 /**
- * TODO
+ * Pull and displayed the tasks stored based on the database and user id
+ * @param {*} db
+ * @param {string} uid
  */
 function updateGoal(db, uid) {
   let n = 1;
@@ -155,7 +157,6 @@ function checkTeams(uid, db) {
     })
     .catch((error) => {
       console.log('Error getting documents: ', error);
-      // document.location.href = 'taskbar.html'
     });
 }
 
