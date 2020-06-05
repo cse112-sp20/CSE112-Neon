@@ -1,4 +1,4 @@
-const { dialog } = require('electron').remote;
+const { dialog } = require('electron')
 /**
  * return the user's teamname
  * @param {*} db
