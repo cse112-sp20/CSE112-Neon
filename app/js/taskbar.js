@@ -39,6 +39,6 @@ joinTeamButton.addEventListener('click', () => { document.location.href = 'joint
 const leaveTeamButton = document.getElementById('leaveTeamButton');
 leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam());
 
-// Initialize backend
+// Call initializers in the backend
 taskbarFunctions.checkTeams(thermometer, teamNoneDiv, flowDiv, teamExistsDiv, startFlowButton, endFlowButton);
 taskbarFunctions.initUser(uname);

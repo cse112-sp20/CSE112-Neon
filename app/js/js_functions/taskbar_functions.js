@@ -29,7 +29,8 @@ const db = firebase.firestore();
 // User info
 const uid = localStorage.getItem('userid');
 let teamName;
-// Utility functions
+
+// Utility functions: functions exported to be called externally
 
 /**
  * Change the status of the team member on UI
@@ -48,6 +49,54 @@ function onStatusChange(name, status) {
     }, 500);
   }
 }
+
+/**
+ * Remove the user from the current team in the datbase and redirect to the main UI.
+ */
+function leaveTeam() {
+  // Attempt to remove the status document from the corresponding user in the team document
+  db.collection('teams').doc(teamName).collection(uid).doc('status')
+    .delete()
+    .then(() => {
+      console.log('Successfully removed status document from teams collection');
+
+      // If successful, also remove the uid=true field from the team document
+      const docRef = db.collection('teams').doc(teamName);
+      docRef.update({
+        [uid]: firebase.firestore.FieldValue.delete(),
+      }).then(() => {
+        console.log('Successfully removed uid field from teams collection');
+        document.location.href = 'taskbar.html';
+      }).catch((error) => {
+        console.error('Error removing field: ', error);
+      });
+    })
+    .catch((error) => {
+      console.error('Error removing document: ', error);
+    });
+}
+
+/**
+ * Logs the user out and return to the signin page.
+ */
+function logout() {
+  firebase.auth().signOut().then(() => {
+    localStorage.removeItem('userid');
+    localStorage.removeItem('email');
+    localStorage.removeItem('displayName');
+    document.location.href = 'signin.html';
+  }).catch((error) => {
+    // Handle errors
+    dialog.showMessageBox({
+      type: 'error',
+      title: 'Error',
+      message: error.message,
+    });
+    console.log(error);
+  });
+}
+
+//Internal functions: functions used internally for the backend.
 
 /**
  * Adds the team member to the team div on UI name
@@ -98,53 +147,9 @@ function addStatusListener(id) {
     });
 }
 
-// Body functions
-
-/**
- * Create user doc if not present in firebase,
- * if the user is present, this will simply updates its status to online
- */
-function initUser(uname) {
-  const ref = db.collection('users').doc(uid);
-  ref.get().then((doc) => {
-    if (doc.exists) {
-      ref.update({
-        displayName: uname,
-        userStatus: 'Online',
-      });
-    } else {
-      ref.set({
-        displayName: uname,
-        userStatus: 'Online',
-      });
-    }
-  });
-}
-
-/**
- * Check if the user has checked in in the team
- */
-function checkStatus(flowDiv, teamExistsDiv, startFlowButton, endFlowButton) {
-  flowDiv.style.display = 'block';
-  teamExistsDiv.style.display = 'block';
-  console.log(teamName);
-  const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
-  docRef.get()
-    .then((doc) => {
-      if (doc.exists) {
-        if (doc.data().checkedIn) {
-          startFlowButton.style.display = 'none';
-          endFlowButton.style.display = 'block';
-        }
-      }
-    })
-    .catch((error) => {
-      console.error('Error getting data: ', error);
-    });
-}
-
 /**
  * Checks value of thermometer and updates ui
+ * @param {DOM element} thermometer: Div element for displaying thermometer
  */
 function checkThermometer(thermometer) {
 
@@ -192,8 +197,64 @@ function getTeam() {
 }
 
 /**
+ * Check if the user has checked in in the team.
+ * @param {DOM element} flowDiv: Div element for flow display.
+ * @param {DOM element} teamExistsDiv: Div element for displaying the team(if exists).
+ * @param {DOM element} startFlowButton: Button element to start the flow.
+ * @param {DOM element} endFlowButton: Button element to end the flow.
+ */
+function checkStatus(flowDiv, teamExistsDiv, startFlowButton, endFlowButton) {
+  flowDiv.style.display = 'block';
+  teamExistsDiv.style.display = 'block';
+  console.log(teamName);
+  const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
+  docRef.get()
+    .then((doc) => {
+      if (doc.exists) {
+        if (doc.data().checkedIn) {
+          startFlowButton.style.display = 'none';
+          endFlowButton.style.display = 'block';
+        }
+      }
+    })
+    .catch((error) => {
+      console.error('Error getting data: ', error);
+    });
+}
+
+// Initializer functions: Functions called to initialize the backend
+
+/**
+ * Create user doc if not present in firebase,
+ * if the user is present, this will simply updates its status to online
+ * @param {string} uname: username of the user
+ */
+function initUser(uname) {
+  const ref = db.collection('users').doc(uid);
+  ref.get().then((doc) => {
+    if (doc.exists) {
+      ref.update({
+        displayName: uname,
+        userStatus: 'Online',
+      });
+    } else {
+      ref.set({
+        displayName: uname,
+        userStatus: 'Online',
+      });
+    }
+  });
+}
+
+/**
  * Check if the user is already in a team.
  * If so, join the team automatically
+ * @param {DOM element} thermometer: Div element for displaying thermometer.
+ * @param {DOM element} teamNoneDiv: Div element for displaying board if user is not in a team.
+ * @param {DOM element} flowDiv: Div element for flow display.
+ * @param {DOM element} teamExistsDiv: Div element for displaying the team(if exists).
+ * @param {DOM element} startFlowButton: Button element to start the flow.
+ * @param {DOM element} endFlowButton: Button element to end the flow.
  */
 function checkTeams(thermometer, teamNoneDiv, flowDiv, teamExistsDiv, startFlowButton, endFlowButton) {
   db.collection('teams').where(uid, '==', true).get()
@@ -227,61 +288,11 @@ function checkTeams(thermometer, teamNoneDiv, flowDiv, teamExistsDiv, startFlowB
     });
 }
 
-/**
- * Remove the user from the current team in the datbase and redirect to the main UI.
- */
-function leaveTeam() {
-  // Attempt to remove the status document from the corresponding user in the team document
-  db.collection('teams').doc(teamName).collection(uid).doc('status')
-    .delete()
-    .then(() => {
-      console.log('Successfully removed status document from teams collection');
-
-      // If successful, also remove the uid=true field from the team document
-      const docRef = db.collection('teams').doc(teamName);
-      docRef.update({
-        [uid]: firebase.firestore.FieldValue.delete(),
-      }).then(() => {
-        console.log('Successfully removed uid field from teams collection');
-        document.location.href = 'taskbar.html';
-      }).catch((error) => {
-        console.error('Error removing field: ', error);
-      });
-    })
-    .catch((error) => {
-      console.error('Error removing document: ', error);
-    });
-}
-
-/**
- * Logs the user out and return to the signin page.
- */
-function logout() {
-  firebase.auth().signOut().then(() => {
-    localStorage.removeItem('userid');
-    localStorage.removeItem('email');
-    localStorage.removeItem('displayName');
-    document.location.href = 'signin.html';
-  }).catch((error) => {
-    // Handle errors
-    dialog.showMessageBox({
-      type: 'error',
-      title: 'Error',
-      message: error.message,
-    });
-    console.log(error);
-  });
-}
-
+// Export utility functions and init functions
 module.exports = {
-  initUser,
-  checkTeams,
-  getTeam,
-  checkStatus,
-  leaveTeam,
-  checkThermometer,
-  addStatusListener,
   logout,
   onStatusChange,
-  addTeamMember,
+  initUser,
+  checkTeams,
+  leaveTeam,
 };
