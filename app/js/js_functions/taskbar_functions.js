@@ -1,15 +1,5 @@
 const { dialog } = require('electron').remote;
-const firebase = require('firebase/app');
-
-// The emojis for each status
-const statusEmoji = {
-  Online: '😀',
-  Offline: '😴',
-  Coding: '👨‍💻',
-  Researching: '👀',
-  Documenting: '📝',
-  Meeting: '👥',
-};
+//const firebase = require('firebase');
 
 /** Firebase Config */
 const firebaseConfig = {
@@ -23,20 +13,22 @@ const firebaseConfig = {
   measurementId: 'G-VMS6JL8H4S',
 };
 
+// The emojis for each status
+const statusEmoji = {
+  Online: '😀',
+  Offline: '😴',
+  Coding: '👨‍💻',
+  Researching: '👀',
+  Documenting: '📝',
+  Meeting: '👥',
+};
+
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 // User info
 const uid = localStorage.getItem('userid');
-const uname = localStorage.getItem('displayName');
 let teamName;
-// HTML elements
-const flowDiv = document.getElementById('flowDiv');
-const teamExistsDiv = document.getElementById('teamExistsDiv');
-const teamNoneDiv = document.getElementById('teamNoneDiv');
-const startFlowButton = document.getElementById('startFlowButton');
-const endFlowButton = document.getElementById('endFlowButton');
-
 // Utility functions
 
 /**
@@ -112,7 +104,7 @@ function addStatusListener(id) {
  * Create user doc if not present in firebase,
  * if the user is present, this will simply updates its status to online
  */
-function initUser() {
+function initUser(uname) {
   const ref = db.collection('users').doc(uid);
   ref.get().then((doc) => {
     if (doc.exists) {
@@ -132,7 +124,7 @@ function initUser() {
 /**
  * Check if the user has checked in in the team
  */
-function checkStatus() {
+function checkStatus(flowDiv, teamExistsDiv, startFlowButton, endFlowButton) {
   flowDiv.style.display = 'block';
   teamExistsDiv.style.display = 'block';
   console.log(teamName);
@@ -154,8 +146,7 @@ function checkStatus() {
 /**
  * Checks value of thermometer and updates ui
  */
-function checkThermometer() {
-  const thermometer = document.getElementById('thermometer');
+function checkThermometer(thermometer) {
 
   // Checking lastTime was reset
   db.collection('thermometers').doc(teamName)
@@ -204,7 +195,7 @@ function getTeam() {
  * Check if the user is already in a team.
  * If so, join the team automatically
  */
-function checkTeams() {
+function checkTeams(thermometer, teamNoneDiv, flowDiv, teamExistsDiv, startFlowButton, endFlowButton) {
   db.collection('teams').where(uid, '==', true).get()
     .then((querySnapshot) => {
       // console.log(querySnapshot.docs)
@@ -214,12 +205,12 @@ function checkTeams() {
           // console.log(doc.id, " => ", doc.data());
           // console.log("Team name: ", doc.id)
           teamName = doc.id;
-          checkStatus();
+          checkStatus(flowDiv, teamExistsDiv, startFlowButton, endFlowButton);
         });
         teamExistsDiv.style.display = 'block';
         const h2 = document.getElementById('teamName');
         h2.innerHTML = teamName;
-        checkThermometer();
+        checkThermometer(thermometer);
         getTeam();
       } else {
         teamNoneDiv.style.display = 'block';
@@ -288,9 +279,9 @@ module.exports = {
   getTeam,
   checkStatus,
   leaveTeam,
-  addTeamMember,
   checkThermometer,
   addStatusListener,
-  onStatusChange,
   logout,
+  onStatusChange,
+  addTeamMember,
 };

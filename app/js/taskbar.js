@@ -1,18 +1,15 @@
-const taskbarFunctions = require('./js_functions/taskbar_functions');
-
-taskbarFunctions.checkTeams();
-taskbarFunctions.initUser();
-const uname = localStorage.getItem('displayName');
-
+const taskbarFunctions = require('./js/js_functions/taskbar_functions');
 
 /**
  * Top user information logistics
  */
+const uname = localStorage.getItem('displayName');
 document.getElementById('username').innerHTML = uname;
 document.getElementById('userStatus').onchange = function () {
   const { value } = document.getElementById('userStatus');
   taskbarFunctions.onStatusChange(uname, value);
 };
+const thermometer = document.getElementById('thermometer');
 
 // Top right log out button logistics
 const logoutButton = document.getElementById('logOutBtn');
@@ -41,3 +38,7 @@ const joinTeamButton = document.getElementById('joinTeamButton');
 joinTeamButton.addEventListener('click', () => { document.location.href = 'jointeam.html'; });
 const leaveTeamButton = document.getElementById('leaveTeamButton');
 leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam());
+
+// Initialize backend
+taskbarFunctions.checkTeams(thermometer, teamNoneDiv, flowDiv, teamExistsDiv, startFlowButton, endFlowButton);
+taskbarFunctions.initUser(uname);
