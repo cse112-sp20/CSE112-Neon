@@ -78,6 +78,7 @@
   "spectron": "^10.0.1"
  },
  "dependencies": {
+  "body-parser": "^1.19.0",
   "express": "^4.17.1",
   "firebase": "^7.14.4",
   "jsdom": "^16.2.2",

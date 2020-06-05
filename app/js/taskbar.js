@@ -1,41 +1,7 @@
-const { dialog } = require('electron').remote;
-const { firebaseConfig } = require('./js/common.js');
+const taskbarFunctions = require('./js/js_functions/taskbar_functions.js');
 
-const statusEmoji = {
-  Online: '😀',
-  Offline: '😴',
-  Coding: '👨‍💻',
-  Researching: '👀',
-  Documenting: '📝',
-  Meeting: '👥',
-};
-
-/** Initialize Firebase */
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 // User info
-const uid = localStorage.getItem('userid');
 const uname = localStorage.getItem('displayName');
-
-
-/**
- * Create user doc if not present in firebase,
- * if the user is present, this will simply updates its status to online
- */
-const ref = db.collection('users').doc(uid);
-ref.get().then((doc) => {
-  if (doc.exists) {
-    ref.update({
-      displayName: uname,
-      userStatus: 'Online',
-    });
-  } else {
-    ref.set({
-      displayName: uname,
-      userStatus: 'Online',
-    });
-  }
-});
 
 /**
  * Top user information logistics
@@ -43,62 +9,37 @@ ref.get().then((doc) => {
 document.getElementById('username').innerHTML = uname;
 document.getElementById('userStatus').onchange = function () {
   const { value } = document.getElementById('userStatus');
-  db.collection('users').doc(uid).update({
-    userStatus: value,
-  })
-    .catch((error) => {
-      console.error('Error attempting to change user status: ', error);
-    });
+  taskbarFunctions.onStatusChange(uname, value);
 };
 
-/**
- * Top right log out button logistics
- */
+// Top right log out button logistics
 const logoutButton = document.getElementById('logOutBtn');
-logoutButton.addEventListener('click', () => {
-  firebase.auth().signOut().then(() => {
-    localStorage.removeItem('userid');
-    localStorage.removeItem('email');
-    localStorage.removeItem('displayName');
-    document.location.href = 'signin.html';
-  }).catch((error) => {
-    // Handle errors
-    dialog.showMessageBox({
-      type: 'error',
-      title: 'Error',
-      message: error.message,
-    });
-    console.log(error);
-  });
-});
+logoutButton.addEventListener('click', () => taskbarFunctions.logout());
 
 // Left column logistics
 const startFlowButton = document.getElementById('startFlowButton');
-startFlowButton.addEventListener('click', () => startFlow());
+startFlowButton.addEventListener('click', () => { document.location.href = 'checkin.html'; });
 
 const endFlowButton = document.getElementById('endFlowButton');
-endFlowButton.addEventListener('click', () => endFlow());
+endFlowButton.addEventListener('click', () => { document.location.href = 'checkout.html'; });
 
 const flowDiv = document.getElementById('flowDiv');
 const teamNoneDiv = document.getElementById('teamNoneDiv');
 const teamExistsDiv = document.getElementById('teamExistsDiv');
-const teamStatusesDiv = document.getElementById('teamStatusesDiv');
 flowDiv.style.display = 'none';
 teamNoneDiv.style.display = 'none';
 teamExistsDiv.style.display = 'none';
 endFlowButton.style.display = 'none';
 
-function startFlow() { document.location.href = 'checkin.html'; }
-
-function endFlow() { document.location.href = 'checkout.html'; }
 
 // Right column logistics
-let teamName;
 const createTeamButton = document.getElementById('createTeamButton');
-createTeamButton.addEventListener('click', () => createTeam());
+createTeamButton.addEventListener('click', () => { document.location.href = 'createteam.html'; });
 const joinTeamButton = document.getElementById('joinTeamButton');
-joinTeamButton.addEventListener('click', () => joinTeam());
+joinTeamButton.addEventListener('click', () => { document.location.href = 'jointeam.html'; });
 const leaveTeamButton = document.getElementById('leaveTeamButton');
-leaveTeamButton.addEventListener('click', () => leaveTeam());
+leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam());
 
-checkTeams();
+// Call initializers in the backend
+taskbarFunctions.checkTeams();
+taskbarFunctions.initUser(uname);
