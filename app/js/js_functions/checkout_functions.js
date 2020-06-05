@@ -49,6 +49,7 @@ function setColor(btn, color, i) {
   }
 }
 
+
 /**
  * create a list of listeners for buttons according to row i
  * @param {integer} i
@@ -116,6 +117,11 @@ function updateGoal(db, uid) {
         if (n === 1) {
           goalText.innerHTML = 'No Task Set For The Day!';
           goalText.style.display = 'block';
+        } else {
+          /* the tasks are first set to complete */
+          for (j = 1; j <= 3; j += 1) {
+            setColor(c, '#7FFF00', j);
+          }
         }
       } else {
         console.error('Error getting data');

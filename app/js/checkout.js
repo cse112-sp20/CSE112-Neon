@@ -1,7 +1,7 @@
 const { firebaseConfig } = require('./common.js');
 
 const {
-  checkTeams, endFlow, cancel, setColor
+  checkTeams, endFlow, cancel,
 } = require('./js_functions/checkout_functions.js');
 
 /** Initialize Firebase */
@@ -16,8 +16,3 @@ endFlowButton.addEventListener('click', () => endFlow(db, uid));
 
 const cancelButton = document.getElementById('cancelBtn');
 cancelButton.addEventListener('click', () => cancel());
-
-/* the tasks are first set to complete */
-for (j = 1; j <= 3; j += 1) {
-  setColor(c, '#7FFF00', j);
-}
