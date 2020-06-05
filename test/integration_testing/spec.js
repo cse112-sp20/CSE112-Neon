@@ -57,7 +57,7 @@ describe('Application launch', function () {
   //this.app.start();
   afterEach(function () {
     if (this.app && this.app.isRunning()) {
-      //return this.app.stop()
+      return this.app.stop()
     }
   })/*
   it('shows an initial window', function () { 
