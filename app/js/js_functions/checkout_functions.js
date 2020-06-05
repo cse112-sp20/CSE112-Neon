@@ -1,38 +1,71 @@
+const dialog = require('electron').remote;
+
+const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
+let teamName;
+
+
+/* a dictionary to check if any button is clicked */
+const dict = {};
+const c = 'completedBtn';
+const k = 'keepBtn';
+const s = 'sosBtn';
+const b = 'blockedBtn';
+let j;
+for (j = 1; j <= 3; j += 1) {
+  dict[j] = {};
+  dict[j][c] = 1;
+  dict[j][k] = 1;
+  dict[j][s] = 1;
+  dict[j][b] = 1;
+}
+const colors = {};
+colors[c] = '#7FFF00';
+colors[k] = '#00B4AB';
+colors[s] = '#FFD832';
+colors[b] = 'red';
+
 /**
- * Checks which team a particular user is currently in
- * @param {string} uid
- * @param {*} db
+ * set the color of a row of button to the desired
+ * @param {*} btn
+ * @param {*} color
+ * @param {integer} i
  */
-function checkTeams(uid, db) {
-  db.collection('teams').where(uid, '==', true)
-    .get()
-    .then((querySnapshot) => {
-      console.log(querySnapshot.docs);
-      if (querySnapshot.docs.length > 0) {
-        querySnapshot.forEach((doc) => {
-          teamName = doc.id;
-        });
-        updateGoal(db, uid);
+function setColor(btn, color, i) {
+  const keys = Object.keys(dict[i]);
+  for (let n = 0; n < keys.length; n += 1) {
+    const property = document.getElementById(keys[n] + i.toString());
+    if (keys[n] === btn) {
+      if (dict[i][btn] === 0) {
+        property.style.backgroundColor = '#FFFFFF';
+        dict[i][btn] = 1;
       } else {
-        dialog.showMessageBox({
-          type: 'error',
-          title: 'Error',
-          message: errorMessage,
-        });
-        console.log('Team not found');
-        // document.location.href = 'taskbar.html'
+        property.style.backgroundColor = color;
+        dict[i][btn] = 0;
       }
-    })
-    .catch((error) => {
-      console.log('Error getting documents: ', error);
-      // document.location.href = 'taskbar.html'
-    });
+    } else {
+      property.style.backgroundColor = '#FFFFFF';
+      dict[i][keys[n]] = 1;
+    }
+  }
+}
+
+
+/**
+ * create a list of listeners for buttons according to row i
+ * @param {integer} i
+ */
+function setListener(i) {
+  const keys = Object.keys(dict[i]);
+  for (let n = 0; n < keys.length; n += 1) {
+    const property = document.getElementById(keys[n] + i.toString());
+    property.addEventListener('click', () => setColor(keys[n], colors[keys[n]], i));
+  }
 }
 
 /**
  * create a list of goals that user saved in check-in
  * @param {*} goal
- * @param {*} n
+ * @param {integer} n
  */
 function createGoalList(goal, n) {
   // Assigning the attributes
@@ -42,11 +75,10 @@ function createGoalList(goal, n) {
   const labelId = `task${id}`;
   const con = document.getElementById(`container${id}`);
 
-
   // appending the created text to
   // the created label tag
-  const s = '';
-  label.appendChild(document.createTextNode(goal + s));
+  const str = '';
+  label.appendChild(document.createTextNode(goal + str));
   label.id = labelId;
 
 
@@ -61,10 +93,10 @@ function createGoalList(goal, n) {
   form.appendChild(con);
 }
 
-let taskNum = 1;
-
 /**
- * TODO
+ * Pull and displayed the tasks stored based on the database and user id
+ * @param {*} db
+ * @param {string} uid
  */
 function updateGoal(db, uid) {
   let n = 1;
@@ -76,15 +108,20 @@ function updateGoal(db, uid) {
         goalText.style.display = 'none';
         let id = `task${n.toString()}`;
         const data = doc.data();
-        while (id in data & data[id] != '') {
+        while (id in data && data[id] !== '') {
           createGoalList(data[id], n);
-          n++;
-          taskNum++;
+          setListener(n);
+          n += 1;
           id = `task${n.toString()}`;
         }
-        if (n == 1) {
+        if (n === 1) {
           goalText.innerHTML = 'No Task Set For The Day!';
           goalText.style.display = 'block';
+        } else {
+          /* the tasks are first set to complete */
+          for (j = 1; j <= 3; j += 1) {
+            setColor(c, '#7FFF00', j);
+          }
         }
       } else {
         console.error('Error getting data');
@@ -92,17 +129,36 @@ function updateGoal(db, uid) {
     })
     .catch((error) => {
       console.error('Error getting data: ', error);
-      // document.location.href = 'taskbar.html'
     });
 }
 
 /**
- * Starts endflow
- * @param {*} db
+ * Checks which team a particular user is currently in
  * @param {string} uid
+ * @param {*} db
  */
-function endFlow(db, uid) {
-  updateThermometer(db, uid);
+function checkTeams(uid, db) {
+  db.collection('teams').where(uid, '==', true)
+    .get()
+    .then((querySnapshot) => {
+      console.log(querySnapshot.docs);
+      if (querySnapshot.docs.length > 0) {
+        querySnapshot.forEach((doc) => {
+          teamName = doc.id;
+          updateGoal(db, uid, teamName);
+        });
+      } else {
+        dialog.showMessageBox({
+          type: 'error',
+          title: 'Error',
+          message: errorMessage,
+        });
+        console.log('Team not found');
+      }
+    })
+    .catch((error) => {
+      console.log('Error getting documents: ', error);
+    });
 }
 
 /**
@@ -114,7 +170,7 @@ function handleEndFlow(db, uid) {
   const obj = {
     checkedIn: false,
   };
-  for (i = 1; i < 4; i++) {
+  for (let i = 1; i < 4; i += 1) {
     const id = i.toString();
     const taskId = `task${id}`;
     const taskStatus = `taskStatus${id}`;
@@ -122,13 +178,12 @@ function handleEndFlow(db, uid) {
     if (element != null) {
       const t = element.textContent;
 
-      // obj[taskId] = t;
       obj[taskStatus] = 0;
-      if (dict[i][k] == 0) obj[taskStatus] = 1;
-      else if (dict[i][s] == 0) obj[taskStatus] = 2;
-      else if (dict[i][b] == 0) obj[taskStatus] = 3;
+      if (dict[i][k] === 0) obj[taskStatus] = 1;
+      else if (dict[i][s] === 0) obj[taskStatus] = 2;
+      else if (dict[i][b] === 0) obj[taskStatus] = 3;
 
-      if (obj[taskStatus] == 0) obj[taskId] = '';
+      if (obj[taskStatus] === 0) obj[taskId] = '';
       else obj[taskId] = t;
     } else {
       obj[taskId] = '';
@@ -146,7 +201,6 @@ function handleEndFlow(db, uid) {
         message: error.message,
       });
       console.error('Error adding document: ', error);
-      // document.location.href = 'taskbar.html'
     });
 }
 
@@ -166,15 +220,15 @@ function updateThermometer(db, uid) {
   if (window.getComputedStyle(line3).display === 'block') line3Valid = true;
   let tasksCompleted = 0;
   if (line1Valid) {
-    if (dict[1].completedBtn == 0) tasksCompleted++;
+    if (dict[1].completedBtn === 0) tasksCompleted += 1;
     else console.log('Task 1 not completed');
   }
   if (line2Valid) {
-    if (dict[2].completedBtn == 0) tasksCompleted++;
+    if (dict[2].completedBtn === 0) tasksCompleted += 1;
     else console.log('Task 2 not completed');
   }
   if (line3Valid) {
-    if (dict[3].completedBtn == 0) tasksCompleted++;
+    if (dict[3].completedBtn === 0) tasksCompleted += 1;
   }
   console.log(tasksCompleted);
   console.log(teamName);
@@ -221,6 +275,15 @@ function updateThermometer(db, uid) {
       console.log('Error getting documents: ', error);
       handleEndFlow(db, uid);
     });
+}
+
+/**
+ * Starts endflow
+ * @param {*} db
+ * @param {string} uid
+ */
+function endFlow(db, uid) {
+  updateThermometer(db, uid);
 }
 
 /**
