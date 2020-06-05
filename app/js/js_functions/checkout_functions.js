@@ -55,6 +55,18 @@ for (j = 1; j <= 3; j += 1) {
 }
 
 /**
+ * create a list of listeners for buttons according to row i
+ * @param {integer} i
+ */
+function setListener(i) {
+  const keys = Object.keys(dict[i]);
+  for (let n = 0; n < keys.length; n += 1) {
+    const property = document.getElementById(keys[n] + i.toString());
+    property.addEventListener('click', () => setColor(keys[n], colors[keys[n]], i));
+  }
+}
+
+/**
  * create a list of goals that user saved in check-in
  * @param {*} goal
  * @param {integer} n
@@ -69,8 +81,8 @@ function createGoalList(goal, n) {
 
   // appending the created text to
   // the created label tag
-  const s = '';
-  label.appendChild(document.createTextNode(goal + s));
+  const str = '';
+  label.appendChild(document.createTextNode(goal + str));
   label.id = labelId;
 
 
@@ -100,6 +112,7 @@ function updateGoal(db, uid) {
         const data = doc.data();
         while (id in data && data[id] !== '') {
           createGoalList(data[id], n);
+          setListener(n);
           n += 1;
           id = `task${n.toString()}`;
         }
@@ -113,7 +126,6 @@ function updateGoal(db, uid) {
     })
     .catch((error) => {
       console.error('Error getting data: ', error);
-      // document.location.href = 'taskbar.html'
     });
 }
 
@@ -139,7 +151,6 @@ function checkTeams(uid, db) {
           message: errorMessage,
         });
         console.log('Team not found');
-        // document.location.href = 'taskbar.html'
       }
     })
     .catch((error) => {
@@ -166,10 +177,9 @@ function handleEndFlow(db, uid) {
       const t = element.textContent;
 
       obj[taskStatus] = 0;
-      // TODO: THERE IS NO K OR S WHAT IS THIS??????????????????????????
-      // if (dict[i][k] == 0) obj[taskStatus] = 1;
-      // else if (dict[i][s] == 0) obj[taskStatus] = 2;
-      // else if (dict[i][b] == 0) obj[taskStatus] = 3;
+      if (dict[i][k] === 0) obj[taskStatus] = 1;
+      else if (dict[i][s] === 0) obj[taskStatus] = 2;
+      else if (dict[i][b] === 0) obj[taskStatus] = 3;
 
       if (obj[taskStatus] === 0) obj[taskId] = '';
       else obj[taskId] = t;
@@ -189,7 +199,6 @@ function handleEndFlow(db, uid) {
         message: error.message,
       });
       console.error('Error adding document: ', error);
-      // document.location.href = 'taskbar.html'
     });
 }
 
