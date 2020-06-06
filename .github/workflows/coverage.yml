@@ -1,12 +1,12 @@
 name: coverage
 
+# With how mastre has been protected this will only run when we merge a pr into master
+# Code Climate needs the actual branchs name making the push to match the default branch name configured which is set to master
+
 on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - '*'
 
 jobs:
   coverage:

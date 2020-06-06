@@ -3,12 +3,12 @@
 
 # See README on use
 
-name: Build_And_Release
+name: release
 
 on:
   push:
     branches:
-      - release
+      - master
 
 jobs:
   build_and_release:
@@ -18,7 +18,6 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
-        #os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
 
