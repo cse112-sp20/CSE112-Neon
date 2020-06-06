@@ -1,37 +1,63 @@
+const { dialog } = require('electron')
 /**
- * Checks which team a particular user is currently in
+ * return the user's teamname
+ * @param {*} db
+ * @param {string} uid
+ */
+function getTeamName(db, uid) {
+  const getTN = function tn(resolve) {
+    db.collection('teams').where(uid, '==', true)
+      .get()
+      .then((querySnapshot) => {
+        if (querySnapshot.docs.length > 0) {
+          querySnapshot.forEach((doc) => {
+            resolve(doc.id);
+          });
+        }
+      });
+  };
+  return new Promise(getTN);
+}
+
+/**
+ * show warnings if a user fail to join a team
+ * @param {*} db
+ * @param {string} uid
+ */
+function failGetTeamName() {
+  const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
+  dialog.showMessageBox({
+    type: 'error',
+    title: 'Error',
+    message: errorMessage,
+  });
+  document.location.href = 'taskbar.html';
+}
+
+/**
+ * Checks if a user joined a team or not
  * @param {*} db
  * @param {string} uid
  */
 function checkTeams(db, uid) {
-  const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
-  db.collection('teams').where(uid, '==', true)
-    .get()
-    .then((querySnapshot) => {
-      console.log(querySnapshot.docs);
-      if (querySnapshot.docs.length > 0) {
-        querySnapshot.forEach((doc) => {
-          teamName = doc.id;
-        });
-      } else {
-        dialog.showMessageBox({
-          type: 'error',
-          title: 'Error',
-          message: errorMessage,
-        });
-        console.log('Team not found');
-        document.location.href = 'taskbar.html';
-      }
-    })
-    .catch((error) => {
-      dialog.showMessageBox({
-        type: 'error',
-        title: 'Error',
-        message: errorMessage,
-      });
-      console.log('Error getting documents: ', error);
-      document.location.href = 'taskbar.html';
-    });
+  getTeamName(db, uid)
+    .then()
+    .catch(failGetTeamName);
+}
+
+/**
+ * TODO
+ * @param {*} parent
+ * @param {*} text
+ */
+function addTask(parent, text) {
+  const task = `
+          <li>
+              <input style="display: inline-block;" value = "${text}">
+              <button class="bt">Add</button>
+              <button class="bt">Delete</button>
+          </li>`;
+  parent.insertAdjacentHTML('beforeend', task);
 }
 
 /**
@@ -40,36 +66,26 @@ function checkTeams(db, uid) {
  * @param {string} uid
  */
 function checkPrevTask(db, uid) {
-  db.collection('teams').where(uid, '==', true)
-    .get()
-    .then((querySnapshot) => {
-      console.log(querySnapshot.docs);
-      if (querySnapshot.docs.length > 0) {
-        querySnapshot.forEach((doc) => {
-          teamName = doc.id;
-        });
-      }
-      return teamName;
-    })
+  getTeamName(db, uid)
     .then((teamName) => {
       db.collection('teams')
         .doc(teamName)
         .collection(uid).doc('status')
         .get()
         .then((status) => {
-          statusObj = status.data();
-          ptDiv = document.getElementById('prevTask');
+          const statusObj = status.data();
+          const ptDiv = document.getElementById('prevTask');
           console.log(statusObj.task1);
-          if (statusObj.task1 != '' || statusObj.task2 != '' || statusObj.task3 != '') {
+          if (statusObj.task1 !== '' || statusObj.task2 !== '' || statusObj.task3 !== '') {
             ptDiv.style.display = 'block';
           }
-          if (statusObj.task1 != '') {
+          if (statusObj.task1 !== '') {
             addTask(ptDiv, statusObj.task1);
           }
-          if (statusObj.task2 != '') {
+          if (statusObj.task2 !== '') {
             addTask(ptDiv, statusObj.task2);
           }
-          if (statusObj.task3 != '') {
+          if (statusObj.task3 !== '') {
             addTask(ptDiv, statusObj.task3);
           }
         })
@@ -78,22 +94,12 @@ function checkPrevTask(db, uid) {
         });
     });
 }
-// startflow will always send 3 tasks value, if the user didn't not set any of them, just set the val to be ""
+
 /**
  * TODO
  */
 function startFlow(db, uid, task1, task2, task3) {
-  db.collection('teams').where(uid, '==', true)
-    .get()
-    .then((querySnapshot) => {
-      console.log(querySnapshot.docs);
-      if (querySnapshot.docs.length > 0) {
-        querySnapshot.forEach((doc) => {
-          teamName = doc.id;
-        });
-      }
-      return teamName;
-    })
+  getTeamName(db, uid)
     .then((teamName) => {
       const obj = {
         checkedIn: true,
@@ -120,20 +126,6 @@ function startFlow(db, uid, task1, task2, task3) {
     });
 }
 
-/**
- * TODO
- * @param {*} parent
- * @param {*} text
- */
-function addTask(parent, text) {
-  const task = `
-        <li>
-            <input style="display: inline-block;" value = "${text}">
-            <button class="bt">Add</button>
-            <button class="bt">Delete</button>
-        </li>`;
-  parent.insertAdjacentHTML('beforeend', task);
-}
 module.exports = {
   checkTeams, checkPrevTask, startFlow, addTask,
 };
