@@ -32,7 +32,10 @@ jobs:
     #   run: ${{ contains(git -l github.ref, '') }}
        
       - name:
-        run: git status
+        run: git tag -l
+        
+      - name:
+        run: ${{contains(github.ref, 'release')}}
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
