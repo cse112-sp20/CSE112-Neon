@@ -35,6 +35,8 @@ jobs:
         run: git tag -l
         
       - name:
+        run: ${{github.ref}}
+      - name:
         run: ${{contains(github.ref, 'release')}}
 
       - name: Build/release Electron app
