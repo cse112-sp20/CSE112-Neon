@@ -4,11 +4,15 @@ const { dialog } = require('electron')
  * @param {*} db
  * @param {string} uid
  */
+
+function getTeamNameDb(db, uid) {
+    return db.collection('teams').where(uid, '==', true).get();
+}
+
 function getTeamName(db, uid) {
   const getTN = function tn(resolve) {
-    db.collection('teams').where(uid, '==', true)
-      .get()
-      .then((querySnapshot) => {
+      var thing = getTeamNameDb(db, uid);
+      thing.then((querySnapshot) => {
         if (querySnapshot.docs.length > 0) {
           querySnapshot.forEach((doc) => {
             resolve(doc.id);
@@ -127,5 +131,5 @@ function startFlow(db, uid, task1, task2, task3) {
 }
 
 module.exports = {
-  checkTeams, checkPrevTask, startFlow, addTask,
+  checkTeams, checkPrevTask, startFlow, addTask, getTeamName, getTeamNameDb
 };
