@@ -36,7 +36,7 @@ jobs:
         run: echo $VERSION
         
       - name: contains
-        run: ${{ contains($VERSION, "v1.0.4")}}
+        run: ${{ contains(env.VERSION, "v1.0.4")}}
       
      
 
