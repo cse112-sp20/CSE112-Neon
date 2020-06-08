@@ -11,7 +11,7 @@ function getTeamNameDb(db, uid) {
 
 function getTeamName(db, uid) {
   const getTN = function tn(resolve) {
-      var thing = getTeamNameDb(db, uid);
+      var thing = this.getTeamNameDb(db, uid);
       thing.then((querySnapshot) => {
         if (querySnapshot.docs.length > 0) {
           querySnapshot.forEach((doc) => {
@@ -64,6 +64,13 @@ function addTask(parent, text) {
   parent.insertAdjacentHTML('beforeend', task);
 }
 
+function checkPrevTaskDb(db, teamName, uid) {
+    return db.collection('teams')
+        .doc(teamName)
+        .collection(uid).doc('status')
+        .get();
+}
+
 /**
  * TODO
  * @param {*} db
@@ -72,10 +79,7 @@ function addTask(parent, text) {
 function checkPrevTask(db, uid) {
   getTeamName(db, uid)
     .then((teamName) => {
-      db.collection('teams')
-        .doc(teamName)
-        .collection(uid).doc('status')
-        .get()
+      checkPrevTaskDb(db, teamName, uid)
         .then((status) => {
           const statusObj = status.data();
           const ptDiv = document.getElementById('prevTask');
@@ -99,6 +103,11 @@ function checkPrevTask(db, uid) {
     });
 }
 
+function startFlowDb(db, teamName, uid, obj) {
+    return db.collection('teams').doc(teamName).collection(uid).doc('status')
+        .set(obj);
+}
+
 /**
  * TODO
  */
@@ -112,8 +121,7 @@ function startFlow(db, uid, task1, task2, task3) {
         task3: task3.value,
         taskStatus: 1,
       };
-      db.collection('teams').doc(teamName).collection(uid).doc('status')
-        .set(obj)
+      startFlowDb(db, teamName, uid, obj)
         .then(() => {
           console.log('Document written');
           document.location.href = 'taskbar.html';

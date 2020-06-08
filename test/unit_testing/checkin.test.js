@@ -13,6 +13,7 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
 /** Import and use firestore mock **/
+//const { dialog } = require('electron')
 const FirestoreMock = require('firestore-mock');
 const firestore = new FirestoreMock();
 const uid = 'odkSxashOmg9QeyRL2cRs00Jke12';
@@ -45,14 +46,18 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
         expect(before_html).to.not.equal(after_html);
       });
     });
-    describe('#getTeamNameDb', () => {
+    describe('#getTeamName', () => {
         before( () =>
          {
            firestore.collection('teams').doc('Neon').collection(uid).doc('status')
                .set({checkedIn : "false", task1 : "Test Task", task2 : "", task3 : "", taskStatus1 : 1  });
          });
     	it('getTeamName test basic', () => {
-            getTeamNameDb(firestore, uid);
+    	    var stub = sinon.stub(module, 'getTeamNameDb').callsFake(() => {
+    	      //return new Promise(module.getTeamNameDb(firestore, uid));
+              //return new Promise(new QuerySnapshot(getTeamNameDb(firestore, uid)));
+            });
+            console.log(getTeamName(firestore, uid));
 		});
 	});
   });
