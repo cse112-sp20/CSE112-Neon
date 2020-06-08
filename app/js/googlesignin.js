@@ -10,8 +10,8 @@ firebase.initializeApp(firebaseConfig);
 const h3 = document.getElementById('loginstatus');
 
 /**
- * Gets redirect result, if there isn't a redirect result then redirects page to Google sign in page. After
- * redirect result is obtained then post to server.
+ * Gets redirect result, if there isn't a redirect result then redirects page to
+ * Google sign in page. After redirect result is obtained then post to server.
  */
 firebase.auth().getRedirectResult().then((result) => {
   if (result.credential) {

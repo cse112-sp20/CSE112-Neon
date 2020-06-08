@@ -1,5 +1,4 @@
 const { firebaseConfig } = require('../common.js');
-// const firebase = require('firebase');
 
 /* global firebase */
 

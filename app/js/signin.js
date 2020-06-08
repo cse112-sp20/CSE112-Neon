@@ -13,8 +13,9 @@ const signInBtn = document.getElementById('signInBtn');
 let intervalVar;
 
 /**
- * Opens up google sign in page, then continually pings server for response from redirect. Once that
- * redirect response is received then userid, email, and name are retrieved. Then redirects to taskbar.html
+ * Opens up google sign in page, then continually pings server for response from
+ * redirect. Once that redirect response is received then userid, email, and name
+ * are retrieved. Then redirects to taskbar.html
  */
 signInBtn.addEventListener('click', () => {
   console.log('here');
