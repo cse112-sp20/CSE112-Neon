@@ -27,16 +27,13 @@ jobs:
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
+        
+      - name: get package version
+        run: echo ::set-env name=PACKAGE_VER::$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"')
        
       - name: set env
-        run: echo ::set-env name=VERSION::$(git tag -l foo=$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"') && git tag -l ${foo})
+        run: echo ::set-env name=NEW_VERSION::$(git tag -l env.PACKAGE_VER)
         
-        
-      - name: echo
-        run: echo $VERSION
-        
-      - name: contains
-        run: ${{ contains(env.VERSION, "v1.0.4")}}
       
      
 
