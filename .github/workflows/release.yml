@@ -34,7 +34,7 @@ jobs:
         run: echo ${{env.PACKAGE_VER}}
        
       - name: get if package version is already tagged
-        run: echo "::set-env name=NEW_VERSION::$(git tag -l env.PACKAGE_VER)"
+        run: echo "::set-env name=NEW_VERSION::$(git tag -l ${{env.PACKAGE_VER}})"
       - name: print result
         run: echo ${{env.NEW_VERSION}}
         
