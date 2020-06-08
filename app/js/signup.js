@@ -15,7 +15,7 @@ signUpBtn.addEventListener('click', () => {
   console.log(email);
   console.log(password);
   console.log(passwordRPT);
-  if (password.localeCompare(passwordRPT) == 0) {
+  if (password.localeCompare(passwordRPT) === 0) {
     firebase.auth().createUserWithEmailAndPassword(email, password).then((user) => {
       dialog.showMessageBox({
         title: 'Message',
