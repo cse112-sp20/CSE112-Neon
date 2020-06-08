@@ -20,19 +20,22 @@ jobs:
         os: [macos-latest, windows-latest]
 
     steps:
-
+      
       - name: Check out Git repository
       
         uses: actions/checkout@v1
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
-
-     # - name:
-    #   run: ${{ contains(git -l github.ref, '') }}
+        
+        env:
+          PULLED_VERSION = cat package.json | grep version | head -1 | awk -F: '{print $2}' | sed 's/[\",]//g' | tr -d '[[:space:]]'
+        
+      - name: pull tag
+        uses: git pull tag origin master  
        
-      - name:
-        run: git tag -l
+      - name: look at list of tags
+        run: git tag -l $PULLED_VERSION     
         
       - name:
         run: ${{github.ref}}
