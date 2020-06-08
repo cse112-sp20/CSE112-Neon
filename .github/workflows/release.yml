@@ -36,9 +36,8 @@ jobs:
       - id: setoutput
         if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
         run: echo "::set-output name=release::true"
-      
 
-      - id: Build and Release Electron app
+      - id: buildandrelease
         if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
         uses: samuelmeuli/action-electron-builder@v1
         with:
