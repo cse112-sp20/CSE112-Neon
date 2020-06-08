@@ -7,7 +7,7 @@ const uname = localStorage.getItem('displayName');
  * Top user information logistics
  */
 document.getElementById('username').innerHTML = uname;
-document.getElementById('userStatus').onchange = function () {
+document.getElementById('userStatus').onchange = function onchange() {
   const { value } = document.getElementById('userStatus');
   taskbarFunctions.onStatusChange(uname, value);
 };

@@ -1,5 +1,7 @@
 const { firebaseConfig } = require('./js/common.js');
 
+/* global firebase, cancel */
+
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();

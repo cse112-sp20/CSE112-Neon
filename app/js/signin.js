@@ -1,18 +1,21 @@
-const { dialog } = require('electron').remote;
+// const { dialog } = require('electron').remote;
 const { shell } = require('electron');
 const { firebaseConfig } = require('./js/common.js');
 
+/* global firebase, guidVal */
+
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// const db = firebase.firestore();
 
 const signInBtn = document.getElementById('signInBtn');
 
 let intervalVar;
 
 /**
- * Opens up google sign in page, then continually pings server for response from redirect. Once that
- * redirect response is received then userid, email, and name are retrieved. Then redirects to taskbar.html
+ * Opens up google sign in page, then continually pings server for response from
+ * redirect. Once that redirect response is received then userid, email, and name
+ * are retrieved. Then redirects to taskbar.html
  */
 signInBtn.addEventListener('click', () => {
   console.log('here');
@@ -22,7 +25,9 @@ signInBtn.addEventListener('click', () => {
     const url = `http://localhost:3000/checklogin?guid=${guid}`;
     xhr.open('get', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function () { // Call a function when the state changes.
+
+    // Call a function when the state changes.
+    xhr.onreadystatechange = function onreadystatechange() {
       if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
         console.log('Response is');
         console.log(xhr.response);
