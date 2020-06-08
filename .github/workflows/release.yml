@@ -32,7 +32,10 @@ jobs:
         uses: git pull tag origin master  
        
       - name: look at list of tags
+        env:
+          pulled_version: ${{cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | tr -d '[[:space:]]')}}
         run: git tag -l ${{pulled_version}}
+
      
 
       - name: Build/release Electron app
@@ -45,5 +48,3 @@ jobs:
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
           release: false  #${{ startsWith(github.ref, 'refs/tags/v') }}
-        env:
-          pulled_version: ${{cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | tr -d '[[:space:]]')}}
