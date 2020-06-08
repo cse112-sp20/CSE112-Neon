@@ -31,14 +31,17 @@ jobs:
       - name: get package version
         run: echo "::set-env name=PACKAGE_VER::$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"')"
       - name: print result
-        run: echo env.PACKAGE_VER
+        run: echo ${{env.PACKAGE_VER}}
        
-      - name: set env
+      - name: get if package version is already tagged
         run: echo "::set-env name=NEW_VERSION::$(git tag -l env.PACKAGE_VER)"
       - name: print result
-        run: echo env.NEW_VERSION
-      
-     
+        run: echo ${{env.NEW_VERSION}}
+        
+        
+      - name: runner
+        if: !contains(env.NEW_VERSION, env.PACKAGE_VER)
+        run: echo doesnt contain #git tag ${{env.PACKAGE_VER}}
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
