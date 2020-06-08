@@ -27,13 +27,14 @@ jobs:
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
-        
-      - name: pull tag
-        uses: git pull tag origin master  
        
-      - name: look at list of tags
-        run: git tag -l foo=$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"') && git tag -l ${foo}
-
+      - name: set env
+        run: echo ::set-env name=VERSION::$(git tag -l foo=$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"') && git tag -l ${foo})
+        
+        
+      - name: echo
+        run echo $VERSION
+      
      
 
       - name: Build/release Electron app
