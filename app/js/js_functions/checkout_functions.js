@@ -292,5 +292,12 @@ function endFlow(db, uid) {
 function cancel() { document.location.href = 'taskbar.html'; }
 
 module.exports = {
-  checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel,
+  checkTeams,
+  createGoalList,
+  updateGoal,
+  endFlow,
+  updateThermometer,
+  cancel,
+  setColor,
+  setListener,
 };
