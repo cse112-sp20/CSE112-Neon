@@ -134,6 +134,16 @@ function addStatusListener(id) {
     });
 }
 
+
+/**
+ * Plays audio to signal an update in the thermometer
+ */
+function playAudio() {
+  const audio = document.getElementById('ding');
+  audio.play();
+}
+
+
 /**
  * Checks value of thermometer and updates ui
  */
@@ -275,13 +285,6 @@ function checkTeams() {
     });
 }
 
-/**
- * Plays audio to signal an update in the thermometer
- */
-function playAudio() {
-  const audio = document.getElementById('ding');
-  audio.play();
-}
 
 // Export utility functions and init functions
 module.exports = {
