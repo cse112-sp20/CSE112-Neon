@@ -11,12 +11,12 @@ on:
      # - master
 
 jobs:
-  
   tagger:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       output1: ${{ steps.setoutput.outputs.release }}
+      
     steps:
     - uses: actions/checkout@master
       with:
@@ -28,7 +28,6 @@ jobs:
     - name: check for existing tags
       run: echo "::set-env name=NEW_VERSION::$(git tag -l ${{env.PACKAGE_VER}})"  
       
-    - name: Update release variable  
     - id: setoutput
       if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
       run: echo "::set-output name=release::true"
@@ -49,6 +48,7 @@ jobs:
         os: [macos-latest, windows-latest]
     timeout-minutes: 5
     needs: tagger
+    
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
