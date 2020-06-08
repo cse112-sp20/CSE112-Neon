@@ -33,7 +33,7 @@ jobs:
         
         
       - name: echo
-        run echo $VERSION
+        run: echo $VERSION
       
      
 
