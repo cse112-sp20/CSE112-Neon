@@ -2,6 +2,8 @@ const { dialog } = require('electron').remote;
 const { shell } = require('electron');
 const { firebaseConfig } = require('./js/common.js');
 
+/* global firebase */
+
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();

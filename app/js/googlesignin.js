@@ -2,6 +2,8 @@ const regexGUID = /\?guid=([\dA-z]*[-][\dA-z]*[-][\dA-z]*)/;
 const guid = window.location.search.match(regexGUID)[1];
 console.log(guid);
 
+/* global firebase, firebaseConfig */
+
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
 

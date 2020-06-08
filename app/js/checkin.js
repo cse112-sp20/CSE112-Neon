@@ -2,6 +2,8 @@ const dialog = require('electron').remote;
 const { firebaseConfig } = require('./common.js');
 const { checkTeams, checkPrevTask, startFlow } = require('./js_functions/checkin_functions.js');
 
+/* global firebase */
+
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();

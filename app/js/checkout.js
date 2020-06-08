@@ -4,6 +4,8 @@ const {
   checkTeams, endFlow, cancel,
 } = require('./js_functions/checkout_functions.js');
 
+/* global firebase */
+
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
