@@ -40,7 +40,7 @@ jobs:
         
         
       - name: runner
-        if: !contains(env.NEW_VERSION, env.PACKAGE_VER)
+        if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
         run: echo doesnt contain #git tag ${{env.PACKAGE_VER}}
 
       - name: Build/release Electron app
