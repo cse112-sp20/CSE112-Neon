@@ -39,11 +39,12 @@ jobs:
         run: echo ${{env.NEW_VERSION}}
         
         
-      - name: runner
+      - name: Create Tag
         if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
-        run: echo doesnt contain #git tag ${{env.PACKAGE_VER}}
+        run: git tag ${{env.PACKAGE_VER}}
 
-      - name: Build/release Electron app
+      - name: Build and Release Electron app
+        if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
         uses: samuelmeuli/action-electron-builder@v1
         with:
           # GitHub token, automatically provided to the action
@@ -52,4 +53,4 @@ jobs:
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
-          release: false  #${{ startsWith(github.ref, 'refs/tags/v') }}
+          release: true  #${{ startsWith(github.ref, 'refs/tags/v') }}
