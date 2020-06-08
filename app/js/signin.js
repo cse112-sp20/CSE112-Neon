@@ -1,4 +1,4 @@
-const { dialog } = require('electron').remote;
+// const { dialog } = require('electron').remote;
 const { shell } = require('electron');
 const { firebaseConfig } = require('./js/common.js');
 
@@ -6,7 +6,7 @@ const { firebaseConfig } = require('./js/common.js');
 
 /** Initialize Firebase */
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// const db = firebase.firestore();
 
 const signInBtn = document.getElementById('signInBtn');
 
