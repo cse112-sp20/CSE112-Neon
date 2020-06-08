@@ -38,7 +38,8 @@ firebase.auth().getRedirectResult().then((result) => {
     const url = '/registerlogin';
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function () { // Call a function when the state changes.
+    // Call a function when the state changes.
+    xhr.onreadystatechange = function onreadystatechange() {
       if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
         const response = JSON.parse(xhr.response);
       }

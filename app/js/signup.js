@@ -11,11 +11,11 @@ const signUpBtn = document.getElementById('signUpBtn');
 signUpBtn.addEventListener('click', () => {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  const password_rpt = document.getElementById('password_rpt').value;
+  const passwordRPT = document.getElementById('passwordRPT').value;
   console.log(email);
   console.log(password);
-  console.log(password_rpt);
-  if (password.localeCompare(password_rpt) == 0) {
+  console.log(passwordRPT);
+  if (password.localeCompare(passwordRPT) == 0) {
     firebase.auth().createUserWithEmailAndPassword(email, password).then((user) => {
       dialog.showMessageBox({
         title: 'Message',

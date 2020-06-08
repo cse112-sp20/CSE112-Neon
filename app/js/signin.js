@@ -25,7 +25,9 @@ signInBtn.addEventListener('click', () => {
     const url = `http://localhost:3000/checklogin?guid=${guid}`;
     xhr.open('get', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function () { // Call a function when the state changes.
+
+    // Call a function when the state changes.
+    xhr.onreadystatechange = function onreadystatechange() {
       if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
         console.log('Response is');
         console.log(xhr.response);
