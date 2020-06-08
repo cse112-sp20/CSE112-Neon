@@ -29,12 +29,12 @@ jobs:
         uses: actions/setup-node@v1
         
       - name: get package version
-        run: ::set-env name=PACKAGE_VER::$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"')
+        run: echo "::set-env name=PACKAGE_VER::$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"')"
       - name: print result
         run: echo env.PACKAGE_VER
        
       - name: set env
-        run: ::set-env name=NEW_VERSION::$(git tag -l env.PACKAGE_VER)
+        run: echo "::set-env name=NEW_VERSION::$(git tag -l env.PACKAGE_VER)"
       - name: print result
         run: echo env.NEW_VERSION
       
