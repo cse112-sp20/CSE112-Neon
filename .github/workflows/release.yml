@@ -11,44 +11,44 @@ on:
      # - master
 
 jobs:
-  build_and_release_mac:
-    runs-on: macos-latest
+  
+  tagger:
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       output1: ${{ steps.setoutput.outputs.release }}
     steps:
-      - id: checkout
-        uses: actions/checkout@v1
-
-      - id: intallnpm
-        uses: actions/setup-node@v1
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: '0'
         
-      - id: packageversion
-        run: echo "::set-env name=PACKAGE_VER::$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"')"
-       
-      - id: newrelease
-        run: echo "::set-env name=NEW_VERSION::$(git tag -l ${{env.PACKAGE_VER}})"  
-        
-      - id: tag
-        if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
-        run: git tag ${{env.PACKAGE_VER}}
-        
-      - id: setoutput
-        if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
-        run: echo "::set-output name=release::true"
-
-      - id: buildandrelease
-        if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-
-          release: true
-          
-  build_and_release_windows:
-    runs-on: windows-latest
+    - name: get package version
+      run: echo "::set-env name=PACKAGE_VER::$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"')"
+    
+    - name: check for existing tags
+      run: echo "::set-env name=NEW_VERSION::$(git tag -l ${{env.PACKAGE_VER}})"  
+      
+    - name: Update release variable  
+    - id: setoutput
+      if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
+      run: echo "::set-output name=release::true"
+      
+    - name: Bump version and push tag
+      if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
+      uses: anothrNick/github-tag-action@1.17.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CUSTOM_TAG: ${{env.PACKAGE_VER}}
+    
+    
+  build_and_release:
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 5
-    needs: build_and_release_mac
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+    timeout-minutes: 5
+    needs: tagger
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -57,13 +57,8 @@ jobs:
         uses: actions/setup-node@v1
 
       - name: Build and Release Electron app
-        if: ${{needs.build_and_release_mac.outputs.output1}}
+        if: ${{needs.tagger.outputs.output1}}
         uses: samuelmeuli/action-electron-builder@v1
         with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
-
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: true  #${{ startsWith(github.ref, 'refs/tags/v') }}
+          release: true
