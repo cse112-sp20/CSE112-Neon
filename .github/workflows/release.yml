@@ -28,19 +28,12 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         
-        env:
-          PULLED_VERSION = cat package.json | grep version | head -1 | awk -F: '{print $2}' | sed 's/[\",]//g' | tr -d '[[:space:]]'
-        
       - name: pull tag
         uses: git pull tag origin master  
        
       - name: look at list of tags
-        run: git tag -l $PULLED_VERSION     
-        
-      - name:
-        run: ${{github.ref}}
-      - name:
-        run: ${{contains(github.ref, 'release')}}
+        run: git tag -l cat package.json | grep version | head -1 | awk -F: '{print $2}' | sed 's/[\",]//g' | tr -d '[[:space:]]'     
+      
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
