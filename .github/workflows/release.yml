@@ -1,6 +1,5 @@
 # Source
 # https://github.com/samuelmeuli/action-electron-builder
-
 # See README on use
 
 name: release
@@ -11,31 +10,54 @@ on:
       - master
 
 jobs:
+  tagger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      output1: ${{ steps.setoutput.outputs.release }}
+      
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: '0'
+        
+    - name: get package version
+      run: echo "::set-env name=PACKAGE_VER::$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"')"
+    
+    - name: check for existing tags
+      run: echo "::set-env name=NEW_VERSION::$(git tag -l ${{env.PACKAGE_VER}})"  
+      
+    - id: setoutput
+      if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
+      run: echo "::set-output name=release::true"
+      
+    - name: Bump version and push tag
+      if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
+      uses: anothrNick/github-tag-action@1.17.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_BRANCHES : master
+        CUSTOM_TAG: ${{env.PACKAGE_VER}}
+    
+    
   build_and_release:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
-
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
-
+    needs: tagger
+    
     steps:
-
       - name: Check out Git repository
-      
         uses: actions/checkout@v1
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
 
-
-      - name: Build/release Electron app
+      - name: Build and Release Electron app
+        if: ${{needs.tagger.outputs.output1}}
         uses: samuelmeuli/action-electron-builder@v1
         with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
-
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          release: true
