@@ -1,13 +1,21 @@
+const { firebaseConfig } = require('./js/common.js');
 const taskbarFunctions = require('./js/js_functions/taskbar_functions.js');
 
 // User info
 const uname = localStorage.getItem('displayName');
 
+/* global firebase */
+
+/** Initialize Firebase */
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+
 /**
  * Top user information logistics
  */
 document.getElementById('username').innerHTML = uname;
-document.getElementById('userStatus').onchange = function () {
+document.getElementById('userStatus').onchange = function onchange() {
   const { value } = document.getElementById('userStatus');
   taskbarFunctions.onStatusChange(uname, value);
 };
@@ -41,5 +49,5 @@ const leaveTeamButton = document.getElementById('leaveTeamButton');
 leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam());
 
 // Call initializers in the backend
+taskbarFunctions.initTaskbar(uname, db);
 taskbarFunctions.checkTeams();
-taskbarFunctions.initUser(uname);
