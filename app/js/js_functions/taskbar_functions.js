@@ -1,3 +1,5 @@
+/* global firebase */
+
 // The emojis for each status
 const statusEmoji = {
   Online: '😀',
@@ -8,9 +10,8 @@ const statusEmoji = {
   Meeting: '👥',
 };
 
-// Global reference to the db
 let db;
-
+let loadingThermometer = false;
 // User info
 const uid = localStorage.getItem('userid');
 let teamName;
@@ -128,6 +129,16 @@ function addStatusListener(id) {
     });
 }
 
+
+/**
+ * Plays audio to signal an update in the thermometer
+ */
+function playAudio() {
+  const audio = document.getElementById('ding');
+  audio.play();
+}
+
+
 /**
  * Checks value of thermometer and updates ui
  */
@@ -136,6 +147,13 @@ function checkThermometer() {
   // Checking lastTime was reset
   db.collection('thermometers').doc(teamName)
     .onSnapshot((doc) => {
+      if (loadingThermometer) {
+        console.log('Loading thermometer');
+        loadingThermometer = false;
+      } else {
+        console.log('New update');
+        playAudio();
+      }
       console.log('Current data: ', doc.data());
       const data = doc.data();
       thermometer.value = data.progress;
@@ -148,7 +166,7 @@ function checkThermometer() {
       newDay.setMinutes(0);
       newDay.setSeconds(0);
       if (timeDiff > day) {
-        db.collection('thermomemters').doc(teamName).set({
+        db.collection('thermometers').doc(teamName).set({
           progress: 0,
           lastEpoch: newDay.getTime(),
         });
@@ -211,8 +229,8 @@ function checkStatus() {
  * @param {string} uname: username of the user
  * @param {*}     db_ref: Database reference
  */
-function init(uname, db_ref) {
-  db = db_ref;
+function initTaskbar(uname, dbRef) {
+  db = dbRef;
   const ref = db.collection('users').doc(uid);
   ref.get().then((doc) => {
     if (doc.exists) {
@@ -249,6 +267,7 @@ function checkTeams() {
         teamExistsDiv.style.display = 'block';
         const h2 = document.getElementById('teamName');
         h2.innerHTML = teamName;
+        loadingThermometer = true;
         checkThermometer();
         getTeam();
       } else {
@@ -263,11 +282,12 @@ function checkTeams() {
     });
 }
 
+
 // Export utility functions and init functions
 module.exports = {
   logout,
   onStatusChange,
-  init,
+  initTaskbar,
   checkTeams,
   leaveTeam,
 };

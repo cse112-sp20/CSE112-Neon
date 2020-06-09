@@ -1,0 +1,90 @@
+name: CI
+
+on: [pull_request]
+
+jobs:
+  
+  #Runs unit tests on js files
+  unit:
+    runs-on: ubuntu-latest  # only need to unit test in one env
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: npm install
+    - name: run unit test
+      run:  npm run test:unit
+
+  # Runs Spectron integration tests
+  integration:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    needs: unit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: npm ci
+      - name: Run headless test
+        uses: GabrielBB/xvfb-action@v1.2
+        with:
+          working-directory: ./ #optional
+          run: npm run test:int
+
+  # Tests that the app is build able
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    needs: integration
+
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+
+    steps:
+
+      - name: Check out Git repository
+      
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+
+
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          release: false
+
+  # Runs the coverage reporter
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [unit, integration]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: setup
+        run: npm ci
+      - name: Run headless test
+        uses: GabrielBB/xvfb-action@v1.2
+        with:
+          working-directory: ./ #optional
+          run: npm run test:int_cov_lcov
+      - name: move report file
+        run: cp ${{github.workspace}}/coverage/lcov.info ${{github.workspace}}/coverage/lcov2.info
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v2.6.0
+        env:
+          CC_TEST_REPORTER_ID: ${{secrets.CC_REPORT_ID}}
+        with:
+          coverageCommand: npm run test:unit_cov_lcov
+          coverageLocations: |
+            ${{github.workspace}}/coverage/lcov.info:lcov
+            ${{github.workspace}}/coverage/lcov2.info:lcov
+          debug: true
