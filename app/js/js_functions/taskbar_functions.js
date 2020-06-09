@@ -10,10 +10,12 @@ const statusEmoji = {
   Meeting: '👥',
 };
 
+// Global reference to database refernece and user id
 let db;
+let uid;
+
 let loadingThermometer = false;
 // User info
-const uid = localStorage.getItem('userid');
 let teamName;
 
 // Utility functions: functions exported to be called externally
@@ -228,9 +230,11 @@ function checkStatus() {
  * if the user is present, this will simply updates its status to online
  * @param {string} uname: username of the user
  * @param {*}     db_ref: Database reference
+ * @param {*}         id: Id of the current user
  */
-function initTaskbar(uname, dbRef) {
+function initTaskbar(uname, dbRef, id) {
   db = dbRef;
+  uid = id;
   const ref = db.collection('users').doc(uid);
   ref.get().then((doc) => {
     if (doc.exists) {

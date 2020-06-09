@@ -3,6 +3,7 @@ const taskbarFunctions = require('./js/js_functions/taskbar_functions.js');
 
 // User info
 const uname = localStorage.getItem('displayName');
+const uid = localStorage.getItem('userid');
 
 /* global firebase */
 
@@ -49,5 +50,5 @@ const leaveTeamButton = document.getElementById('leaveTeamButton');
 leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam());
 
 // Call initializers in the backend
-taskbarFunctions.initTaskbar(uname, db);
+taskbarFunctions.initTaskbar(uname, db, uid);
 taskbarFunctions.checkTeams();
