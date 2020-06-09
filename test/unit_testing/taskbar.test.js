@@ -21,49 +21,50 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
   const dom = new JSDOM(html);
   global.document = dom.window.document;
 
-  let teamStatusesDiv = document.getElementById('teamStatusesDiv');
-  memberSpy = sinon.spy(module, 'addTeamMember');
-  statusSpy = sinon.spy(module, 'onStatusChange');
-  module.addTeamMember('testing', 'Online');
-  
-  let nameList = document.getElementById('name_list');
-  let nameElem = document.getElementById('name_testing');
-  let statusList = document.getElementById('status_list');
-  let statusElem = document.getElementById('status_testing');
-  describe('#taskbar_functions', () => {
-    describe('#addTeamMember', () => {
+  describe('#taskbar_functions', function() {
+    memberSpy = sinon.spy(module, 'addTeamMember');
+    module.addTeamMember('testing', 'Online');
+    const statusList = document.getElementById('status_list');
+    const nameList = document.getElementById('name_list');
+    const nameElem = document.getElementById('name_testing');
+    const statusElem = document.getElementById('status_testing');
+
+    describe('#addTeamMember', function() {
       it('addTeamMember is called once', () => {
-        expect(addSpy.calledOnce).to.equal(true);
+        expect(memberSpy.calledOnce).to.equal(true);
       });
       it('addTeamMember is called with correct param', () => {
-        expect(addSpy.calledWith('testing', 'Online')).to.equal(true);
+        expect(memberSpy.calledWith('testing', 'Online')).to.equal(true);
       });
-      it('Team list should be created', () => {
+      it('should create a team list', () => {
         assert.notEqual(nameList, null);
       });
-      it('Member should be added to the list', () => {
+      it('should add member to team list', () => {
         assert.notEqual(nameElem, null);
         assert.equal(nameElem.innerHTML, 'testing');
       });
-      it('Status list should be created', () => {
+      it('should create a status list', () => {
         assert.notEqual(statusList, null);
       });
-      it('Status should be added to the list', () => {
+      it('should status member to status list', () => {
         assert.notEqual(statusElem, null);
         assert.equal(statusElem.innerHTML, '😀');
       });
     });
-
+    
+    statusSpy = sinon.spy(module, 'onStatusChange');
     module.onStatusChange('testing', 'Offline');
     describe('#onStatusChange', () => {
       it('onStatusChange is called once', () => {
-        expect(addSpy.calledOnce).to.equal(true);
+        expect(statusSpy.calledOnce).to.equal(true);
       });
       it('onStatusChange is called with correct param', () => {
-        expect(addSpy.calledWith('testing', 'Offline')).to.equal(true);
+        expect(statusSpy.calledWith('testing', 'Offline')).to.equal(true);
       });
-      it('The status changes to offline', () => {
-        assert.equal(statusElem.innerHTML, '😴');
+      it('should change the status to offline', () => {
+        setTimeout(() => {
+          assert.equal(statusElem.innerHTML, '😴');
+        }, 500);
       });
     });
   });

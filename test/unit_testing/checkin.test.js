@@ -53,12 +53,10 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
            firestore.collection('teams').doc('Neon').collection(uid).doc('status')
                .set({checkedIn : "false", task1 : "Test Task", task2 : "", task3 : "", taskStatus1 : 1  });
          });
-    	it('getTeamName test basic', () => {
-    	    var stub = sinon.stub(module, 'getTeamNameDb').callsFake(() => {
-    	      //return new Promise(module.getTeamNameDb(firestore, uid));
-              //return new Promise(new QuerySnapshot(getTeamNameDb(firestore, uid)));
-            });
-            console.log(getTeamName(firestore, uid));
+    	it('getTeamName is called exactly once', () => {
+    	    var spyCurr = sinon.spy(module, 'getTeamName');
+            module.getTeamName(firestore, uid);
+            expect(spyCurr.calledOnce).to.equal(true);
 		});
 	});
   });

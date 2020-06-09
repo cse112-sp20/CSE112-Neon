@@ -50,5 +50,5 @@ const leaveTeamButton = document.getElementById('leaveTeamButton');
 leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam());
 
 // Call initializers in the backend
-taskbarFunctions.initTaskbar(uname, db, uid);
+taskbarFunctions.initTaskbar(uname, uid, db);
 taskbarFunctions.checkTeams();

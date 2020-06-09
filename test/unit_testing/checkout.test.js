@@ -8,7 +8,13 @@ const { JSDOM } = jsdom;
 const uid = 'OwkxFmv1k7OnibEQswl8lmNYGPh2';
 
 let html;
-
+let dom;
+let setColorSpy;
+let createGoalListSpy;
+let setListenerSpy;
+let cancelStub;
+let task1;
+let completedBtn1;
 
 const {
     setColor, setListener, createGoalList, cancel,
@@ -16,26 +22,27 @@ const {
 
 
 fs.readFile(`${__dirname}/../../app/checkout.html`, 'utf8', async (err, data) => {
-    html = data;
-    const dom = new JSDOM(html);
-    global.document = dom.window.document;
-
-    var setColorSpy = sinon.spy(module, 'setColor');
-    var createGoalListSpy = sinon.spy(module, 'createGoalList');
-    var setListenerSpy = sinon.spy(module, 'setListener');
-    var cancelStub = sinon.stub(module, 'cancel');
-
-    module.createGoalList("task1", 1);
-    module.setListener(1);
-    module.setColor('completedBtn', 'yellow', 1);
-
-    var completedBtn1 = document.getElementById('completedBtn1');
-    var task1 = document.getElementById('task1');
-
-     
-
-    cancelStub();
     describe('#checkout_functions', () => {
+        before(() => {
+            html = data;
+            dom = new JSDOM(html);
+            global.document = dom.window.document;
+
+            setColorSpy = sinon.spy(module, 'setColor');
+            createGoalListSpy = sinon.spy(module, 'createGoalList');
+            setListenerSpy = sinon.spy(module, 'setListener');
+            cancelStub = sinon.stub(module, 'cancel');
+
+            module.createGoalList("task1", 1);
+            module.setListener(1);
+            module.setColor('completedBtn', '#7FFF00', 1);
+
+            task1 = document.getElementById('task1');
+            completedBtn1 = document.getElementById('completedBtn1');
+
+            cancelStub();
+        });
+
         describe('#createGoalList()', () => {
             it('createGoalList is called once', () => {
                 expect(createGoalListSpy.calledOnce).to.equal(true);
@@ -54,7 +61,7 @@ fs.readFile(`${__dirname}/../../app/checkout.html`, 'utf8', async (err, data) =>
                 expect(setColorSpy.calledOnce).to.equal(true);
             });
             it('setColor is called with correct arguments', () => {
-                expect(setColorSpy.calledWith('completedBtn', 'yellow', 1)).to.equal(true);
+                expect(setColorSpy.calledWith('completedBtn', '#7FFF00', 1)).to.equal(true);
             });
             it('setColor sets the correct color for a button', () => {
                 const before = completedBtn1.style.backgroundColor;

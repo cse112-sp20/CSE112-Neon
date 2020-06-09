@@ -232,7 +232,7 @@ function checkStatus() {
  * @param {*}     db_ref: Database reference
  * @param {*}         id: Id of the current user
  */
-function initTaskbar(uname, dbRef, id) {
+function initTaskbar(uname, id, dbRef) {
   db = dbRef;
   uid = id;
   const ref = db.collection('users').doc(uid);
@@ -291,6 +291,7 @@ function checkTeams() {
 module.exports = {
   logout,
   onStatusChange,
+  addTeamMember,
   initTaskbar,
   checkTeams,
   leaveTeam,
