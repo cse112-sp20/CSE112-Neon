@@ -1,5 +1,3 @@
-const { firebaseConfig } = require('../common.js');
-
 /* global firebase */
 
 // The emojis for each status
@@ -12,11 +10,8 @@ const statusEmoji = {
   Meeting: '👥',
 };
 
+let db;
 let loadingThermometer = false;
-
-/** Initialize Firebase */
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 // User info
 const uid = localStorage.getItem('userid');
 let teamName;
@@ -232,8 +227,10 @@ function checkStatus() {
  * Create user doc if not present in firebase,
  * if the user is present, this will simply updates its status to online
  * @param {string} uname: username of the user
+ * @param {*}     db_ref: Database reference
  */
-function initUser(uname) {
+function initTaskbar(uname, dbRef) {
+  db = dbRef;
   const ref = db.collection('users').doc(uid);
   ref.get().then((doc) => {
     if (doc.exists) {
@@ -290,7 +287,7 @@ function checkTeams() {
 module.exports = {
   logout,
   onStatusChange,
-  initUser,
+  initTaskbar,
   checkTeams,
   leaveTeam,
 };
