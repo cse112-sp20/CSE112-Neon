@@ -14,8 +14,9 @@ const { JSDOM } = jsdom;
 
 /** Import and use firestore mock **/
 //const { dialog } = require('electron')
-const FirestoreMock = require('firestore-mock');
-const firestore = new FirestoreMock();
+const MockFirebase = require('mock-cloud-firestore');
+const firebase = new MockFirebase();
+const firestore = firebase.firestore();
 const uid = 'odkSxashOmg9QeyRL2cRs00Jke12';
 
 

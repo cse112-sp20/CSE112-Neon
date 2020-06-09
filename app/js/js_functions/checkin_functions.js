@@ -11,7 +11,7 @@ function getTeamNameDb(db, uid) {
 
 function getTeamName(db, uid) {
   const getTN = function tn(resolve) {
-      var thing = this.getTeamNameDb(db, uid);
+      var thing = getTeamNameDb(db, uid);
       thing.then((querySnapshot) => {
         if (querySnapshot.docs.length > 0) {
           querySnapshot.forEach((doc) => {
