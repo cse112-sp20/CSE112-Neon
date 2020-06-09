@@ -49,4 +49,4 @@ leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam(db, u
 
 // Call initializers in the backend
 taskbarFunctions.initTaskbar(uname, uid, db);
-taskbarFunctions.checkTeams();
+taskbarFunctions.checkTeams(db, uid);
