@@ -1,8 +1,11 @@
 const taskbarFunctions = require('./js/js_functions/taskbar_functions.js');
-
+const { firebaseConfig } = require('./common.js');
 // User info
 const uname = localStorage.getItem('displayName');
+const uid = localStorage.getItem('userid');
 
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 /**
  * Top user information logistics
  */
@@ -38,8 +41,8 @@ createTeamButton.addEventListener('click', () => { document.location.href = 'cre
 const joinTeamButton = document.getElementById('joinTeamButton');
 joinTeamButton.addEventListener('click', () => { document.location.href = 'jointeam.html'; });
 const leaveTeamButton = document.getElementById('leaveTeamButton');
-leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam());
+leaveTeamButton.addEventListener('click', () => taskbarFunctions.leaveTeam(db,uid));
 
 // Call initializers in the backend
-taskbarFunctions.checkTeams();
-taskbarFunctions.initUser(uname);
+taskbarFunctions.checkTeams(db,uid);
+taskbarFunctions.initUser(uname,db,uid);

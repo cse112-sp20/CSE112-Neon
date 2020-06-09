@@ -1,6 +1,3 @@
-const { firebaseConfig } = require('../common.js');
-// const firebase = require('firebase');
-
 
 // The emojis for each status
 const statusEmoji = {
@@ -12,11 +9,7 @@ const statusEmoji = {
   Meeting: '👥',
 };
 
-/** Initialize Firebase */
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 // User info
-const uid = localStorage.getItem('userid');
 let teamName;
 
 // Utility functions: functions exported to be called externally
@@ -36,13 +29,14 @@ function onStatusChange(name, status) {
     setTimeout(() => {
       statusElem.classList.remove('hide');
     }, 500);
+    
   }
 }
 
 /**
  * Remove the user from the current team in the datbase and redirect to the main UI.
  */
-function leaveTeam() {
+function leaveTeam(db,uid) {
   // Attempt to remove the status document from the corresponding user in the team document
   db.collection('teams').doc(teamName).collection(uid).doc('status')
     .delete()
@@ -122,7 +116,7 @@ function addTeamMember(name, status) {
  * Adds a listener to the status of the given user with id
  * @param {*} id: user's id
  */
-function addStatusListener(id) {
+function addStatusListener(id,db) {
   db.collection('users').doc(id)
     .onSnapshot((doc) => {
       const displayName = doc.get('displayName');
@@ -135,7 +129,7 @@ function addStatusListener(id) {
 /**
  * Checks value of thermometer and updates ui
  */
-function checkThermometer() {
+function checkThermometer(db) {
   const thermometer = document.getElementById('thermometer');
   // Checking lastTime was reset
   db.collection('thermometers').doc(teamName)
@@ -163,7 +157,7 @@ function checkThermometer() {
 /**
  * Get the team members, and add listeners to their status change
  */
-function getTeam() {
+function getTeam(db) {
   db.collection('users').where('team', '==', teamName).get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
@@ -183,7 +177,7 @@ function getTeam() {
 /**
  * Check if the user has checked in in the team.
  */
-function checkStatus() {
+function checkStatus(db,uid) {
   const flowDiv = document.getElementById('flowDiv');
   const teamExistsDiv = document.getElementById('teamExistsDiv');
   const startFlowButton = document.getElementById('startFlowButton');
@@ -214,7 +208,7 @@ function checkStatus() {
  * if the user is present, this will simply updates its status to online
  * @param {string} uname: username of the user
  */
-function initUser(uname) {
+function initUser(uname,db,uid) {
   const ref = db.collection('users').doc(uid);
   ref.get().then((doc) => {
     if (doc.exists) {
@@ -235,7 +229,7 @@ function initUser(uname) {
  * Check if the user is already in a team.
  * If so, join the team automatically
  */
-function checkTeams() {
+function checkTeams(db,uid) {
   db.collection('teams').where(uid, '==', true).get()
     .then((querySnapshot) => {
       // console.log(querySnapshot.docs)
@@ -272,4 +266,5 @@ module.exports = {
   initUser,
   checkTeams,
   leaveTeam,
+  addTeamMember,
 };
