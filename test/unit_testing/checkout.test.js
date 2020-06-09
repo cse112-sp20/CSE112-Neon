@@ -27,7 +27,7 @@ fs.readFile(`${__dirname}/../../app/checkout.html`, 'utf8', async (err, data) =>
 
     module.createGoalList("task1", 1);
     module.setListener(1);
-    module.setColor('completedBtn', 'yellow', 1);
+    module.setColor('completedBtn', '#7FFF00', 1);
 
     var completedBtn1 = document.getElementById('completedBtn1');
     var task1 = document.getElementById('task1');
@@ -54,7 +54,7 @@ fs.readFile(`${__dirname}/../../app/checkout.html`, 'utf8', async (err, data) =>
                 expect(setColorSpy.calledOnce).to.equal(true);
             });
             it('setColor is called with correct arguments', () => {
-                expect(setColorSpy.calledWith('completedBtn', 'yellow', 1)).to.equal(true);
+                expect(setColorSpy.calledWith('completedBtn', '#7FFF00', 1)).to.equal(true);
             });
             it('setColor sets the correct color for a button', () => {
                 const before = completedBtn1.style.backgroundColor;
