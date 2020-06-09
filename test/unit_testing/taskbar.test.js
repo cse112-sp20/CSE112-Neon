@@ -69,6 +69,41 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
           assert.equal(statusElem.innerHTML, '😴');
         }, 500);
       });
+    });  
+    describe('#initTaskbar create user', () => {
+      initTaskbarSpy = sinon.spy(module, 'initTaskbar');
+      module.initTaskbar('testing', uid, firestore);
+      it('initTaskbar is called with correct param', () => {
+        expect(initTaskbarSpy.calledWith('testing', uid, firestore)).to.equal(true);
+      });
+      it('should create a new user profile', () => {
+        firestore.collection('users').doc(uid).get().then((doc) => {
+          expect(doc.exists).to.equal(true);
+          let data = doc.data();
+          expect(data['displayName']).to.equal('testing');
+          expect(data['userStatus']).to.equal('Online');
+        });
+      });
+    });
+    describe('#initTaskbar update user', () => {
+      before( () => {
+        firestore.collection('users').doc(uid).set({
+          displayName: 'testing',
+          userStatus: 'Offline',
+        });
+      });
+      it('initTaskbar is called with correct param', () => {
+        expect(initTaskbarSpy.calledWith('testing', uid, firestore)).to.equal(true);
+      });
+      it('should update the current user profile', () => {
+        module.initTaskbar('testing', uid, firestore);
+        firestore.collection('users').doc(uid).get().then((doc) => {
+          expect(doc.exists).to.equal(true);
+          let data = doc.data();
+          expect(data['displayName']).to.equal('testing');
+          expect(data['userStatus']).to.equal('Online');
+        });
+      });
     });
   });
 });
