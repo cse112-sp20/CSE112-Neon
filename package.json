@@ -75,6 +75,7 @@
   "firebase-server": "^1.1.0",
   "husky": "^4.2.5",
   "mocha": "^7.1.2",
+  "mock-cloud-firestore": "^0.12.0",
   "nyc": "^15.0.1",
   "spectron": "^10.0.1"
  },
