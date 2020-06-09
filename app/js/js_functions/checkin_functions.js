@@ -6,19 +6,19 @@ const { dialog } = require('electron');
  */
 
 function getTeamNameDb(db, uid) {
-    return db.collection('teams').where(uid, '==', true).get();
+  return db.collection('teams').where(uid, '==', true).get();
 }
 
 function getTeamName(db, uid) {
   const getTN = function tn(resolve) {
-      var thing = getTeamNameDb(db, uid);
-      thing.then((querySnapshot) => {
-        if (querySnapshot.docs.length > 0) {
-          querySnapshot.forEach((doc) => {
-            resolve(doc.id);
-          });
-        }
-      });
+    const thing = getTeamNameDb(db, uid);
+    thing.then((querySnapshot) => {
+      if (querySnapshot.docs.length > 0) {
+        querySnapshot.forEach((doc) => {
+          resolve(doc.id);
+        });
+      }
+    });
   };
   return new Promise(getTN);
 }
@@ -56,19 +56,19 @@ function checkTeams(db, uid) {
  */
 function addTask(parent, text) {
   const task = `
-          <li>
-              <input style="display: inline-block;" value = "${text}">
-              <button class="bt">Add</button>
-              <button class="bt">Delete</button>
-          </li>`;
+    <li>
+        <input style="display: inline-block;" value = "${text}">
+        <button class="bt">Add</button>
+        <button class="bt">Delete</button>
+    </li>`;
   parent.insertAdjacentHTML('beforeend', task);
 }
 
 function checkPrevTaskDb(db, teamName, uid) {
-    return db.collection('teams')
-        .doc(teamName)
-        .collection(uid).doc('status')
-        .get();
+  return db.collection('teams')
+    .doc(teamName)
+    .collection(uid).doc('status')
+    .get();
 }
 
 /**
@@ -104,8 +104,8 @@ function checkPrevTask(db, uid) {
 }
 
 function startFlowDb(db, teamName, uid, obj) {
-    return db.collection('teams').doc(teamName).collection(uid).doc('status')
-        .set(obj);
+  return db.collection('teams').doc(teamName).collection(uid).doc('status')
+    .set(obj);
 }
 
 /**
@@ -139,5 +139,5 @@ function startFlow(db, uid, task1, task2, task3) {
 }
 
 module.exports = {
-  checkTeams, checkPrevTask, startFlow, addTask, getTeamName, getTeamNameDb
+  checkTeams, checkPrevTask, startFlow, addTask, getTeamName, getTeamNameDb,
 };

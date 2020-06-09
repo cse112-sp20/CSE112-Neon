@@ -50,6 +50,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         assert.notEqual(statusElem, null);
         assert.equal(statusElem.innerHTML, '😀');
       });
+      it('addTeamMember creates the correct memberList', () => {
+        expect(nameList.childElementCount).to.equal(1);
+      });
     });
     
     statusSpy = sinon.spy(module, 'onStatusChange');
