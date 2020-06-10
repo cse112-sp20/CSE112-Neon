@@ -1,4 +1,4 @@
-const { dialog } = require('electron');
+const dialog = require('electron');
 /**
  * return the user's teamname
  * @param {*} db
@@ -43,6 +43,7 @@ function checkTeams(db, uid) {
   getTeamName(db, uid)
     .then()
     .catch(failGetTeamName);
+  return 'Get';
 }
 
 /**
@@ -66,66 +67,74 @@ function addTask(parent, text) {
  * @param {string} uid
  */
 function checkPrevTask(db, uid) {
-  getTeamName(db, uid)
-    .then((teamName) => {
-      db.collection('teams')
-        .doc(teamName)
-        .collection(uid).doc('status')
-        .get()
-        .then((status) => {
-          const statusObj = status.data();
-          const ptDiv = document.getElementById('prevTask');
-          console.log(statusObj.task1);
-          if (statusObj.task1 !== '' || statusObj.task2 !== '' || statusObj.task3 !== '') {
-            ptDiv.style.display = 'block';
-          }
-          if (statusObj.task1 !== '') {
-            addTask(ptDiv, statusObj.task1);
-          }
-          if (statusObj.task2 !== '') {
-            addTask(ptDiv, statusObj.task2);
-          }
-          if (statusObj.task3 !== '') {
-            addTask(ptDiv, statusObj.task3);
-          }
-        })
-        .catch((error) => {
-          console.log('Error checking prev tasks', error);
-        });
-    });
+  const getPrevTask = function pT(resolve) {
+    getTeamName(db, uid)
+      .then((teamName) => {
+        db.collection('teams')
+          .doc(teamName)
+          .collection(uid).doc('status')
+          .get()
+          .then((status) => {
+            const statusObj = status.data();
+            const ptDiv = document.getElementById('prevTask');
+            console.log(statusObj.task1);
+            if (statusObj.task1 !== '' || statusObj.task2 !== '' || statusObj.task3 !== '') {
+              ptDiv.style.display = 'block';
+            }
+            if (statusObj.task1 !== '') {
+              addTask(ptDiv, statusObj.task1);
+            }
+            if (statusObj.task2 !== '') {
+              addTask(ptDiv, statusObj.task2);
+            }
+            if (statusObj.task3 !== '') {
+              addTask(ptDiv, statusObj.task3);
+            }
+            resolve(statusObj);
+          })
+          .catch((error) => {
+            console.log('Error checking prev tasks', error);
+          });
+      });
+  };
+  return new Promise(getPrevTask);
 }
 
 /**
  * TODO
  */
 function startFlow(db, uid, task1, task2, task3) {
-  getTeamName(db, uid)
-    .then((teamName) => {
-      const obj = {
-        checkedIn: true,
-        task1: task1.value,
-        task2: task2.value,
-        task3: task3.value,
-        taskStatus: 1,
-      };
-      db.collection('teams').doc(teamName).collection(uid).doc('status')
-        .set(obj)
-        .then(() => {
-          console.log('Document written');
-          document.location.href = 'taskbar.html';
-        })
-        .catch((error) => {
-          dialog.showMessageBox({
-            type: 'error',
-            title: 'Error',
-            message: error.message,
+  const startFlowFunc = function sF(resolve) {
+    getTeamName(db, uid)
+      .then((teamName) => {
+        const obj = {
+          checkedIn: true,
+          task1: task1.value,
+          task2: task2.value,
+          task3: task3.value,
+          taskStatus: 1,
+        };
+        db.collection('teams').doc(teamName).collection(uid).doc('status')
+          .set(obj)
+          .then(() => {
+            console.log('Document written');
+            document.location.href = 'taskbar.html';
+          })
+          .catch((error) => {
+            dialog.showMessageBox({
+              type: 'error',
+              title: 'Error',
+              message: error.message,
+            });
+            console.error('Error adding document: ', error);
+            document.location.href = 'taskbar.html';
           });
-          console.error('Error adding document: ', error);
-          document.location.href = 'taskbar.html';
-        });
-    });
+        resolve(obj);
+      });
+  };
+  return new Promise(startFlowFunc);
 }
 
 module.exports = {
-  checkTeams, checkPrevTask, startFlow, addTask,
+  checkTeams, checkPrevTask, startFlow, addTask, getTeamName, failGetTeamName, dialog,
 };
