@@ -3,6 +3,7 @@ const assert = require('assert')
 const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
 const path = require('path')
 
+const load_time = 1200;
 const sleep = time => new Promise(r => setTimeout(r, time));
 
 describe('Integration Testing will now start!', async function(){
@@ -16,10 +17,9 @@ describe('Integration Testing will now start!', async function(){
           args: [path.join(__dirname, '../..')]
         });
         await this.app.start();
-        await sleep(2000);
+        await sleep(load_time);
         await this.app.client.click('#signInBtnFake');
-        //await this.app.client.waitUntilWindowLoaded(10000);
-        await sleep(2000);
+        await sleep(load_time);
       } catch(e) {
         throw new Error("Spectron random error, please try again");
       }
@@ -29,33 +29,26 @@ describe('Integration Testing will now start!', async function(){
       }
     })
     after(async function () {
+      await sleep(load_time);
       await this.app.stop();
     })
 
     it('tests joinTeam cancel', async function () {
-      //await this.app.client.click('#signInBtnFake');
-      //await this.app.client.waitUntilWindowLoaded(10000);
-      await sleep(2000);
+      await sleep(load_time);
       await this.app.client.click('#joinTeamButton');
-      //await this.app.client.waitUntilWindowLoaded(10000);
-      await sleep(2000);
+      await sleep(load_time);
       await this.app.client.setValue('#teamName', 'testTeam');
       await this.app.client.click('#cancelBtn');
-      //await this.app.client.waitUntilWindowLoaded(10000);
-      await sleep(2000);
+      await sleep(load_time);
     })
 
     it('tests joinTeam join', async function () {
-      //await this.app.client.click('#signInBtnFake');
-      //await this.app.client.waitUntilWindowLoaded(10000);
-      await sleep(2000);
+      await sleep(load_time);
       await this.app.client.click('#joinTeamButton');
-      //await this.app.client.waitUntilWindowLoaded(10000);
-      await sleep(2000);
+      await sleep(load_time);
       await this.app.client.setValue('#teamName', 'testTeam');
       await this.app.client.click('#joinBtn');
-      //await this.app.client.waitUntilWindowLoaded(10000);
-      await sleep(2000);
+      await sleep(load_time);
     })
   });
 
