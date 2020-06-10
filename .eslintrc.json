@@ -16,6 +16,8 @@
     },
     "rules": {
 	  "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+	  "import/no-unresolved": "off",
+	  "prefer-rest-params": "off",
 	  "no-console": 0
     }
 }

@@ -20,9 +20,9 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
   global.document = dom.window.document;
 
   document.getElementById('Task1').value = 'This Test Better Work!';
-  checkstub = sinon.stub(module, 'startFlow');
+  const checkstub = sinon.stub(module, 'startFlow');
   checkstub();
-  addSpy = sinon.spy(module, 'addTask');
+  const addSpy = sinon.spy(module, 'addTask');
   ptDiv = document.getElementById('prevTask');
   module.addTask(ptDiv, 'This is a test for addTask');
   describe('#checkin_functions', () => {
@@ -40,10 +40,10 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
         expect(before_html).to.not.equal(after_html);
       });
     });
+    const spyCurr = sinon.spy(module, 'getTeamName');
     describe('#getTeamName', () => {
     	it('getTeamName is called exactly once', () => {
-    	    var spyCurr = sinon.spy(module, 'getTeamName');
-            module.getTeamName(firestore, uid[0]);
+            module.getTeamName(firestore, uid);
             expect(spyCurr.calledOnce).to.equal(true);
 		});
 	});
