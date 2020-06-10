@@ -10,7 +10,6 @@ const statusEmoji = {
   Meeting: '👥',
 };
 
-let loadingThermometer = false;
 // User info
 let teamName;
 
@@ -140,7 +139,7 @@ function playAudio() {
 /**
  * Checks value of thermometer and updates ui
  */
-function checkThermometer(db) {
+function checkThermometer(db, loadingThermometer) {
   const thermometer = document.getElementById('thermometer');
   // Checking lastTime was reset
   db.collection('thermometers').doc(teamName)
@@ -265,8 +264,7 @@ function checkTeams(db, uid) {
         teamExistsDiv.style.display = 'block';
         const h2 = document.getElementById('teamName');
         h2.innerHTML = teamName;
-        loadingThermometer = true;
-        checkThermometer(db);
+        checkThermometer(db, true);
         getTeam(db);
       } else {
         const teamNoneDiv = document.getElementById('teamNoneDiv');
