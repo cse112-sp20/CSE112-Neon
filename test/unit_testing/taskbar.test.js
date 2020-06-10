@@ -39,7 +39,8 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       statusSpy = sinon.spy(module, 'onStatusChange');
       initTaskbarSpy = sinon.spy(module, 'initTaskbar');
       checkStatusSpy = sinon.spy(module, 'checkStatus');
-
+      checkTeamsSpy  = sinon.spy(module, 'checkTeams');
+      checkThermometerSpy = sinon.spy(module, 'checkThermometer');
     });
     describe('#addTeamMember', function() {
       let statusList;
@@ -137,7 +138,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       let endFlowButton;
       before( () => {
         firestore.collection('teams').doc(team).collection(uid).doc('status').set({
-          checkedIn : true, task1 : "", task2 : "", task3 : "",
+          checkedIn : true, task1 : "", task2 : "", task3 : "", taskStatus: 0,
         });
         module.checkStatus(firestore, uid, team);
         startFlowButton = document.getElementById('startFlowButton');
@@ -153,6 +154,40 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         expect(endFlowButton.style.display).to.equal('block');
       });
     });
-
+    describe('#checkTeams exists', () => {
+      let teamExistsDiv;
+      let teamDiv;
+      before( () => {
+        firestore.collection('teams').doc(team).set({
+          'odkSxashOmg9QeyRL2cRs00Jke12': true,
+        });
+        firestore.collection('thermometers').doc(team).set({
+          'progress': 0,
+        });
+        module.checkTeams(firestore, uid);
+        teamExistsDiv = document.getElementById('teamExistsDiv');
+        teamDiv = document.getElementById('teamName');
+      });
+      it('checkTeams is called with correct param', () => {
+        expect(checkTeamsSpy.calledWith(firestore, uid)).to.equal(true);
+      });
+      it('team name should appear on UI', () => {
+        expect(teamExistsDiv.style.display).to.equal('block');
+        expect(teamDiv.innerHTML).to.equal(team);
+      });
+    });
+    describe('#checkTeams not exists', () => {
+      let teamNoneDiv;
+      before( () => {
+        module.checkTeams(firestore, "non-exist-uid");
+        teamNoneDiv = document.getElementById('teamNoneDiv');
+      });
+      it('checkTeams is called with correct param', () => {
+        expect(checkTeamsSpy.calledWith(firestore, uid)).to.equal(true);
+      });
+      it('team-none should appear on UI', () => {
+        expect(teamNoneDiv.style.display).to.equal('block');
+      });
+    });
   });
 });
