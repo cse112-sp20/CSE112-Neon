@@ -1,10 +1,10 @@
-var module = require('../../app/js/js_functions/checkout_functions.js');
 const sinon = require('sinon');
 const fs = require('fs');
 const { expect } = require('chai');
-const jsdom = require('jsdom');
+const { JSDOM } = require('jsdom');
 
-const { JSDOM } = jsdom;
+var module = require('../../app/js/js_functions/checkout_functions.js');
+
 /** Import and use firestore mock **/
 const MockFirebase = require('mock-cloud-firestore');
 const firebase = new MockFirebase();

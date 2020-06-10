@@ -136,5 +136,6 @@ function startFlow(db, uid, task1, task2, task3) {
 }
 
 module.exports = {
+
   checkTeams, checkPrevTask, startFlow, addTask, getTeamName, failGetTeamName, dialog,
 };

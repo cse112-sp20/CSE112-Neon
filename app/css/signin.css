@@ -43,4 +43,14 @@ ul.list li input[type="button"]{
     border-radius: 15px;
     padding-right: 20px;
 }
+#signInBtnFake{
+    background: transparent;
+    border: none !important;
+    font-size:0;
+    height:1px;
+    width:1px;
+    border-radius: 0px;
+    padding-right: 0px;
+    padding: 0px 0px;
+}
   
