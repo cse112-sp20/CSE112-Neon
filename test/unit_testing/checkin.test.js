@@ -2,8 +2,9 @@ const sinon = require('sinon');
 const fs = require('fs');
 const { expect } = require('chai');
 const LocalStorageMock = require('./testing_modules/localStorageMock');
-var module = require('../../app/js/js_functions/checkin_functions');
+const { firebase, firestore, uid } = require('./testing_modules/firebaseMock');
 
+var module = require('../../app/js/js_functions/checkin_functions');
 const {
   startFlow, addTask, checkPrevTask, checkTeams, getTeamName, getTeamNameDb
 } = module;
@@ -11,14 +12,6 @@ let html;
 const jsdom = require('jsdom');
 
 const { JSDOM } = jsdom;
-
-/** Import and use firestore mock **/
-//const { dialog } = require('electron')
-const MockFirebase = require('mock-cloud-firestore');
-const firebase = new MockFirebase();
-const firestore = firebase.firestore();
-const uid = 'odkSxashOmg9QeyRL2cRs00Jke12';
-
 
 
 fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => {
@@ -48,14 +41,9 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
       });
     });
     describe('#getTeamName', () => {
-        before( () =>
-         {
-           firestore.collection('teams').doc('Neon').collection(uid).doc('status')
-               .set({checkedIn : "false", task1 : "Test Task", task2 : "", task3 : "", taskStatus1 : 1  });
-         });
     	it('getTeamName is called exactly once', () => {
     	    var spyCurr = sinon.spy(module, 'getTeamName');
-            module.getTeamName(firestore, uid);
+            module.getTeamName(firestore, uid[0]);
             expect(spyCurr.calledOnce).to.equal(true);
 		});
 	});

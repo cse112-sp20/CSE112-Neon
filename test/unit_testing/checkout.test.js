@@ -1,11 +1,13 @@
-var module = require('../../app/js/js_functions/checkout_functions.js');
 const sinon = require('sinon');
 const fs = require('fs');
 const { expect } = require('chai');
-const jsdom = require('jsdom');
+const { JSDOM } = require('jsdom');
 
-const { JSDOM } = jsdom;
-const uid = 'OwkxFmv1k7OnibEQswl8lmNYGPh2';
+var module = require('../../app/js/js_functions/checkout_functions.js');
+const {
+    setColor, setListener, createGoalList, cancel,
+} = module;
+
 
 let html;
 let dom;
@@ -15,10 +17,6 @@ let setListenerSpy;
 let cancelStub;
 let task1;
 let completedBtn1;
-
-const {
-    setColor, setListener, createGoalList, cancel,
-} = module;
 
 
 fs.readFile(`${__dirname}/../../app/checkout.html`, 'utf8', async (err, data) => {
