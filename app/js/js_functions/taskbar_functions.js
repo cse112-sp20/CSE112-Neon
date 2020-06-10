@@ -200,9 +200,9 @@ function checkStatus(db, uid) {
   const teamExistsDiv = document.getElementById('teamExistsDiv');
   const startFlowButton = document.getElementById('startFlowButton');
   const endFlowButton = document.getElementById('endFlowButton');
-
   flowDiv.style.display = 'block';
   teamExistsDiv.style.display = 'block';
+
   console.log(teamName);
   const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
   docRef.get()
@@ -259,14 +259,14 @@ function checkTeams(db, uid) {
           // console.log(doc.id, " => ", doc.data());
           // console.log("Team name: ", doc.id)
           teamName = doc.id;
-          checkStatus();
+          checkStatus(db, uid);
         });
         const teamExistsDiv = document.getElementById('teamExistsDiv');
         teamExistsDiv.style.display = 'block';
         const h2 = document.getElementById('teamName');
         h2.innerHTML = teamName;
         loadingThermometer = true;
-        checkThermometer();
+        checkThermometer(db);
         getTeam();
       } else {
         const teamNoneDiv = document.getElementById('teamNoneDiv');
@@ -283,10 +283,14 @@ function checkTeams(db, uid) {
 
 // Export utility functions and init functions
 module.exports = {
-  logout,
   onStatusChange,
+  leaveTeam,
+  logout,
   addTeamMember,
+  addStatusListener,
+  checkThermometer,
+  getTeam,
+  checkStatus,
   initTaskbar,
   checkTeams,
-  leaveTeam,
 };
