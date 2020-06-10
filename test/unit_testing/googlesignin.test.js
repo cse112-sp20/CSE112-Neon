@@ -1,1 +1,0 @@
-var module = require('../../app/js/js_functions/googlesignin_functions.js');

@@ -1,5 +1,5 @@
 const { firebaseConfig } = require('./js/common.js');
-const createteam_functions = require('./js/js_functions/createteam_functions.js');
+const createTeamFunctions = require('./js/js_functions/createteam_functions.js');
 
 /* global firebase */
 
@@ -13,7 +13,7 @@ const joinTeamButton = document.getElementById('createBtn');
 /**
  * Creates a new team and creates a new thermometer for a given teamname
  */
-joinTeamButton.addEventListener('click', () => createteam_functions.createTeam(uid, db));
+joinTeamButton.addEventListener('click', () => createTeamFunctions.createTeam(uid, db));
 
 const cancelButton = document.getElementById('cancelBtn');
-cancelButton.addEventListener('click', () => createteam_functions.cancel());
+cancelButton.addEventListener('click', () => createTeamFunctions.cancel());

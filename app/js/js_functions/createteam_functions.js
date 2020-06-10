@@ -2,12 +2,12 @@
  * Creates a new team and creates a new thermometer for a given teamname
  * @param {string} uid: user ID
  * @param {*}       db: database reference
- */ 
-function createTeam(uid, db){
+ */
+function createTeam(uid, db) {
   console.log('Clicked');
   const teamName = document.getElementById('teamName').value;
   console.log(teamName);
-  db.collection('users').doc(uid).update({ 'team': teamName });
+  db.collection('users').doc(uid).update({ team: teamName });
   const obj = {};
   obj[uid] = true;
   db.collection('teams').doc(teamName).set(obj)
