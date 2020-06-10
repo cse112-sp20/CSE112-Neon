@@ -140,13 +140,14 @@ function playAudio() {
  * Checks value of thermometer and updates ui
  */
 function checkThermometer(db, loadingThermometer) {
+  let loadingThermometerCheck = loadingThermometer;
   const thermometer = document.getElementById('thermometer');
   // Checking lastTime was reset
   db.collection('thermometers').doc(teamName)
     .onSnapshot((doc) => {
-      if (loadingThermometer) {
+      if (loadingThermometerCheck) {
         console.log('Loading thermometer');
-        loadingThermometer = false;
+        loadingThermometerCheck = false;
       } else {
         console.log('New update');
         playAudio();
