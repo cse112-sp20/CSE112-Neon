@@ -10,7 +10,6 @@ const statusEmoji = {
   Meeting: '👥',
 };
 
-let loadingThermometer = false;
 // User info
 let teamName;
 
@@ -140,14 +139,15 @@ function playAudio() {
 /**
  * Checks value of thermometer and updates ui
  */
-function checkThermometer(db) {
+function checkThermometer(db, loadingThermometer) {
+  let loadingThermometerCheck = loadingThermometer;
   const thermometer = document.getElementById('thermometer');
   // Checking lastTime was reset
   db.collection('thermometers').doc(teamName)
     .onSnapshot((doc) => {
-      if (loadingThermometer) {
+      if (loadingThermometerCheck) {
         console.log('Loading thermometer');
-        loadingThermometer = false;
+        loadingThermometerCheck = false;
       } else {
         console.log('New update');
         playAudio();
@@ -175,8 +175,8 @@ function checkThermometer(db) {
 /**
  * Get the team members, and add listeners to their status change
  */
-function getTeam(db) {
-  db.collection('users').where('team', '==', teamName).get()
+function getTeam(db, teamNameVal) {
+  db.collection('users').where('team', '==', teamNameVal).get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         // console.log(doc.id, " => ", doc.data());
@@ -265,9 +265,8 @@ function checkTeams(db, uid) {
         teamExistsDiv.style.display = 'block';
         const h2 = document.getElementById('teamName');
         h2.innerHTML = teamName;
-        loadingThermometer = true;
-        checkThermometer(db);
-        getTeam(db);
+        checkThermometer(db, true);
+        getTeam(db, teamName);
       } else {
         const teamNoneDiv = document.getElementById('teamNoneDiv');
         teamNoneDiv.style.display = 'block';
