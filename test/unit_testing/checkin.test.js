@@ -5,7 +5,7 @@ const LocalStorageMock = require('./testing_modules/localStorageMock');
 var module = require('../../app/js/js_functions/checkin_functions');
 
 const {
-  startFlow, addTask, checkPrevTask, checkTeams, getTeamName,failGetTeamName
+  startFlow, addTask, checkPrevTask, checkTeams, getTeamName,failGetTeamName,dialog
 } = module;
 let html;
 const jsdom = require('jsdom');
@@ -13,7 +13,6 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
 /** Import and use firestore mock **/
-//const { dialog } = require('electron')
 const MockFirebase = require('mock-cloud-firestore');
 const firebase = new MockFirebase();
 const firestore = firebase.firestore();
@@ -140,12 +139,15 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
         expect(startFlowSpy.calledWith(firestore, uid,'a','b','c')).to.equal(true);
       }); 
       it('startFlow starts the flow with correct tasks', () => {
-        firestore.collection('teams').doc('Neon').collection(uid).doc('status')
-        .get().then((res) => {
-          let data = res.data();
-          expect(data.task1).to.equal('a');
-          expect(data.task2).to.equal('b');
-          expect(data.task3).to.equal('c');
+        startFlow(firestore,uid,'a','b','c')
+        .then((obj) => {
+          firestore.collection('teams').doc('Neon').collection(uid).doc('status')
+          .get().then((res) => {
+            let data = res.data();
+            expect(data.task1).to.equal('a');
+            expect(data.task2).to.equal('b');
+            expect(data.task3).to.equal('c');
+          });
         });
       });
     });

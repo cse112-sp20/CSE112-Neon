@@ -1,4 +1,4 @@
-//const dialog  = require('electron').remote.dialog;
+const dialog = require('electron');
 /**
  * return the user's teamname
  * @param {*} db
@@ -26,7 +26,6 @@ function getTeamName(db, uid) {
  */
 function failGetTeamName() {
   const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
-  const { dialog } = require('electron').remote.dialog;
   dialog.showMessageBox({
     type: 'error',
     title: 'Error',
@@ -68,7 +67,7 @@ function addTask(parent, text) {
  * @param {string} uid
  */
 function checkPrevTask(db, uid) {
-  const getPrevTask = function pT(resolve){
+  const getPrevTask = function pT(resolve) {
     getTeamName(db, uid)
       .then((teamName) => {
         db.collection('teams')
@@ -76,7 +75,7 @@ function checkPrevTask(db, uid) {
           .collection(uid).doc('status')
           .get()
           .then((status) => {
-            var statusObj = status.data();
+            const statusObj = status.data();
             const ptDiv = document.getElementById('prevTask');
             console.log(statusObj.task1);
             if (statusObj.task1 !== '' || statusObj.task2 !== '' || statusObj.task3 !== '') {
@@ -97,43 +96,45 @@ function checkPrevTask(db, uid) {
             console.log('Error checking prev tasks', error);
           });
       });
-  }
+  };
   return new Promise(getPrevTask);
-
 }
 
 /**
  * TODO
  */
 function startFlow(db, uid, task1, task2, task3) {
-  getTeamName(db, uid)
-    .then((teamName) => {
-      const obj = {
-        checkedIn: true,
-        task1: task1.value,
-        task2: task2.value,
-        task3: task3.value,
-        taskStatus: 1,
-      };
-      db.collection('teams').doc(teamName).collection(uid).doc('status')
-        .set(obj)
-        .then(() => {
-          console.log('Document written');
-          document.location.href = 'taskbar.html';
-        })
-        .catch((error) => {
-          const { dialog } = require('electron').remote.dialog;
-          dialog.showMessageBox({
-            type: 'error',
-            title: 'Error',
-            message: error.message,
+  const startFlowFunc = function sF(resolve) {
+    getTeamName(db, uid)
+      .then((teamName) => {
+        const obj = {
+          checkedIn: true,
+          task1: task1.value,
+          task2: task2.value,
+          task3: task3.value,
+          taskStatus: 1,
+        };
+        db.collection('teams').doc(teamName).collection(uid).doc('status')
+          .set(obj)
+          .then(() => {
+            console.log('Document written');
+            document.location.href = 'taskbar.html';
+          })
+          .catch((error) => {
+            dialog.showMessageBox({
+              type: 'error',
+              title: 'Error',
+              message: error.message,
+            });
+            console.error('Error adding document: ', error);
+            document.location.href = 'taskbar.html';
           });
-          console.error('Error adding document: ', error);
-          document.location.href = 'taskbar.html';
-        });
-    });
+        resolve(obj);
+      });
+  };
+  return new Promise(startFlowFunc);
 }
 
 module.exports = {
-  checkTeams, checkPrevTask, startFlow, addTask, getTeamName, failGetTeamName,
+  checkTeams, checkPrevTask, startFlow, addTask, getTeamName, failGetTeamName,dialog
 };
