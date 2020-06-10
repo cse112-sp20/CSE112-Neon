@@ -24,7 +24,12 @@ joinTeamButton.addEventListener('click', () => {
     .then(() => {
       console.log('Document written');
       const objNew = {};
+      const newDay = new Date();
+      newDay.setHours(0);
+      newDay.setMinutes(0);
+      newDay.setSeconds(0);
       objNew.progress = 0;
+      objNew.lastEpoch = newDay.getTime();
       db.collection('thermometers').doc(teamName).set(objNew).then(() => {
         console.log(`Created new thermometer for ${teamName}`);
         document.location.href = 'taskbar.html';
