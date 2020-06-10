@@ -34,32 +34,36 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       html = data;
       const dom = new JSDOM(html);
       global.document = dom.window.document;
-
       memberSpy = sinon.spy(module, 'addTeamMember');
       statusSpy = sinon.spy(module, 'onStatusChange');
       initTaskbarSpy = sinon.spy(module, 'initTaskbar');
       checkStatusSpy = sinon.spy(module, 'checkStatus');
       checkTeamsSpy  = sinon.spy(module, 'checkTeams');
       checkThermometerSpy = sinon.spy(module, 'checkThermometer');
+      addStatusListenerSpy = sinon.spy(module, 'addStatusListener');
     });
     describe('#addTeamMember', function() {
       let statusList;
       let nameList;
       let nameElem;
       let statusElem;
-
       before( () => {
+        consoleStub = sinon.stub(console, 'log');
         module.addTeamMember(uname, 'Online');
         statusList = document.getElementById('status_list');
         nameList = document.getElementById('name_list');
         nameElem = document.getElementById('name_testing');
         statusElem = document.getElementById('status_testing');
       }); 
+      after( () => {
+        consoleStub.restore();
+        memberSpy.resetHistory();
+      });
       it('addTeamMember is called once', () => {
         expect(memberSpy.calledOnce).to.equal(true);
       });
       it('addTeamMember is called with correct param', () => {
-        expect(memberSpy.calledWith(uname, 'Online')).to.equal(true);
+        expect(memberSpy.calledWith('testing', 'Online')).to.equal(true);
       });
       it('should create a team list', () => {
         assert.notEqual(nameList, null);
@@ -77,6 +81,8 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       });
       it('addTeamMember creates the correct memberList', () => {
         expect(nameList.childElementCount).to.equal(1);
+        module.addTeamMember('testing2', 'Online');
+        expect(nameList.childElementCount).to.equal(2);
       });
     });
     describe('#onStatusChange', () => {
@@ -84,6 +90,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       before( () => {
         module.onStatusChange(uname, 'Offline');
         statusElem = document.getElementById('status_testing');
+      });
+      after( () => {
+        statusSpy.resetHistory();
       });
       it('onStatusChange is called once', () => {
         expect(statusSpy.calledOnce).to.equal(true);
@@ -100,6 +109,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
     describe('#initTaskbar create user', () => {
       before( () => {
         module.initTaskbar(uname, uid, firestore);
+      });
+      after( () => {
+        initTaskbarSpy.resetHistory();
       });
       it('initTaskbar is called with correct param', () => {
         expect(initTaskbarSpy.calledWith(uname, uid, firestore)).to.equal(true);
@@ -120,6 +132,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
           userStatus: 'Offline',
         });
         module.initTaskbar(uname, uid, firestore);
+      });
+      after( () => {
+        initTaskbarSpy.resetHistory();
       });
       it('initTaskbar is called with correct param', () => {
         expect(initTaskbarSpy.calledWith(uname, uid, firestore)).to.equal(true);
@@ -143,6 +158,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         module.checkStatus(firestore, uid, team);
         startFlowButton = document.getElementById('startFlowButton');
         endFlowButton = document.getElementById('endFlowButton');
+      });
+      after( () => {
+        checkStatusSpy.resetHistory();
       });
       it('checkStatus is called with correct param', () => {
         expect(checkStatusSpy.calledWith(firestore, uid, team)).to.equal(true);
@@ -168,6 +186,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         teamExistsDiv = document.getElementById('teamExistsDiv');
         teamDiv = document.getElementById('teamName');
       });
+      after( () => {
+        checkTeamsSpy.resetHistory();
+      });
       it('checkTeams is called with correct param', () => {
         expect(checkTeamsSpy.calledWith(firestore, uid)).to.equal(true);
       });
@@ -182,12 +203,41 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         module.checkTeams(firestore, "non-exist-uid");
         teamNoneDiv = document.getElementById('teamNoneDiv');
       });
+      after( () => {
+        checkTeamsSpy.resetHistory();
+      });
       it('checkTeams is called with correct param', () => {
-        expect(checkTeamsSpy.calledWith(firestore, uid)).to.equal(true);
+        expect(checkTeamsSpy.calledWith(firestore, "non-exist-uid")).to.equal(true);
       });
       it('team-none should appear on UI', () => {
         expect(teamNoneDiv.style.display).to.equal('block');
       });
+    });
+    describe('#addStatusListener', () => {
+      let statusElem;
+      before( () => {
+        module.addStatusListener(uid, firestore);
+        firestore.collection('users').doc(uid).set({
+          'displayName': 'testing',
+          'team': 'testing_team',
+          'userStatus': 'Researching',
+        });
+        statusElem = document.getElementById('status_testing');
+      });
+      after( () => {
+        addStatusListenerSpy.resetHistory();
+      });
+      it('addStatusListener is called with correct param', () => {
+        expect(addStatusListenerSpy.calledWith(uid, firestore)).to.equal(true);
+      });
+      /*
+      it('check UI', () => {
+        setTimeout(() => {
+          expect(statusElem.innerHTML).to.equal('👀');
+        }, 500);
+      });
+      */
+      
     });
   });
 });
