@@ -1,6 +1,7 @@
-const dialog = require('electron').remote;
+/* eslint no-shadow: ["error", { "allow": ["teamName"] }] */
+// const dialog = require('electron').remote;
 
-const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
+// const errorMessage = 'An error occurred when trying to find your team, returning to main page.';
 let teamName;
 
 
@@ -98,7 +99,7 @@ function createGoalList(goal, n) {
  * @param {*} db
  * @param {string} uid
  */
-function updateGoal(db, uid) {
+function updateGoal(db, uid, teamName) {
   let n = 1;
   const goalText = document.getElementById('goalText');
   const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
@@ -141,18 +142,13 @@ function checkTeams(uid, db) {
   db.collection('teams').where(uid, '==', true)
     .get()
     .then((querySnapshot) => {
-      console.log(querySnapshot.docs);
       if (querySnapshot.docs.length > 0) {
         querySnapshot.forEach((doc) => {
           teamName = doc.id;
           updateGoal(db, uid, teamName);
         });
       } else {
-        dialog.showMessageBox({
-          type: 'error',
-          title: 'Error',
-          message: errorMessage,
-        });
+        console.log(uid);
         console.log('Team not found');
       }
     })
@@ -164,7 +160,7 @@ function checkTeams(uid, db) {
 /**
  * After thermometer is updated Firebase db is updated with the completed statuses
  */
-function handleEndFlow(db, uid) {
+function handleEndFlow(db, uid, teamName) {
   const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
   // initialize the things to be pushed
   const obj = {
@@ -192,14 +188,8 @@ function handleEndFlow(db, uid) {
   docRef.set(obj)
     .then(() => {
       console.log('Document written');
-      document.location.href = 'taskbar.html';
     })
     .catch((error) => {
-      dialog.showMessageBox({
-        type: 'error',
-        title: 'Error',
-        message: error.message,
-      });
       console.error('Error adding document: ', error);
     });
 }
@@ -209,6 +199,7 @@ function handleEndFlow(db, uid) {
  */
 function updateThermometer(db, uid) {
   console.log(dict);
+  console.log(uid);
   const line1 = document.getElementById('h1');
   const line2 = document.getElementById('h2');
   const line3 = document.getElementById('h3');
@@ -249,11 +240,11 @@ function updateThermometer(db, uid) {
           lastEpoch: newDay.getTime(),
         }).then(() => {
           console.log('Document written');
-          handleEndFlow(db, uid);
+          // handleEndFlow(db, uid);
         })
           .catch((err) => {
             console.log(err);
-            handleEndFlow(db, uid);
+            // handleEndFlow(db, uid);
           });
       } else {
         let currProgress = querySnapshot.data().progress;
@@ -263,19 +254,20 @@ function updateThermometer(db, uid) {
           lastEpoch: querySnapshot.data().lastEpoch,
         }).then(() => {
           console.log('Document written');
-          handleEndFlow(db, uid);
+          // handleEndFlow(db, uid);
         })
           .catch((err) => {
             console.log(err);
-            handleEndFlow(db, uid);
+            // handleEndFlow(db, uid);
           });
       }
     })
     .catch((error) => {
       console.log('Error getting documents: ', error);
-      handleEndFlow(db, uid);
+      // handleEndFlow(db, uid);
     });
 }
+
 
 /**
  * Starts endflow
@@ -284,6 +276,8 @@ function updateThermometer(db, uid) {
  */
 function endFlow(db, uid) {
   updateThermometer(db, uid);
+  handleEndFlow(db, uid, teamName);
+  document.location.href = 'taskbar.html';
 }
 
 /**
@@ -292,5 +286,13 @@ function endFlow(db, uid) {
 function cancel() { document.location.href = 'taskbar.html'; }
 
 module.exports = {
-  checkTeams, createGoalList, updateGoal, endFlow, updateThermometer, cancel,
+  checkTeams,
+  createGoalList,
+  updateGoal,
+  endFlow,
+  updateThermometer,
+  cancel,
+  setColor,
+  setListener,
+  handleEndFlow,
 };

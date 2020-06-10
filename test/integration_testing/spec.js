@@ -3,45 +3,60 @@ const assert = require('assert')
 const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
 const path = require('path')
 
-describe('Application launch', function () {
-  this.timeout(10000)
+const sleep = time => new Promise(r => setTimeout(r, time));
 
-  beforeEach(function () {
-    this.app = new Application({
-      // Your electron path can be any binary
-      // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
-      // But for the sake of the example we fetch it from our node_modules.
-      path: electronPath,
+describe('Integration Testing will now start!', async function(){
+  this.timeout(1000000)
 
-      // Assuming you have the following directory structure
-
-      //  |__ my project
-      //     |__ ...
-      //     |__ main.js
-      //     |__ package.json
-      //     |__ index.html
-      //     |__ ...
-      //     |__ test
-      //        |__ spec.js  <- You are here! ~ Well you should be.
-
-      // The following line tells spectron to look and use the main.js file
-      // and the package.json located 1 level above.
-      args: [path.join(__dirname, '../..')]
+  describe('Join Team Functionality', async function(){
+    before(async function () {
+      try {
+        this.app = await new Application({
+          path: electronPath,
+          args: [path.join(__dirname, '../..')]
+        });
+        await this.app.start();
+        await sleep(2000);
+        await this.app.client.click('#signInBtnFake');
+        //await this.app.client.waitUntilWindowLoaded(10000);
+        await sleep(2000);
+      } catch(e) {
+        throw new Error("Spectron random error, please try again");
+      }
+      try {
+        await this.app.client.click('#leaveTeamButton');
+      } catch (e) {
+      }
     })
-    return this.app.start()
-  })
-
-  afterEach(function () {
-    if (this.app && this.app.isRunning()) {
-      return this.app.stop()
-    }
-  })
-
-  it('shows an initial window', function () {
-    return this.app.client.getWindowCount().then(function (count) {
-      assert.equal(count, 1)
-      // Please note that getWindowCount() will return 2 if `dev tools` are opened.
-      // assert.equal(count, 2)
+    after(async function () {
+      await this.app.stop();
     })
-  })
-})
+
+    it('tests joinTeam cancel', async function () {
+      //await this.app.client.click('#signInBtnFake');
+      //await this.app.client.waitUntilWindowLoaded(10000);
+      await sleep(2000);
+      await this.app.client.click('#joinTeamButton');
+      //await this.app.client.waitUntilWindowLoaded(10000);
+      await sleep(2000);
+      await this.app.client.setValue('#teamName', 'testTeam');
+      await this.app.client.click('#cancelBtn');
+      //await this.app.client.waitUntilWindowLoaded(10000);
+      await sleep(2000);
+    })
+
+    it('tests joinTeam join', async function () {
+      //await this.app.client.click('#signInBtnFake');
+      //await this.app.client.waitUntilWindowLoaded(10000);
+      await sleep(2000);
+      await this.app.client.click('#joinTeamButton');
+      //await this.app.client.waitUntilWindowLoaded(10000);
+      await sleep(2000);
+      await this.app.client.setValue('#teamName', 'testTeam');
+      await this.app.client.click('#joinBtn');
+      //await this.app.client.waitUntilWindowLoaded(10000);
+      await sleep(2000);
+    })
+  });
+
+});

@@ -10,10 +10,7 @@ const statusEmoji = {
   Meeting: '👥',
 };
 
-let db;
-let loadingThermometer = false;
 // User info
-const uid = localStorage.getItem('userid');
 let teamName;
 
 // Utility functions: functions exported to be called externally
@@ -39,7 +36,7 @@ function onStatusChange(name, status) {
 /**
  * Remove the user from the current team in the datbase and redirect to the main UI.
  */
-function leaveTeam() {
+function leaveTeam(db, uid) {
   // Attempt to remove the status document from the corresponding user in the team document
   db.collection('teams').doc(teamName).collection(uid).doc('status')
     .delete()
@@ -119,7 +116,7 @@ function addTeamMember(name, status) {
  * Adds a listener to the status of the given user with id
  * @param {*} id: user's id
  */
-function addStatusListener(id) {
+function addStatusListener(id, db) {
   db.collection('users').doc(id)
     .onSnapshot((doc) => {
       const displayName = doc.get('displayName');
@@ -142,14 +139,15 @@ function playAudio() {
 /**
  * Checks value of thermometer and updates ui
  */
-function checkThermometer() {
+function checkThermometer(db, loadingThermometer) {
+  let loadingThermometerCheck = loadingThermometer;
   const thermometer = document.getElementById('thermometer');
   // Checking lastTime was reset
   db.collection('thermometers').doc(teamName)
     .onSnapshot((doc) => {
-      if (loadingThermometer) {
+      if (loadingThermometerCheck) {
         console.log('Loading thermometer');
-        loadingThermometer = false;
+        loadingThermometerCheck = false;
       } else {
         console.log('New update');
         playAudio();
@@ -177,8 +175,8 @@ function checkThermometer() {
 /**
  * Get the team members, and add listeners to their status change
  */
-function getTeam() {
-  db.collection('users').where('team', '==', teamName).get()
+function getTeam(db, teamNameVal) {
+  db.collection('users').where('team', '==', teamNameVal).get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         // console.log(doc.id, " => ", doc.data());
@@ -186,7 +184,7 @@ function getTeam() {
         const displayName = doc.get('displayName');
         const status = doc.get('userStatus');
         addTeamMember(displayName, status);
-        addStatusListener(doc.id);
+        addStatusListener(doc.id, db);
       });
     })
     .catch((error) => {
@@ -197,16 +195,16 @@ function getTeam() {
 /**
  * Check if the user has checked in in the team.
  */
-function checkStatus() {
+function checkStatus(db, uid, team) {
   const flowDiv = document.getElementById('flowDiv');
   const teamExistsDiv = document.getElementById('teamExistsDiv');
   const startFlowButton = document.getElementById('startFlowButton');
   const endFlowButton = document.getElementById('endFlowButton');
-
   flowDiv.style.display = 'block';
   teamExistsDiv.style.display = 'block';
-  console.log(teamName);
-  const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
+
+  // console.log(teamName);
+  const docRef = db.collection('teams').doc(team).collection(uid).doc('status');
   docRef.get()
     .then((doc) => {
       if (doc.exists) {
@@ -226,11 +224,11 @@ function checkStatus() {
 /**
  * Create user doc if not present in firebase,
  * if the user is present, this will simply updates its status to online
- * @param {string} uname: username of the user
- * @param {*}     db_ref: Database reference
+ * @param {string}  uname: username of the user
+ * @param {*}          db: Database reference
+ * @param {*}         uid: User Id
  */
-function initTaskbar(uname, dbRef) {
-  db = dbRef;
+function initTaskbar(uname, uid, db) {
   const ref = db.collection('users').doc(uid);
   ref.get().then((doc) => {
     if (doc.exists) {
@@ -251,7 +249,7 @@ function initTaskbar(uname, dbRef) {
  * Check if the user is already in a team.
  * If so, join the team automatically
  */
-function checkTeams() {
+function checkTeams(db, uid) {
   db.collection('teams').where(uid, '==', true).get()
     .then((querySnapshot) => {
       // console.log(querySnapshot.docs)
@@ -261,15 +259,14 @@ function checkTeams() {
           // console.log(doc.id, " => ", doc.data());
           // console.log("Team name: ", doc.id)
           teamName = doc.id;
-          checkStatus();
+          checkStatus(db, uid, teamName);
         });
         const teamExistsDiv = document.getElementById('teamExistsDiv');
         teamExistsDiv.style.display = 'block';
         const h2 = document.getElementById('teamName');
         h2.innerHTML = teamName;
-        loadingThermometer = true;
-        checkThermometer();
-        getTeam();
+        checkThermometer(db, true);
+        getTeam(db, teamName);
       } else {
         const teamNoneDiv = document.getElementById('teamNoneDiv');
         teamNoneDiv.style.display = 'block';
@@ -278,16 +275,21 @@ function checkTeams() {
     })
     .catch((error) => {
       console.log(error);
-      document.location.href = 'signin.html';
+      // document.location.href = 'signin.html';
     });
 }
 
 
 // Export utility functions and init functions
 module.exports = {
-  logout,
   onStatusChange,
+  leaveTeam,
+  logout,
+  addTeamMember,
+  addStatusListener,
+  checkThermometer,
+  getTeam,
+  checkStatus,
   initTaskbar,
   checkTeams,
-  leaveTeam,
 };
