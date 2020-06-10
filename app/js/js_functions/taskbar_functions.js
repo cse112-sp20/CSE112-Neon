@@ -195,16 +195,16 @@ function getTeam(db) {
 /**
  * Check if the user has checked in in the team.
  */
-function checkStatus(db, uid) {
+function checkStatus(db, uid, team) {
   const flowDiv = document.getElementById('flowDiv');
   const teamExistsDiv = document.getElementById('teamExistsDiv');
   const startFlowButton = document.getElementById('startFlowButton');
   const endFlowButton = document.getElementById('endFlowButton');
-
   flowDiv.style.display = 'block';
   teamExistsDiv.style.display = 'block';
-  console.log(teamName);
-  const docRef = db.collection('teams').doc(teamName).collection(uid).doc('status');
+
+  // console.log(teamName);
+  const docRef = db.collection('teams').doc(team).collection(uid).doc('status');
   docRef.get()
     .then((doc) => {
       if (doc.exists) {
@@ -259,7 +259,7 @@ function checkTeams(db, uid) {
           // console.log(doc.id, " => ", doc.data());
           // console.log("Team name: ", doc.id)
           teamName = doc.id;
-          checkStatus(db, uid);
+          checkStatus(db, uid, teamName);
         });
         const teamExistsDiv = document.getElementById('teamExistsDiv');
         teamExistsDiv.style.display = 'block';
@@ -283,10 +283,14 @@ function checkTeams(db, uid) {
 
 // Export utility functions and init functions
 module.exports = {
-  logout,
   onStatusChange,
+  leaveTeam,
+  logout,
   addTeamMember,
+  addStatusListener,
+  checkThermometer,
+  getTeam,
+  checkStatus,
   initTaskbar,
   checkTeams,
-  leaveTeam,
 };
