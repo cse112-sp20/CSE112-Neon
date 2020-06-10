@@ -42,6 +42,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       checkTeamsSpy  = sinon.spy(module, 'checkTeams');
       checkThermometerSpy = sinon.spy(module, 'checkThermometer');
       leaveTeamSpy = sinon.spy(module, 'leaveTeam');
+      getTeamSpy = sinon.spy(module, 'getTeam')
     });
     describe('#addTeamMember', function() {
       let statusList;
@@ -212,6 +213,41 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       })
       it('Team is removed', () => {
         expect(teamNoneDiv.style.display).to.equal('block');
+      })
+    });
+    describe('#getTeam', () => {
+      let nameList
+      before( () => {
+        firestore.collection('users').doc('odkSxashOmg9QeyRL2cRs00Jke13').set({
+          displayName: 'testing1',
+          userStatus: 'Offline',
+          team: team
+        });
+        firestore.collection('users').doc('odkSxashOmg9QeyRL2cRs00Jke14').set({
+          displayName: 'testing2',
+          userStatus: 'Offline',
+          team: team
+        });
+        firestore.collection('users').doc('odkSxashOmg9QeyRL2cRs00Jke15').set({
+          displayName: 'testing3',
+          userStatus: 'Offline',
+          team: team
+        });
+        firestore.collection('thermometers').doc(team).set({
+          'progress': 0,
+          'lastEpoch': (new Date()).getTime()
+        });
+        module.getTeam(firestore, team);
+        nameList = document.getElementById('name_list');
+      })
+      it('getTeam is called once', () => {
+        expect(getTeamSpy.calledOnce).to.equal(true);
+      })
+      it('getTeam is called with the correct params', () => {
+        expect(getTeamSpy.calledWith(firestore, team)).to.equal(true);
+      })
+      it('getTeam gets the appropriate team members', () => {
+        expect(nameList.children.length).to.equal(4);
       })
     });
     describe('#checkThermometer', () => {

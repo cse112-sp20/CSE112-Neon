@@ -175,8 +175,8 @@ function checkThermometer(db, loadingThermometer) {
 /**
  * Get the team members, and add listeners to their status change
  */
-function getTeam(db) {
-  db.collection('users').where('team', '==', teamName).get()
+function getTeam(db, teamNameVal) {
+  db.collection('users').where('team', '==', teamNameVal).get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         // console.log(doc.id, " => ", doc.data());
@@ -266,7 +266,7 @@ function checkTeams(db, uid) {
         const h2 = document.getElementById('teamName');
         h2.innerHTML = teamName;
         checkThermometer(db, true);
-        getTeam(db);
+        getTeam(db, teamName);
       } else {
         const teamNoneDiv = document.getElementById('teamNoneDiv');
         teamNoneDiv.style.display = 'block';
