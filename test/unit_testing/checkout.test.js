@@ -4,11 +4,7 @@ const { expect } = require('chai');
 const { JSDOM } = require('jsdom');
 
 var module = require('../../app/js/js_functions/checkout_functions.js');
-const {
-    setColor, setListener, createGoalList, cancel,
-} = module;
 
-const { JSDOM } = jsdom;
 /** Import and use firestore mock **/
 const MockFirebase = require('mock-cloud-firestore');
 const firebase = new MockFirebase();

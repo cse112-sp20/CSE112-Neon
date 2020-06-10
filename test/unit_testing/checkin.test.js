@@ -2,14 +2,12 @@ const sinon = require('sinon');
 const fs = require('fs');
 const { expect } = require('chai');
 const LocalStorageMock = require('./testing_modules/localStorageMock');
-const { firebase, firestore, uid } = require('./testing_modules/firebaseMock');
-
 var module = require('../../app/js/js_functions/checkin_functions');
+
 const {
   startFlow, addTask, checkPrevTask, checkTeams, getTeamName,failGetTeamName,dialog
 } = module;
 let html;
-//let spyCurr;
 const jsdom = require('jsdom');
 
 const { JSDOM } = jsdom;
@@ -39,10 +37,10 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
       let ptDiv;
       before(() => {
         ptDiv = document.getElementById('prevTask');
-        document.getElementById('Task1').value = 'This Test Better Work!'; 
+        document.getElementById('Task1').value = 'This Test Better Work!';
         module.addTask(ptDiv, 'This is a test for addTask');
       })
-      
+
       it('addTask is called once', () => {
         expect(addSpy.calledOnce).to.equal(true);
       });
@@ -56,28 +54,28 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
         expect(before_html).to.not.equal(after_html);
       });
     });
-  
+
     describe('#getTeamName', () => {
-        before( () =>
-         {
-           firestore.collection('teams').doc('Neon').collection(uid).doc('status')
-               .set({checkedIn : "false", task1 : "Test Task", task2 : "", task3 : "", taskStatus1 : 1  });
-           module.getTeamName(firestore,uid);
-         });
-        it('getTeamName is called exactly once', () => {
-          expect(spyCurr.calledOnce).to.equal(true);
+      before( () =>
+      {
+        firestore.collection('teams').doc('Neon').collection(uid).doc('status')
+            .set({checkedIn : "false", task1 : "Test Task", task2 : "", task3 : "", taskStatus1 : 1  });
+        module.getTeamName(firestore,uid);
+      });
+      it('getTeamName is called exactly once', () => {
+        expect(spyCurr.calledOnce).to.equal(true);
+      });
+      it('getTeamName is called with correct param',() => {
+        expect(spyCurr.calledWith(firestore,uid)).to.equal(true);
+      })
+      it('getTeamName gets the team name',() => {
+        module.getTeamName(firestore,uid).then(res => {
+          expect(res).to.equal('Neon');
         });
-        it('getTeamName is called with correct param',() => {
-          expect(spyCurr.calledWith(firestore,uid)).to.equal(true);
-        })
-        it('getTeamName gets the team name',() => {
-          module.getTeamName(firestore,uid).then(res => {
-            expect(res).to.equal('Neon');
-          });
-        });
-      
+      });
+
     });
-    
+
     describe('#failGetTeamName',() => {
       before(() => {
         module.failGetTeamName();
@@ -87,13 +85,13 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
       });
       it('failGetTeamName is called with correct param',() => {
         expect(failGetTeamNameSpy.calledWith()).to.equal(true);
-      }); 
+      });
     });
 
     describe('#checkTeams',() => {
       before(() => {
         firestore.collection('teams').doc('Neon').collection(uid).doc('status')
-        .set({checkedIn : "false", task1 : "Test Task", task2 : "", task3 : "", taskStatus1 : 1  });
+            .set({checkedIn : "false", task1 : "Test Task", task2 : "", task3 : "", taskStatus1 : 1  });
         module.checkTeams(firestore,uid)
       });
       it('checkTeams is called exactly once', () => {
@@ -101,7 +99,7 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
       });
       it('checkTeams is called with correct param',() => {
         expect(checkTeamsSpy.calledWith(firestore, uid)).to.equal(true);
-      }); 
+      });
       it('check teams checks if the member is in a team or not', async() => {
         const res = await checkTeams(firestore,uid);
         expect(res).to.equal('Get');
@@ -111,7 +109,7 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
     describe('#checkPrevTask', () => {
       before(() => {
         firestore.collection('teams').doc('Neon').collection(uid).doc('status')
-        .set({checkedIn : "false", task1 : "prev1", task2 : "prev2", task3 : "", taskStatus1 : 1  });
+            .set({checkedIn : "false", task1 : "prev1", task2 : "prev2", task3 : "", taskStatus1 : 1  });
         module.checkPrevTask(firestore,uid);
       });
       it('checkPrevTask is called exactly once', () => {
@@ -125,13 +123,13 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
           expect(res.task1).to.equal("prev1");
           expect(res.task2).to.equal("prev2");
         });
-      });      
+      });
     });
 
     describe('#startFlow', () => {
       before(() => {
         firestore.collection('teams').doc('Neon').collection(uid).doc('status')
-        .set({checkedIn : "false", task1 : "prev1", task2 : "prev2", task3 : "", taskStatus1 : 1  });
+            .set({checkedIn : "false", task1 : "prev1", task2 : "prev2", task3 : "", taskStatus1 : 1  });
         module.startFlow(firestore,uid,'a','b','c');
       });
       it('startFlow is called exactly once', () => {
@@ -139,18 +137,18 @@ fs.readFile(`${__dirname}/../../app/checkin.html`, 'utf8', async (err, data) => 
       });
       it('startFlow is called with correct param',() => {
         expect(startFlowSpy.calledWith(firestore, uid,'a','b','c')).to.equal(true);
-      }); 
+      });
       it('startFlow starts the flow with correct tasks', () => {
         startFlow(firestore,uid,'a','b','c')
-        .then((obj) => {
-          firestore.collection('teams').doc('Neon').collection(uid).doc('status')
-          .get().then((res) => {
-            let data = res.data();
-            expect(data.task1).to.equal('a');
-            expect(data.task2).to.equal('b');
-            expect(data.task3).to.equal('c');
-          });
-        });
+            .then((obj) => {
+              firestore.collection('teams').doc('Neon').collection(uid).doc('status')
+                  .get().then((res) => {
+                let data = res.data();
+                expect(data.task1).to.equal('a');
+                expect(data.task2).to.equal('b');
+                expect(data.task3).to.equal('c');
+              });
+            });
       });
     });
   });
