@@ -27,7 +27,7 @@
   "test:unit": "mocha ./test/unit_testing/*.js",
   "test:unit_cov": "nyc npm run test:unit",
   "test:unit_cov_lcov": "nyc --reporter=lcov npm run test:unit",
-  "test:unit_cov_html": "nyc --reporter=html npm run test:int",
+  "test:unit_cov_html": "nyc --reporter=html npm run test:unit",
   "test:int": "mocha ./test/integration_testing/*.js",
   "test:int_cov": "nyc npm run test:int",
   "test:int_cov_lcov": "nyc --reporter=lcov npm run test:int",

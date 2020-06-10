@@ -184,7 +184,7 @@ function getTeam(db) {
         const displayName = doc.get('displayName');
         const status = doc.get('userStatus');
         addTeamMember(displayName, status);
-        addStatusListener(doc.id);
+        addStatusListener(doc.id, db);
       });
     })
     .catch((error) => {
@@ -267,7 +267,7 @@ function checkTeams(db, uid) {
         h2.innerHTML = teamName;
         loadingThermometer = true;
         checkThermometer(db);
-        getTeam();
+        getTeam(db);
       } else {
         const teamNoneDiv = document.getElementById('teamNoneDiv');
         teamNoneDiv.style.display = 'block';
@@ -276,7 +276,7 @@ function checkTeams(db, uid) {
     })
     .catch((error) => {
       console.log(error);
-      document.location.href = 'signin.html';
+      // document.location.href = 'signin.html';
     });
 }
 
