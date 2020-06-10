@@ -29,19 +29,31 @@ const team = 'testing_team';
 const uid = 'odkSxashOmg9QeyRL2cRs00Jke12';
 
 fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => {
-  html = data;
-  const dom = new JSDOM(html);
-  global.document = dom.window.document;
-
   describe('#taskbar_functions', function() {
-    memberSpy = sinon.spy(module, 'addTeamMember');
-    module.addTeamMember(uname, 'Online');
-    const statusList = document.getElementById('status_list');
-    const nameList = document.getElementById('name_list');
-    const nameElem = document.getElementById('name_testing');
-    const statusElem = document.getElementById('status_testing');
+    before( () => {
+      html = data;
+      const dom = new JSDOM(html);
+      global.document = dom.window.document;
 
+      memberSpy = sinon.spy(module, 'addTeamMember');
+      statusSpy = sinon.spy(module, 'onStatusChange');
+      initTaskbarSpy = sinon.spy(module, 'initTaskbar');
+      checkStatusSpy = sinon.spy(module, 'checkStatus');
+
+    });
     describe('#addTeamMember', function() {
+      let statusList;
+      let nameList;
+      let nameElem;
+      let statusElem;
+
+      before( () => {
+        module.addTeamMember(uname, 'Online');
+        statusList = document.getElementById('status_list');
+        nameList = document.getElementById('name_list');
+        nameElem = document.getElementById('name_testing');
+        statusElem = document.getElementById('status_testing');
+      }); 
       it('addTeamMember is called once', () => {
         expect(memberSpy.calledOnce).to.equal(true);
       });
@@ -66,10 +78,12 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         expect(nameList.childElementCount).to.equal(1);
       });
     });
-    
-    statusSpy = sinon.spy(module, 'onStatusChange');
-    module.onStatusChange(uname, 'Offline');
     describe('#onStatusChange', () => {
+      let statusElem;
+      before( () => {
+        module.onStatusChange(uname, 'Offline');
+        statusElem = document.getElementById('status_testing');
+      });
       it('onStatusChange is called once', () => {
         expect(statusSpy.calledOnce).to.equal(true);
       });
@@ -83,8 +97,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       });
     });  
     describe('#initTaskbar create user', () => {
-      initTaskbarSpy = sinon.spy(module, 'initTaskbar');
-      module.initTaskbar(uname, uid, firestore);
+      before( () => {
+        module.initTaskbar(uname, uid, firestore);
+      });
       it('initTaskbar is called with correct param', () => {
         expect(initTaskbarSpy.calledWith(uname, uid, firestore)).to.equal(true);
       });
@@ -103,9 +118,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
           displayName: 'testing',
           userStatus: 'Offline',
         });
+        module.initTaskbar(uname, uid, firestore);
       });
       it('initTaskbar is called with correct param', () => {
-        module.initTaskbar(uname, uid, firestore);
         expect(initTaskbarSpy.calledWith(uname, uid, firestore)).to.equal(true);
       });
       it('should update the current user profile', () => {
@@ -118,19 +133,20 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       });
     });
     describe('#checkStatus', () => {
-      checkStatusSpy = sinon.spy(module, 'checkStatus');
+      let startFlowButton;
+      let endFlowButton;
       before( () => {
         firestore.collection('teams').doc(team).collection(uid).doc('status').set({
           checkedIn : true, task1 : "", task2 : "", task3 : "",
         });
+        module.checkStatus(firestore, uid, team);
+        startFlowButton = document.getElementById('startFlowButton');
+        endFlowButton = document.getElementById('endFlowButton');
       });
       it('checkStatus is called with correct param', () => {
-        module.checkStatus(firestore, uid);
-        expect(checkStatusSpy.calledWith(firestore, uid)).to.equal(true);
+        expect(checkStatusSpy.calledWith(firestore, uid, team)).to.equal(true);
       });
       it('should update the style of buttons when checked in', () =>{
-        const startFlowButton = document.getElementById('startFlowButton');
-        const endFlowButton = document.getElementById('endFlowButton');
         expect(startFlowButton).to.not.equal(null);
         expect(endFlowButton).to.not.equal(null);
         expect(startFlowButton.style.display).to.equal('none');
