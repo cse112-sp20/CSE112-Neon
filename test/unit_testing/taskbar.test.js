@@ -41,7 +41,11 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       checkStatusSpy = sinon.spy(module, 'checkStatus');
       checkTeamsSpy  = sinon.spy(module, 'checkTeams');
       checkThermometerSpy = sinon.spy(module, 'checkThermometer');
+      leaveTeamSpy = sinon.spy(module, 'leaveTeam');
+      getTeamSpy = sinon.spy(module, 'getTeam');
+      statusListenerSpy = sinon.spy(module, 'addStatusListener');
     });
+
     describe('#addTeamMember', function() {
       let statusList;
       let nameList;
@@ -79,6 +83,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         expect(nameList.childElementCount).to.equal(1);
       });
     });
+
     describe('#onStatusChange', () => {
       let statusElem;
       before( () => {
@@ -97,6 +102,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         }, 500);
       });
     });  
+
     describe('#initTaskbar create user', () => {
       before( () => {
         module.initTaskbar(uname, uid, firestore);
@@ -113,6 +119,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         });
       });
     });
+
     describe('#initTaskbar update user', () => {
       before( () => {
         firestore.collection('users').doc(uid).set({
@@ -133,6 +140,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         });
       });
     });
+
     describe('#checkStatus', () => {
       let startFlowButton;
       let endFlowButton;
@@ -154,6 +162,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         expect(endFlowButton.style.display).to.equal('block');
       });
     });
+
     describe('#checkTeams exists', () => {
       let teamExistsDiv;
       let teamDiv;
@@ -176,6 +185,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         expect(teamDiv.innerHTML).to.equal(team);
       });
     });
+
     describe('#checkTeams not exists', () => {
       let teamNoneDiv;
       before( () => {
@@ -187,6 +197,119 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
       });
       it('team-none should appear on UI', () => {
         expect(teamNoneDiv.style.display).to.equal('block');
+      });
+    });
+
+    describe('#leaveTeam', () => {
+      let teamNoneDiv;
+      before( () => {
+        firestore.collection('teams').doc(team).set({
+          'odkSxashOmg9QeyRL2cRs00Jke12': true,
+        });
+        firestore.collection('thermometers').doc(team).set({
+          'progress': 0,
+          'lastEpoch': (new Date()).getTime()
+        });
+        module.checkTeams(firestore, uid);
+        module.leaveTeam(firestore, uid);
+        teamNoneDiv = document.getElementById("teamNoneDiv")
+      });
+      it('leaveTeam is called once', () => {
+        expect(leaveTeamSpy.calledOnce).to.equal(true);
+      })
+      it('leaveTeam called with correct param', () => {
+        expect(leaveTeamSpy.calledWith(firestore, uid)).to.equal(true);
+      })
+      it('Team is removed', () => {
+        expect(teamNoneDiv.style.display).to.equal('block');
+      })
+    });
+
+    describe('#getTeam', () => {
+      let nameList
+      before( () => {
+        firestore.collection('users').doc('odkSxashOmg9QeyRL2cRs00Jke13').set({
+          displayName: 'testing1',
+          userStatus: 'Offline',
+          team: team
+        });
+        firestore.collection('users').doc('odkSxashOmg9QeyRL2cRs00Jke14').set({
+          displayName: 'testing2',
+          userStatus: 'Offline',
+          team: team
+        });
+        firestore.collection('users').doc('odkSxashOmg9QeyRL2cRs00Jke15').set({
+          displayName: 'testing3',
+          userStatus: 'Offline',
+          team: team
+        });
+        firestore.collection('thermometers').doc(team).set({
+          'progress': 0,
+          'lastEpoch': (new Date()).getTime()
+        });
+        module.getTeam(firestore, team);
+        nameList = document.getElementById('name_list');
+      })
+      it('getTeam is called once', () => {
+        expect(getTeamSpy.calledOnce).to.equal(true);
+      })
+      it('getTeam is called with the correct params', () => {
+        expect(getTeamSpy.calledWith(firestore, team)).to.equal(true);
+      })
+      it('getTeam gets the appropriate team members', () => {
+        expect(nameList.children.length).to.equal(4);
+      })
+    });
+
+    describe('#checkThermometer', () => {
+      let thermometer
+      before( () => {
+        firestore.collection('teams').doc(team).set({
+          'odkSxashOmg9QeyRL2cRs00Jke12': true,
+        });
+        firestore.collection('thermometers').doc(team).set({
+          'progress': 40,
+          'lastEpoch': (new Date()).getTime()
+        });
+        module.checkThermometer(firestore, true)
+        thermometer = document.getElementById("thermometer")
+      })
+      it('checkThermometer is called once', () => {
+        expect(checkThermometerSpy.calledOnce).to.equal(true);
+      })
+      it('checkThermometer is called with the correct params', () => {
+        expect(checkThermometerSpy.calledWith(firestore, true)).to.equal(true);
+      })
+      it('checkThermometer correctly sets thermometer', () => {
+        firestore.collection('thermometers').doc(team)
+          .onSnapshot((doc) => {
+            expect(thermometer.value).to.equal(40);
+          })
+      })
+    });
+
+    describe('#addStatusListener', () => {
+      before( () => {
+        firestore.collection('users').doc(uid).set({
+          displayName: 'testing',
+          userStatus: 'Offline',
+          team: team
+        });
+        module.addStatusListener(uid, firestore);
+      })
+      it('addStatusListener is called once', () => {
+        expect(statusListenerSpy.calledOnce).to.equal(true);
+      })
+      it('addStatusListener is called with the correct params', () => {
+        expect(statusListenerSpy.calledWith(uid, firestore)).to.equal(true);
+      })
+      it('addStatusListener retrieves correct user docs', () => {
+        firestore.collection('users').doc(uid).get().then((doc) => {
+          expect(doc.exists).to.equal(true);
+          let data = doc.data();
+          expect(data['displayName']).to.equal('testing');
+          expect(data['userStatus']).to.equal('Offline');
+        });
       });
     });
   });
