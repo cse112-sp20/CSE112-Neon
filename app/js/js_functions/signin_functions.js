@@ -28,7 +28,7 @@ function signIn(xhrRef, shell, localStorage) {
         if (response.guid) {
           console.log('Successfully logged in');
           clearInterval(intervalVar);
-          this.setStorage(localStorage, response.uid, response.displayName, response.email);
+          setStorage(localStorage, response.uid, response.displayName, response.email);
         }
       }
     };
