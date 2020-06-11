@@ -1,6 +1,7 @@
 // const { dialog } = require('electron').remote;
 const { shell } = require('electron');
 const { firebaseConfig } = require('./js/common.js');
+const singinFunctions = require('./js/js_functions/signin_functions.js');
 
 /* global firebase, guidVal */
 
@@ -20,7 +21,7 @@ let intervalVar;
  */
 signInBtn.addEventListener('click', () => {
   console.log('here');
-  const guid = guidVal();
+  const guid = signinFunctions.guidVal();
   intervalVar = setInterval(() => {
     const xhr = new XMLHttpRequest();
     const url = `http://localhost:3000/checklogin?guid=${guid}`;
