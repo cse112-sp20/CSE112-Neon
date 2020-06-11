@@ -50,8 +50,7 @@
   "_comment": "Purpose of this part: to do code coverage within Mocha/Chai using Istanbul",
   "register": "babel-register",
   "include": [
-   "**/*.js",
-   "./*.js"
+   "**app/js/js_functions/*.js"
   ],
   "exclude": [
    "**/node_modules/**",
