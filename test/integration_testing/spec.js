@@ -9,6 +9,7 @@ const loadTime = 4000;
 /* Time to wait after each action, solely for user, tests run without this wait*/
 const userViewTime = 400;
 const invalidName = 'invalidNameShouldNotWork';
+var beforeHTML, afterHTML;
 
 const app = new Application({
   path: electronPath,
@@ -96,65 +97,41 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
   });
   describe('Interior Functionality', async function() {
     /** INSERT CHECKIN/OUT/STATUS FUNCTIONS HERE **/
-    /*
     describe('Status Functionality', async function() {
       it('test if status change shows', async function() {
-        await waitUntilAction(async () => {before = await app.client.getHTML('#teamStatusesDiv')});
+        await waitUntilAction(async () => {beforeHTML = await app.client.getHTML('#teamStatusesDiv')});
         await waitUntilAction(async () => {app.client.selectByIndex('#userStatus', 1)});
-        await sleep();
-        await waitUntilAction(async () => {after = await app.client.getHTML('#teamStatusesDiv')});
+        await waitUntil(loadTime);
+        await waitUntilAction(async () => {afterHTML = await app.client.getHTML('#teamStatusesDiv')});
 
         await expect(before).to.not.equal(after);
       })
     });
-     */
-    /*
+
     describe('Check-In Functionality', async function () {
       it('test startFlow', async function () {
-        await sleep();
         try {
-          await app.client.click('#startFlowButton');
+          await waitUntilAction(async () => {app.client.click('#startFlowButton')});
         } catch (e) {
           assert(false, 'Start flow button does not exist even though it should');
         }
-        await sleep();
       });
       it('test cancel Check-In Flow', async function () {
-        await sleep();
-        await app.client.click('#cancelBtn');
-        assert(app.client.$('#logOutBtn').isExisting(),
-            'The cancel button brings the user to taskbar');
+        await waitUntilAction(async () => {app.client.click('#cancelBtn')});
       });
       it('test checkIn and checkOut with no tasks', async function() {
-        await sleep();
-        await app.client.click('#startFlowButton');
-        await sleep();
-        await app.client.click('#startFlowBtn');
-        await sleep();
-        await app.client.click('#endFlowButton');
-        await sleep();
-        await app.client.click('#endFlowBtn');
-        await sleep();
-        assert(app.client.$('#logOutBtn').isExisting(),
-          'The end flow button brings the user to taskbar');
-        assert(app.client.$('#startFlowButton').isExisting(),
-          'The end flow button brings back the startFlow button');
+        await waitUntilAction(async () => {app.client.click('#startFlowButton')});
+        await waitUntilAction(async () => {app.client.click('#startFlowBtn')});
+        await waitUntilAction(async () => {app.client.click('#endFlowButton')});
+        await waitUntilAction(async () => {app.client.click('#endFlowBtn')});
       });
       it('test checkIn addTask needs to be filled', async function() {
-        await sleep();
-        await app.client.click('#startFlowButton');
-        await sleep();
-        //const before = await app.client.getHTML('#todayTask');
-        await app.client.click('#addTasks');
-        await sleep();
-        //const after = await app.client.getHTML('#todayTask');
-        await sleep();
-        await app.client.click('#cancelBtn');
-        await sleep();
-        //expect(before).equal.to(after);
+        await waitUntilAction(async () => {app.client.click('#startFlowButton')});
+        await waitUntilAction(async () => {app.client.click('#addTasks')});
+        await waitUntilAction(async () => {app.client.click('#cancelBtn')});
       });
     });
-     */
+
     describe('Log Out Functionality', async function () {
       it('test if logOut button actually logs out user', async function () {
         await waitUntilAction(async () => {app.client.click('#logOutBtn')});
