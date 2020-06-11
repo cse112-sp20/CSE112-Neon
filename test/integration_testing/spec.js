@@ -4,7 +4,7 @@ const electronPath = require('electron') // Require Electron from the binaries i
 const path = require('path')
 const { expect } = require('chai');
 
-const loadTime = 2100;
+const loadTime = 1900;
 const invalidName = 'invalidNameShouldNotWork';
 const sleep = time => new Promise(r => setTimeout(r, time));
 
@@ -19,7 +19,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
       });
       await this.app.start();
       await sleep(loadTime);
-      await this.app.client.click('#signInBtnFake');
+      await this.app.client.click('#testingEntry');
       await sleep(loadTime);
     } catch(e) {
       throw new Error("Spectron random error, please try again");
@@ -29,6 +29,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
     await sleep(loadTime);
     await this.app.stop();
   })
+
 
   describe('Exterior functionality', async function() {
     beforeEach(async function() {
@@ -97,6 +98,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
       })
     });
   });
+
   describe('Interior Functionality', async function() {
     /** INSERT CHECKIN/OUT/STATUS FUNCTIONS HERE **/
     describe('Status Functionality', async function() {
@@ -115,9 +117,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         await sleep(loadTime);
         try {
           await this.app.client.click('#startFlowButton');
-        } catch (e) {
-
-        }
+        } catch (e) {}
         await sleep(loadTime);
       });
       it('Cancel Check-In Flow', async function () {

@@ -28,10 +28,7 @@ function signIn(xhrRef, shell, localStorage) {
         if (response.guid) {
           console.log('Successfully logged in');
           clearInterval(intervalVar);
-          localStorage.setItem('userid', response.uid);
-          localStorage.setItem('displayName', response.displayName);
-          localStorage.setItem('email', response.email);
-          document.location.href = 'taskbar.html';
+          this.setStorage(localStorage, response.uid, response.displayName, response.email);
         }
       }
     };
@@ -43,4 +40,14 @@ function signIn(xhrRef, shell, localStorage) {
   shell.openExternal(url);
 }
 
-module.exports = { guidVal, signIn };
+/**
+ * Helper function that updates local storage and document.
+ */
+function setStorage(localStorage, uid, displayName, email) {
+  localStorage.setItem('userid', uid);
+  localStorage.setItem('displayName', displayName);
+  localStorage.setItem('email', email);
+  document.location.href = 'taskbar.html';
+}
+
+module.exports = { guidVal, signIn, setStorage };
