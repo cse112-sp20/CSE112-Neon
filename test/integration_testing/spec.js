@@ -4,9 +4,13 @@ const electronPath = require('electron') // Require Electron from the binaries i
 const path = require('path')
 const { expect } = require('chai');
 
-const loadTime = 3500;
+const loadTime = 5000;
 const extraTime = 3500;
 const invalidName = 'invalidNameShouldNotWork';
+
+const taskbarSelector = '#logOutBtn';
+const createSelector = '#cancelBtn';
+//var before, after;
 
 const app = new Application({
   path: electronPath,
@@ -15,29 +19,28 @@ const app = new Application({
 
 const waitUntil = time => new Promise(r => setTimeout(r, time));
 async function sleep() {
-  /*
-  try {
-    await app.client.waitUntilWindowLoaded(loadTime);
-  } catch (e) {
-  }
-
-   */
   await waitUntil(extraTime)
+}
+async function waitUntilAction(action) {
+  await app.client.waitUntil(async () => {
+    try {
+      await action();
+      console.log("SUCCESS: " + action);
+      return true;
+    } catch(e) {
+      console.log("FAILURE: " + action);
+      return false;
+    }
+  }, {timeout:loadTime});
 }
 
 describe('Integration Testing will now start for Create Team, Join Team, Leave Team, Log Out!', async function(){
   this.timeout(1000000)
 
   before(async function() {
-    try {
-      //await sleep();
-      await app.start();
-      await sleep();
-      await app.client.click('#testingEntry');
-      //await sleep();
-    } catch(e) {
-      throw new Error("Spectron random error, please try again");
-    }
+    await sleep();
+    await app.start();
+    await waitUntilAction(async () => {app.client.click('#testingEntry')});
   })
   after(async function () {
     await sleep();
@@ -47,82 +50,69 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
 
   describe('Exterior functionality', async function() {
     beforeEach(async function() {
-      await sleep();
       try {
-        await app.client.click('#leaveTeamButton');
-      } catch (e) {}
+        await waitUntilAction(async () => {app.client.click('#leaveTeamButton')});
+      //Here it is okay if it can't click the leaveTeamButton, some cases require this
+      } catch(e) {}
     })
     describe('Create Team Functionality', async function () {
       it('tests createTeam cancel', async function () {
-        await sleep();
-        await app.client.click('#createTeamButton');
-        await sleep();
-        await app.client.setValue('#teamName', 'testTeam');
-        await app.client.click('#cancelBtn');
+        await waitUntilAction(async () => {app.client.click('#createTeamButton')});
+        await waitUntilAction(async () => {app.client.setValue('#teamName', 'testTeam')})
+        await waitUntilAction(async () => {app.client.click('#cancelBtn')});
       })
       it('tests createTeam with pre-existing team name', async function () {
-        await sleep();
-        await app.client.click('#createTeamButton');
-        await sleep();
-        await app.client.setValue('#teamName', 'testTeam');
-        await app.client.click('#createBtn');
+        await waitUntilAction(async () => {app.client.click('#createTeamButton')});
+        await waitUntilAction(async () => {app.client.setValue('#teamName', 'testTeam')});
+        await waitUntilAction(async () => {app.client.click('#createBtn')});
       })
     });
 
     describe('Join Team Functionality', async function () {
       it('tests joinTeam cancel', async function () {
-        await sleep();
-        await app.client.click('#joinTeamButton');
-        await sleep();
-        await app.client.setValue('#teamName', 'testTeam');
-        await app.client.click('#cancelBtn');
+        await waitUntilAction(async () => {app.client.click('#joinTeamButton')});
+        await waitUntilAction(async () => {app.client.setValue('#teamName', 'testTeam')});
+        await waitUntilAction(async () => {app.client.click('#cancelBtn')});
       })
 
       it('tests joinTeam join invalid name', async function () {
-        await sleep();
-        await app.client.click('#joinTeamButton');
-        await sleep();
-        await app.client.setValue('#teamName', invalidName);
-        await sleep();
-        await app.client.click('#joinBtn');
-        await sleep();
+        await waitUntilAction(async () => {app.client.click('#joinTeamButton')});
+        await waitUntilAction(async () => {app.client.setValue('#teamName', invalidName)});
+        await waitUntilAction(async () => {app.client.click('#joinBtn')});
+
         try {
           //See if back on it went through and now on taskbar taskbar
-          await app.client.click('leaveTeamButton');
-          await sleep();
-          assert(false, 'Test is allowed to join invalid name: ' + invalidName);
+          await waitUntilAction(async () => {app.client.click('leaveTeamButton')});
+          await assert(false, 'Test is allowed to join invalid name: ' + invalidName);
         } catch (e) {
           //If caught error then it works properly
-          await sleep();
-          assert(true, 'Test is not allowed to join invalid name: ' + invalidName);
+          await assert(true, 'Test is not allowed to join invalid name: ' + invalidName);
           //Get back to taskbar for next test
-          await app.client.click('#cancelBtn');
+          await waitUntilAction(async () => {app.client.click('#cancelBtn')});
         }
       })
 
       it('tests joinTeam join valid name', async function () {
-        await sleep();
-        await app.client.click('#joinTeamButton');
-        await sleep();
-        await app.client.setValue('#teamName', 'testTeam');
-        await app.client.click('#joinBtn');
+        await waitUntilAction(async () => {app.client.click('#joinTeamButton')});
+        await waitUntilAction(async () => {app.client.setValue('#teamName', 'testTeam')});
+        await waitUntilAction(async () => {app.client.click('#joinBtn')});
       })
     });
   });
-
   describe('Interior Functionality', async function() {
     /** INSERT CHECKIN/OUT/STATUS FUNCTIONS HERE **/
+    /*
     describe('Status Functionality', async function() {
       it('test if status change shows', async function() {
+        await waitUntilAction(async () => {before = await app.client.getHTML('#teamStatusesDiv')});
+        await waitUntilAction(async () => {app.client.selectByIndex('#userStatus', 1)});
         await sleep();
-        const before = await app.client.getHTML('#teamStatusesDiv');
-        await app.client.selectByIndex('#userStatus', 1);
-        await sleep();
-        const after = await app.client.getHTML('#teamStatusesDiv');
-        await sleep();
-        expect(before).to.not.equal(after);
+        await waitUntilAction(async () => {after = await app.client.getHTML('#teamStatusesDiv')});
+
+        await expect(before).to.not.equal(after);
       })
     });
+     */
     /*
     describe('Check-In Functionality', async function () {
       it('test startFlow', async function () {
@@ -170,20 +160,21 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
       });
     });
      */
+    /*
     describe('Log Out Functionality', async function () {
       it('test if logOut button actually logs out user', async function () {
-        await sleep();
-        await app.client.click('#logOutBtn');
-        await sleep();
+        await waitUntilAction(async () => {app.client.click('#logOutBtn')});
+
         //Make sure logged out successfully
         try {
           //Should be on sign-in page, try to sign in to catch
-          await app.client.click('#signInBtn');
-          await sleep();
+          await waitUntilAction(async () => {app.client.click('#signInBtn')});
+
         } catch (e) {
-          assert(false, 'Test does not log-out on log-out click');
+          await assert(false, 'Test does not log-out on log-out click');
         }
       })
     });
+     */
   })
 });
