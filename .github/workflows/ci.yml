@@ -32,7 +32,7 @@ jobs:
         uses: GabrielBB/xvfb-action@v1.0
         with:
           #working-directory: ./ #optional
-          run: npm run test:int
+          run: npm run test:int || npm run test:int || npm run test:int # runs the test up to three times in case of failure
 
   # Tests that the app is build able
   build:
@@ -63,7 +63,7 @@ jobs:
   # Runs the coverage reporter
   coverage:
     name: coverage
-    runs-on: macos-latest
+    runs-on: windows-latest
     timeout-minutes: 5
     needs: [unit, integration]
     steps:
@@ -83,7 +83,7 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_REPORT_ID}}
         with:
-          coverageCommand: npm run test:unit_cov_lcov
+          coverageCommand: npm run test:unit_cov_lcov || npm run test:unit_cov_lcov || npm run test:unit_cov_lcov  # runs the test up to three times in case of failure
           coverageLocations: |
             ${{github.workspace}}/coverage/lcov.info:lcov
             ${{github.workspace}}/coverage/lcov2.info:lcov
