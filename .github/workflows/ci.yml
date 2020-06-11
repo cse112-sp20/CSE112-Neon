@@ -21,7 +21,7 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 5
+    timeout-minutes: 10
     needs: unit
     steps:
       - name: Checkout
@@ -29,10 +29,10 @@ jobs:
       - name: Install
         run: npm ci
       - name: Run headless test
-        uses: GabrielBB/xvfb-action@v1.2
+        uses: GabrielBB/xvfb-action@v1.0
         with:
-          working-directory: ./ #optional
-          run: npm run test:int
+          #working-directory: ./ #optional
+          run: npm run test:multi_int # runs the test up to three times in case of failure
 
   # Tests that the app is build able
   build:
@@ -64,7 +64,7 @@ jobs:
   coverage:
     name: coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     needs: [unit, integration]
     steps:
       - name: Checkout
@@ -72,10 +72,10 @@ jobs:
       - name: setup
         run: npm ci
       - name: Run headless test
-        uses: GabrielBB/xvfb-action@v1.2
+        uses: GabrielBB/xvfb-action@v1.0
         with:
-          working-directory: ./ #optional
-          run: npm run test:int_cov_lcov
+          #working-directory: ./ #optional
+          run: npm run test:multi_int_cov_lcov
       - name: move report file
         run: cp ${{github.workspace}}/coverage/lcov.info ${{github.workspace}}/coverage/lcov2.info
       - name: Test & publish code coverage

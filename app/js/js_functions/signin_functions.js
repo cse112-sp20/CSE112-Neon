@@ -6,6 +6,15 @@ function guidVal() {
   return `${s4() + s4()}-${s4()}-${s4()}`;
 }
 
+/**
+ * Helper function that updates local storage and document.
+ */
+function setStorage(localStorage, uid, displayName, email) {
+  localStorage.setItem('userid', uid);
+  localStorage.setItem('displayName', displayName);
+  localStorage.setItem('email', email);
+  document.location.href = 'taskbar.html';
+}
 
 /**
  * Opens up google sign in page, then continually pings server for response from
@@ -28,10 +37,7 @@ function signIn(xhrRef, shell, localStorage) {
         if (response.guid) {
           console.log('Successfully logged in');
           clearInterval(intervalVar);
-          localStorage.setItem('userid', response.uid);
-          localStorage.setItem('displayName', response.displayName);
-          localStorage.setItem('email', response.email);
-          document.location.href = 'taskbar.html';
+          setStorage(localStorage, response.uid, response.displayName, response.email);
         }
       }
     };
@@ -43,4 +49,4 @@ function signIn(xhrRef, shell, localStorage) {
   shell.openExternal(url);
 }
 
-module.exports = { guidVal, signIn };
+module.exports = { guidVal, signIn, setStorage };
