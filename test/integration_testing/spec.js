@@ -2,8 +2,9 @@ const Application = require('spectron').Application
 const assert = require('assert')
 const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
 const path = require('path')
+const { expect } = require('chai');
 
-const loadTime = 1500;
+const loadTime = 1800;
 const invalidName = 'invalidNameShouldNotWork';
 const sleep = time => new Promise(r => setTimeout(r, time));
 
@@ -95,9 +96,38 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         await sleep(loadTime);
       })
     });
+  });
+  describe('Interior Functionality', async function() {
+    /** INSERT CHECKIN/OUT/STATUS FUNCTIONS HERE **/
+    describe('Status Functionality', async function() {
+      it('test if status change shows', async function() {
+        await sleep(loadTime);
+        const before = await this.app.client.getHTML('#teamStatusesDiv');
+        await this.app.client.selectByIndex('#userStatus', 1);
+        await sleep(loadTime);
+        const after = await this.app.client.getHTML('#teamStatusesDiv');
+        await sleep(loadTime);
+        expect(before).to.not.equal(after);
+      })
+    });
+    describe('Check-In Functionality', async function () {
+      it('StartFlow', async function () {
+        await sleep(loadTime);
+        try {
+          await this.app.client.click('#startFlowButton');
+        } catch (e) {
 
+        }
+        await sleep(loadTime);
+      });
+      it('Cancel Check-In Flow', async function () {
+        await sleep(loadTime);
+        await this.app.client.click('#cancelBtn');
+        assert(this.app.client.$('#logOutBtn').isExisting(),
+            'The cancel button brings the user to taskbar');
+      });
+    });
     describe('Log Out Functionality', async function () {
-
       it('test if logOut button actually logs out user', async function () {
         await sleep(loadTime);
         await this.app.client.click('#logOutBtn');
@@ -112,8 +142,5 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         }
       })
     });
-  });
-  describe('Interior Functionality', async function() {
-    /** INSERT CHECKIN/OUT/STATUS FUNCTIONS HERE **/
   })
 });
