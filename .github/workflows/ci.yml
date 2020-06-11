@@ -63,7 +63,7 @@ jobs:
   # Runs the coverage reporter
   coverage:
     name: coverage
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 5
     needs: [unit, integration]
     steps:
