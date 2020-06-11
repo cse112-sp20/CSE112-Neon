@@ -33,7 +33,7 @@
   "test:int_cov": "nyc npm run test:int",
   "test:int_cov_lcov": "nyc --reporter=lcov npm run test:int",
   "test:multi_int_cov_lcov": "npm run test:int_cov_lcov || npm run test:int_cov_lcov || npm run test:int_cov_lcov",
-  "test:int_cov_html": "nyc --silent --no-clean --reporter=html npm run test:int",
+  "test:int_cov_html": "nyc --reporter=html npm run test:int",
   "test:all": "npm run test:unit && npm run test:int",
   "test:all_cov": "nyc npm run test:all",
   "test:all_cov_lcov": "nyc --reporter=lcov npm run test:all",
@@ -52,7 +52,8 @@
   "register": "babel-register",
   "cache": "false",
   "include": [
-   "**/*.js"
+   "**/app/js/js_functions/*.js",
+   "**/app/main.js"
   ],
   "exclude": [
    "**/node_modules/**",
