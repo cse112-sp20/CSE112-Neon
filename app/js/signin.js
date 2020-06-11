@@ -10,7 +10,6 @@ firebase.initializeApp(firebaseConfig);
 // const db = firebase.firestore();
 
 const signInBtn = document.getElementById('signInBtn');
-const signInBtnFake = document.getElementById('signInBtnFake');
 
 signInBtn.addEventListener('click', () => {
   signinFunctions.signIn(new XMLHttpRequest(), shell, localStorage);

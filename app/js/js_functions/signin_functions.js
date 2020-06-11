@@ -12,15 +12,15 @@ function guidVal() {
  * redirect. Once that redirect response is received then userid, email, and name
  * are retrieved. Then redirects to taskbar.html
  */
-function signIn(xhr, shell, localStorage){
-  let intervalVar;
+function signIn(xhrRef, shell, localStorage) {
+  const xhr = xhrRef;
   const guid = guidVal();
-  intervalVar = setInterval(() => {
+  const intervalVar = setInterval(() => {
     const url = `http://localhost:3000/checklogin?guid=${guid}`;
     xhr.open('get', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     // Call a function when the state changes.
-    xhr.onreadystatechange = function () {
+    xhr.onreadystatechange = function onreadystatechange() {
       if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
         console.log('Response is');
         console.log(xhr.response);
