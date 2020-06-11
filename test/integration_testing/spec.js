@@ -14,7 +14,6 @@ async function sleep() {
   } catch(e) {}
   await waitUntil(2500);
 }
-
 describe('Integration Testing will now start for Create Team, Join Team, Leave Team, Log Out!', async function(){
   this.timeout(1000000)
 
@@ -121,6 +120,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         expect(before).to.not.equal(after);
       })
     });
+    /*
     describe('Check-In Functionality', async function () {
       it('test startFlow', async function () {
         await sleep();
@@ -147,12 +147,10 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         await sleep();
         await this.app.client.click('#endFlowBtn');
         await sleep();
-        /*
         assert(this.app.client.$('#logOutBtn').isExisting(),
           'The end flow button brings the user to taskbar');
         assert(this.app.client.$('#startFlowButton').isExisting(),
           'The end flow button brings back the startFlow button');
-         */
       });
       it('test checkIn addTask needs to be filled', async function() {
         await sleep();
@@ -168,6 +166,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         //expect(before).equal.to(after);
       });
     });
+     */
     describe('Log Out Functionality', async function () {
       it('test if logOut button actually logs out user', async function () {
         await sleep();
