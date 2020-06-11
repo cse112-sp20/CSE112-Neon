@@ -4,7 +4,8 @@ const electronPath = require('electron') // Require Electron from the binaries i
 const path = require('path')
 const { expect } = require('chai');
 
-const loadTime = 2500;
+const loadTime = 3500;
+const extraTime = 3500;
 const invalidName = 'invalidNameShouldNotWork';
 
 const app = new Application({
@@ -14,11 +15,16 @@ const app = new Application({
 
 const waitUntil = time => new Promise(r => setTimeout(r, time));
 async function sleep() {
+  /*
   try {
-    await app.client.waitUntilWindowLoaded(3500);
-  } catch(e) {}
-  await waitUntil(1500);
+    await app.client.waitUntilWindowLoaded(loadTime);
+  } catch (e) {
+  }
+
+   */
+  await waitUntil(extraTime)
 }
+
 describe('Integration Testing will now start for Create Team, Join Team, Leave Team, Log Out!', async function(){
   this.timeout(1000000)
 
