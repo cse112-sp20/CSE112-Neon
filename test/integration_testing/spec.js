@@ -71,6 +71,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         await this.app.client.click('#joinTeamButton');
         await sleep(loadTime);
         await this.app.client.setValue('#teamName', invalidName);
+        await sleep(loadTime);
         await this.app.client.click('#joinBtn');
         await sleep(loadTime);
         try {
@@ -113,18 +114,48 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
       })
     });
     describe('Check-In Functionality', async function () {
-      it('StartFlow', async function () {
+      it('test startFlow', async function () {
         await sleep(loadTime);
         try {
           await this.app.client.click('#startFlowButton');
-        } catch (e) {}
+        } catch (e) {
+          assert(false, 'Start flow button does not exist even though it should');
+        }
         await sleep(loadTime);
       });
-      it('Cancel Check-In Flow', async function () {
+      it('test cancel Check-In Flow', async function () {
         await sleep(loadTime);
         await this.app.client.click('#cancelBtn');
         assert(this.app.client.$('#logOutBtn').isExisting(),
             'The cancel button brings the user to taskbar');
+      });
+      it('test checkIn and checkOut with no tasks', async function() {
+        await sleep(loadTime);
+        await this.app.client.click('#startFlowButton');
+        await sleep(loadTime);
+        await this.app.client.click('#startFlowBtn');
+        await sleep(loadTime);
+        await this.app.client.click('#endFlowButton');
+        await sleep(loadTime);
+        await this.app.client.click('#endFlowBtn');
+        await sleep(loadTime);
+        await assert(this.app.client.$('#logOutBtn').isExisting(),
+          'The end flow button brings the user to taskbar');
+        await assert(this.app.client.$('#startFlowButton').isExisting(),
+          'The end flow button brings back the startFlow button');
+      });
+      it('test checkIn addTask needs to be filled', async function() {
+        await sleep(loadTime);
+        await this.app.client.click('#startFlowButton');
+        await sleep(loadTime);
+        const before = await this.app.client.getHTML('#todayTask');
+        await this.app.client.click('#addTasks');
+        await sleep(loadTime);
+        const after = await this.app.client.getHTML('#todayTask');
+        await sleep(loadTime);
+        await this.app.client.click('#cancelBtn');
+        await sleep(loadTime);
+        //await expect(before).equal.to(after);
       });
     });
     describe('Log Out Functionality', async function () {
