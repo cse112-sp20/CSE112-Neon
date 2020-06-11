@@ -21,7 +21,7 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 5
+    timeout-minutes: 10
     needs: unit
     steps:
       - name: Checkout
@@ -64,7 +64,7 @@ jobs:
   coverage:
     name: coverage
     runs-on: windows-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     needs: [unit, integration]
     steps:
       - name: Checkout
