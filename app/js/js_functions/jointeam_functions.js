@@ -1,5 +1,3 @@
-
-
 /**
  * Cancel join team flow
  */
@@ -8,8 +6,7 @@ function cancel() { document.location.href = 'taskbar.html'; }
 /**
  * Logic for joining a team, checks if team exists then adds current user to the team.
  */
-function joinTeam(db, uid, dialog) {
-  const teamName = document.getElementById('teamName').value;
+function joinTeam(teamName, db, uid, dialog) {
   db.collection('teams').doc(teamName)
     .get()
     .then((querySnapshot) => {
