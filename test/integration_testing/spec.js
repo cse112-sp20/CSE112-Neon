@@ -104,7 +104,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         await waitUntil(loadTime);
         await waitUntilAction(async () => {afterHTML = await app.client.getHTML('#teamStatusesDiv')});
 
-        await expect(before).to.not.equal(after);
+        await expect(beforeHTML).to.not.equal(afterHTML);
       })
     });
 
@@ -140,7 +140,7 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         try {
           //Should be on sign-in page, try to sign in to catch
           await waitUntilAction(async () => {app.client.click('#signInBtn')});
-
+          await waitUntil(loadTime);
         } catch (e) {
           await assert(false, 'Test does not log-out on log-out click');
         }
