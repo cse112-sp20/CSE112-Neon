@@ -4,46 +4,41 @@ const electronPath = require('electron') // Require Electron from the binaries i
 const path = require('path')
 const { expect } = require('chai');
 
-const loadTime = 5000;
-const extraTime = 3500;
+/* Time allocated to loading, if action is not performed by this time there is a failure */
+const loadTime = 4000;
+/* Time to wait after each action, solely for user, tests run without this wait*/
+const userViewTime = 400;
 const invalidName = 'invalidNameShouldNotWork';
-
-const taskbarSelector = '#logOutBtn';
-const createSelector = '#cancelBtn';
-//var before, after;
 
 const app = new Application({
   path: electronPath,
   args: [path.join(__dirname, '../..')]
 });
 
-const waitUntil = time => new Promise(r => setTimeout(r, time));
-async function sleep() {
-  await waitUntil(extraTime)
-}
+const waitUntil = time => new Promise(ex => setTimeout(ex, time));
+
 async function waitUntilAction(action) {
   await app.client.waitUntil(async () => {
     try {
       await action();
-      console.log("SUCCESS: " + action);
       return true;
     } catch(e) {
-      console.log("FAILURE: " + action);
       return false;
     }
   }, {timeout:loadTime});
+  await waitUntil(userViewTime);
 }
 
 describe('Integration Testing will now start for Create Team, Join Team, Leave Team, Log Out!', async function(){
   this.timeout(1000000)
 
   before(async function() {
-    await sleep();
+    await waitUntil(loadTime);
     await app.start();
     await waitUntilAction(async () => {app.client.click('#testingEntry')});
   })
   after(async function () {
-    await sleep();
+    await waitUntil(loadTime);
     await app.stop();
   })
 
@@ -160,7 +155,6 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
       });
     });
      */
-    /*
     describe('Log Out Functionality', async function () {
       it('test if logOut button actually logs out user', async function () {
         await waitUntilAction(async () => {app.client.click('#logOutBtn')});
@@ -175,6 +169,5 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         }
       })
     });
-     */
   })
 });
