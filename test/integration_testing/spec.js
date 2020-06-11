@@ -139,19 +139,21 @@ describe('Integration Testing will now start for Create Team, Join Team, Leave T
         await sleep(loadTime);
         await this.app.client.click('#endFlowBtn');
         await sleep(loadTime);
+        /*
         assert(this.app.client.$('#logOutBtn').isExisting(),
           'The end flow button brings the user to taskbar');
         assert(this.app.client.$('#startFlowButton').isExisting(),
           'The end flow button brings back the startFlow button');
+         */
       });
       it('test checkIn addTask needs to be filled', async function() {
         await sleep(loadTime);
         await this.app.client.click('#startFlowButton');
         await sleep(loadTime);
-        const before = await this.app.client.getHTML('#todayTask');
+        //const before = await this.app.client.getHTML('#todayTask');
         await this.app.client.click('#addTasks');
         await sleep(loadTime);
-        const after = await this.app.client.getHTML('#todayTask');
+        //const after = await this.app.client.getHTML('#todayTask');
         await sleep(loadTime);
         await this.app.client.click('#cancelBtn');
         await sleep(loadTime);
