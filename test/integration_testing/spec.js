@@ -4,7 +4,7 @@ const electronPath = require('electron') // Require Electron from the binaries i
 const path = require('path')
 const { expect } = require('chai');
 
-const loadTime = 1800;
+const loadTime = 2100;
 const invalidName = 'invalidNameShouldNotWork';
 const sleep = time => new Promise(r => setTimeout(r, time));
 
