@@ -1,5 +1,4 @@
-# Source
-# https://github.com/samuelmeuli/action-electron-builder
+# Source for release action https://github.com/samuelmeuli/action-electron-builder
 # See README on use
 
 name: release
@@ -22,16 +21,20 @@ jobs:
         fetch-depth: '0'
         
     - name: get package version
+      # this will get use the version number in package.json in the format vx.x.x
       run: echo "::set-env name=PACKAGE_VER::$(cat package.json | grep version | head -1 | awk '{print $2}' | sed 's/[\",]//g' | perl -ne 'print "v$_"')"
     
     - name: check for existing tags
+      # this will check if master has any tags with the pulled version in the format vx.x.x
       run: echo "::set-env name=NEW_VERSION::$(git tag -l ${{env.PACKAGE_VER}})"  
       
     - id: setoutput
+      # here is how we trigger the build commands to run - this passes a boolean to our build_and_release job
       if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
       run: echo "::set-output name=release::true"
       
     - name: Bump version and push tag
+      # if we do have a new release then we tag the repo with the line vx.x.x that we pulled earlier
       if: ${{!contains(env.NEW_VERSION, env.PACKAGE_VER)}}
       uses: anothrNick/github-tag-action@1.17.2
       env:
@@ -47,7 +50,8 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest]
     needs: tagger
-    
+    if: ${{needs.tagger.outputs.output1}}
+
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -56,7 +60,6 @@ jobs:
         uses: actions/setup-node@v1
 
       - name: Build and Release Electron app
-        if: ${{needs.tagger.outputs.output1}}
         uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.github_token }}
