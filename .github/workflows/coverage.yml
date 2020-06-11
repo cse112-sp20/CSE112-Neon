@@ -11,27 +11,29 @@ on:
 jobs:
   coverage:
     name: coverage
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: setup
         run: npm ci
-      - name: Run headless test
-        uses: GabrielBB/xvfb-action@v1.0
-        with:
-          #working-directory: ./ #optional
-          run: npm run test:int_cov_lcov
-      - name: move report file
-        run: cp ${{github.workspace}}/coverage/lcov.info ${{github.workspace}}/coverage/lcov2.info
+     # Bug with NYC and integration testing - temp remove   
+     # https://github.com/istanbuljs/nyc/issues/1158
+     # - name: Run headless test
+     #   uses: GabrielBB/xvfb-action@v1.0
+     #   with:
+     #     #working-directory: ./ #optional
+     #     run: npm run test:int_cov_lcov
+     # - name: move report file
+     #   run: cp ${{github.workspace}}/coverage/lcov.info ${{github.workspace}}/coverage/lcov2.info
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v2.6.0
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_REPORT_ID}}
         with:
-          coverageCommand: npm test:multi_int_cov_lcov  # runs the test up to three times in case of failure
+          coverageCommand: npm run test:unit_cov_lcov 
           coverageLocations: |
             ${{github.workspace}}/coverage/lcov.info:lcov
-            ${{github.workspace}}/coverage/lcov2.info:lcov
+        #    ${{github.workspace}}/coverage/lcov2.info:lcov
           debug: true
