@@ -51,15 +51,3 @@ signInBtn.addEventListener('click', () => {
   const url = `http://localhost:3000/googlesignin.html?guid=${guid}`;
   shell.openExternal(url);
 });
-
-/**
- * Opens up google sign in page, then continually pings server for response from
- * redirect. Once that redirect response is received then userid, email, and name
- * are retrieved. Then redirects to taskbar.html
- */
-signInBtnFake.addEventListener('click', () => {
-  localStorage.setItem('userid', 'KDirlpoDKjUBN6lfkrHdflqzfoC2');
-  localStorage.setItem('displayName', 'Test McTesterson');
-  localStorage.setItem('email', 'testingneonapp@gmail.com');
-  document.location.href = 'taskbar.html';
-});
