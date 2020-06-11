@@ -12,7 +12,7 @@ jobs:
   coverage:
     name: coverage
     runs-on: windows-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_REPORT_ID}}
         with:
-          coverageCommand: npm run test:unit_cov_lcov || npm run test:unit_cov_lcov || npm run test:unit_cov_lcov  # runs the test up to three times in case of failure
+          coverageCommand: npm test:multi_int_cov_lcov  # runs the test up to three times in case of failure
           coverageLocations: |
             ${{github.workspace}}/coverage/lcov.info:lcov
             ${{github.workspace}}/coverage/lcov2.info:lcov
