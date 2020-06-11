@@ -19,7 +19,7 @@ jobs:
       - name: setup
         run: npm ci
       - name: Run headless test
-        uses: GabrielBB/xvfb-action@v1.2
+        uses: GabrielBB/xvfb-action@v1.0
         with:
           working-directory: ./ #optional
           run: npm run test:int_cov_lcov
