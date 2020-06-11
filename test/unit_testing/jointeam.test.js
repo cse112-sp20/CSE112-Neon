@@ -22,16 +22,14 @@ fs.readFile(`${__dirname}/../../app/jointeam.html`, 'utf8', async (err, data) =>
     joinTeamStub();
 
     describe('#jointeam_functions', () => {
-      describe('#cancel()', () => {
-       
+        describe('#cancel()', () => {
         it('cancel is called once', () => {
             expect(cancelStub.calledOnce).to.equal(true);
         });
         it('cancel is called with correct arguments', () => {
             expect(cancelStub.calledWith()).to.equal(true);
         });
-      });
-      
+        });
        describe('#joinTeam', () => {
 
             it('joinTeam is called exactly once', () => {

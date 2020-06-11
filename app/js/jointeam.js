@@ -1,3 +1,4 @@
+const { dialog } = require('electron');
 const { firebaseConfig } = require('./js/common.js');
 const joinTeamFunctions = require('./js/js_functions/jointeam_functions.js');
 
@@ -10,7 +11,7 @@ const uid = localStorage.getItem('userid');
 
 // On joinBtn clicked
 const joinTeamButton = document.getElementById('joinBtn');
-joinTeamButton.addEventListener('click', () => { joinTeamFunctions.joinTeam(db, uid); });
+joinTeamButton.addEventListener('click', () => { joinTeamFunctions.joinTeam(db, uid, dialog); });
 
 // On cancelButton clicked
 const cancelButton = document.getElementById('cancelBtn');

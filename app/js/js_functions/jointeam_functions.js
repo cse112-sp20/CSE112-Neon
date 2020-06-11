@@ -1,4 +1,4 @@
-const { dialog } = require('electron');
+
 
 /**
  * Cancel join team flow
@@ -8,7 +8,7 @@ function cancel() { document.location.href = 'taskbar.html'; }
 /**
  * Logic for joining a team, checks if team exists then adds current user to the team.
  */
-function joinTeam(db, uid) {
+function joinTeam(db, uid, dialog) {
   const teamName = document.getElementById('teamName').value;
   db.collection('teams').doc(teamName)
     .get()
