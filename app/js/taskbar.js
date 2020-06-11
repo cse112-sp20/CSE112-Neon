@@ -28,16 +28,8 @@ const startFlowButton = document.getElementById('startFlowButton');
 startFlowButton.addEventListener('click', () => { document.location.href = 'checkin.html'; });
 
 const endFlowButton = document.getElementById('endFlowButton');
-endFlowButton.addEventListener('click', () => { document.location.href = 'checkout.html'; });
-
-const flowDiv = document.getElementById('flowDiv');
-const teamNoneDiv = document.getElementById('teamNoneDiv');
-const teamExistsDiv = document.getElementById('teamExistsDiv');
-flowDiv.style.display = 'none';
-teamNoneDiv.style.display = 'none';
-teamExistsDiv.style.display = 'none';
 endFlowButton.style.display = 'none';
-
+endFlowButton.addEventListener('click', () => { document.location.href = 'checkout.html'; });
 
 // Right column logistics
 const createTeamButton = document.getElementById('createTeamButton');
