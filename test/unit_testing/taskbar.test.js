@@ -225,6 +225,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
     describe('#leaveTeam', () => {
       let teamNoneDiv;
       before( () => {
+        consoleStub = sinon.stub(console, 'log');
+        // Suppress reference error to firebase
+        errStub = sinon.stub(console, 'error');
         firestore.collection('teams').doc(team).set({
           'odkSxashOmg9QeyRL2cRs00Jke12': true,
         });
@@ -235,6 +238,10 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         module.checkTeams(firestore, uid);
         module.leaveTeam(firestore, uid);
         teamNoneDiv = document.getElementById("teamNoneDiv")
+      });
+      after( () => {
+        consoleStub.restore();
+        errStub.restore();
       });
       it('leaveTeam is called once', () => {
         expect(leaveTeamSpy.calledOnce).to.equal(true);
@@ -249,6 +256,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
     describe('#getTeam', () => {
       let nameList
       before( () => {
+        consoleStub = sinon.stub(console, 'log');
         firestore.collection('users').doc('odkSxashOmg9QeyRL2cRs00Jke13').set({
           displayName: 'testing1',
           userStatus: 'Offline',
@@ -272,7 +280,10 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         nameList.innerHTML = "";
         module.getTeam(firestore, team);
         nameList = document.getElementById('name_list');
-      })
+      });
+      after( () => {
+        consoleStub.restore();
+      });
       it('getTeam is called once', () => {
         expect(getTeamSpy.calledOnce).to.equal(true);
       })
@@ -286,6 +297,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
     describe('#checkThermometer', () => {
       let thermometer
       before( () => {
+        consoleStub = sinon.stub(console, 'log');
         firestore.collection('teams').doc(team).set({
           'odkSxashOmg9QeyRL2cRs00Jke12': true,
         });
@@ -296,6 +308,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         module.checkThermometer(firestore, true)
         thermometer = document.getElementById("thermometer")
       })
+      after( () => {
+        consoleStub.restore();
+      });
       it('checkThermometer is called once', () => {
         expect(checkThermometerSpy.calledOnce).to.equal(true);
       })
@@ -311,6 +326,7 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
     });
     describe('#addStatusListener', () => {
       before( () => {
+        consoleStub = sinon.stub(console, 'log');
         firestore.collection('users').doc(uid).set({
           displayName: 'testing',
           userStatus: 'Offline',
@@ -318,6 +334,9 @@ fs.readFile(`${__dirname}/../../app/taskbar.html`, 'utf8', async (err, data) => 
         });
         module.addStatusListener(uid, firestore);
       })
+      after( () => {
+        consoleStub.restore();
+      });
       it('addStatusListener is called once', () => {
         expect(statusListenerSpy.calledOnce).to.equal(true);
       })

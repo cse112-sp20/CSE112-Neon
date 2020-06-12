@@ -29,14 +29,15 @@
   "test:unit_cov_lcov": "nyc --reporter=lcov npm run test:unit",
   "test:unit_cov_html": "nyc --reporter=html npm run test:unit",
   "test:int": "mocha ./test/integration_testing/*.js",
+  "test:multi_int": "npm run test:int || npm run test:int || npm run test:int",
   "test:int_cov": "nyc npm run test:int",
   "test:int_cov_lcov": "nyc --reporter=lcov npm run test:int",
+  "test:multi_int_cov_lcov": "npm run test:int_cov_lcov || npm run test:int_cov_lcov || npm run test:int_cov_lcov",
   "test:int_cov_html": "nyc --reporter=html npm run test:int",
   "test:all": "npm run test:unit && npm run test:int",
   "test:all_cov": "nyc npm run test:all",
   "test:all_cov_lcov": "nyc --reporter=lcov npm run test:all",
   "test:all_cov_html": "nyc --reporter=html npm run test:all",
-  "coverage": "rm -rf ./node_modules/.cache && rm -rf coverage/ && rm -rf .nyc_output/ && NODE_ENV=test LOG_LEVEL=silent nyc tape -r npm run test:unit",
   "manual:postinstall": "electron-builder install-app-deps",
   "manual:build": "electron-builder",
   "manual:release": "electron-builder --windows --publish always"
@@ -49,9 +50,10 @@
  "nyc": {
   "_comment": "Purpose of this part: to do code coverage within Mocha/Chai using Istanbul",
   "register": "babel-register",
+  "cache": "false",
   "include": [
-   "**/*.js",
-   "./*.js"
+   "**/app/js/js_functions/*.js",
+   "**/app/main.js"
   ],
   "exclude": [
    "**/node_modules/**",
