@@ -28,6 +28,8 @@ describe('#sum()', function() {
       }).to.throw(TypeError, 'sum() expects only numbers.')
     })
   })
+
+  console.log("\nHere UNit tests\n");
   
 })
 
